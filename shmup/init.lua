@@ -1,5 +1,6 @@
 function _init()
   set_global_vars()
+  set_flags()
   set_sprites()
   set_ship()
   set_bullets()
@@ -26,6 +27,10 @@ function set_global_vars()
   current_blink_color = 5
 end
 
+function set_flags()
+  flags = {}
+end
+
 function set_sprites()
   sprites = {
     ship = {
@@ -47,8 +52,8 @@ end
 
 function set_ship()
   ship = {
-    x = map_w / 2,
-    y = map_h / 2,
+    x = flr(map_w / 2),
+    y = flr(map_h / 2),
     speed = 1,
     sprite = sprites.ship.default,
     thruster_sprite_i = 1

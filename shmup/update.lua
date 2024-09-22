@@ -19,6 +19,7 @@ function update_game()
   handle_map_boundaries()
   animate_starfield()
   handle_game_over()
+  handle_enemy_collision()
 end
 
 function update_start()
@@ -70,6 +71,14 @@ function handle_firing()
   for bullet in all(bullets) do
     if bullet.muzzle_r >= 0 then
       bullet.muzzle_r -= 1
+    end
+
+    for enemy in all(enemies) do
+      local hit = objects_collided(bullet, enemy)
+
+      if hit then
+        del(enemies, enemy)
+      end
     end
 
     bullet.y -= bullet_speed
@@ -135,5 +144,15 @@ end
 function handle_game_over()
   if lives == 0 then
     current_mode = modes.over
+  end
+end
+
+function handle_enemy_collision()
+  for enemy in all(enemies) do
+    local ship_collided = objects_collided(ship, enemy)
+
+    if ship_collided then
+      lives -= 1
+    end
   end
 end
