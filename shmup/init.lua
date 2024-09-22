@@ -17,6 +17,7 @@ function set_global_vars()
   score = 0
   max_lives = 3
   lives = 3
+  invincibility_frames = 0
   modes = {
     game = 0,
     start = 1,
@@ -54,7 +55,7 @@ function set_ship()
   ship = {
     x = flr(map_w / 2),
     y = flr(map_h / 2),
-    speed = 1,
+    speed = 1.5,
     sprite = sprites.ship.default,
     thruster_sprite_i = 1
   }

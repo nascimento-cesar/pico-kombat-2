@@ -38,20 +38,28 @@ function handle_ship_controls()
   ship.sprite = sprites.ship.default
 
   if btn(⬅️) then
+    if btn(⬆️) then
+      ship.y -= ship.speed / 2
+    elseif btn(⬇️) then
+      ship.y += ship.speed / 2
+    end
+
     ship.x -= ship.speed
+
     ship.sprite = sprites.ship.left
-  end
+  elseif btn(➡️) then
+    if btn(⬆️) then
+      ship.y -= ship.speed / 2
+    elseif btn(⬇️) then
+      ship.y += ship.speed / 2
+    end
 
-  if btn(➡️) then
     ship.x += ship.speed
+
     ship.sprite = sprites.ship.right
-  end
-
-  if btn(⬆️) then
+  elseif btn(⬆️) then
     ship.y -= ship.speed
-  end
-
-  if btn(⬇️) then
+  elseif btn(⬇️) then
     ship.y += ship.speed
   end
 end
@@ -89,7 +97,7 @@ function handle_firing()
 end
 
 function handle_enemies()
-  local speed = .5
+  local speed = 1
   for enemy in all(enemies) do
     enemy.y += speed
   end
@@ -125,6 +133,7 @@ function handle_map_boundaries()
 
     if enemy.y > map_h then
       deli(enemies, i)
+      set_enemies()
     end
   end
 end
@@ -154,8 +163,11 @@ function handle_enemy_collision()
   for enemy in all(enemies) do
     local ship_collided = objects_collided(ship, enemy)
 
-    if ship_collided then
+    if ship_collided and invincibility_frames <= 0 then
       lives -= 1
+      invincibility_frames = 30
     end
   end
+
+  invincibility_frames -= 1
 end
