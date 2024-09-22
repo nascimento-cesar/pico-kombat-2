@@ -4,6 +4,7 @@ function _init()
   set_ship()
   set_bullets()
   set_stars()
+  set_enemies()
 end
 
 function set_global_vars()
@@ -36,6 +37,7 @@ function set_sprites()
       default = 16
     },
     thruster = { 4, 5, 4, 6, 4 },
+    enemy = { 17, 18, 17, 19, 17 },
     lives = {
       default = 7,
       empty = 8
@@ -70,4 +72,14 @@ function set_stars()
     }
     add(stars, new_star)
   end
+end
+
+function set_enemies()
+  enemies = {}
+  local new_enemy = {
+    sprite_i = 1,
+    x = random_axis(),
+    y = 20
+  }
+  add(enemies, new_enemy)
 end

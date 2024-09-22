@@ -15,6 +15,7 @@ function draw_game()
   draw_lives()
   draw_ship()
   draw_bullet()
+  draw_enemies()
   draw_debug()
 end
 
@@ -47,16 +48,15 @@ function draw_ship()
   if ship.thruster_sprite_i >= #sprites.thruster then
     ship.thruster_sprite_i = 1
   else
-    local thruster_speed = .5
-    ship.thruster_sprite_i += thruster_speed
+    local animation_speed = .5
+    ship.thruster_sprite_i += animation_speed
   end
 
   spr(sprites.thruster[flr(ship.thruster_sprite_i)], ship.x, ship.y + 8)
 end
 
 function draw_bullet()
-  for i = 1, #bullets do
-    local bullet = bullets[i]
+  for bullet in all(bullets) do
     spr(sprites.bullet.default, bullet.x, bullet.y)
 
     if bullet.muzzle_r > 0 then
@@ -83,8 +83,7 @@ function draw_lives()
 end
 
 function draw_starfield()
-  for i = 1, #stars do
-    local star = stars[i]
+  for star in all(stars) do
     local star_color = 7
 
     if star.speed < 1 then
@@ -97,8 +96,22 @@ function draw_starfield()
   end
 end
 
+function draw_enemies()
+  for enemy in all(enemies) do
+    if enemy.sprite_i >= #sprites.enemy then
+      enemy.sprite_i = 1
+    else
+      local animation_speed = .1
+      enemy.sprite_i += animation_speed
+    end
+
+    spr(sprites.enemy[flr(enemy.sprite_i)], enemy.x, enemy.y)
+  end
+end
+
 function draw_debug()
   print(ship.x, 0, 16, 7)
   print(ship.y, 0, 24, 7)
   print(#bullets, 0, 32, 7)
+  print(#enemies, 0, 40, 7)
 end

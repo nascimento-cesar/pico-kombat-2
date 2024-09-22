@@ -15,6 +15,7 @@ end
 function update_game()
   handle_ship_controls()
   handle_firing()
+  handle_enemies()
   handle_map_boundaries()
   animate_starfield()
   handle_game_over()
@@ -66,14 +67,19 @@ function handle_firing()
     add(bullets, new_bullet)
   end
 
-  for i = 1, #bullets do
-    local bullet = bullets[i]
-
+  for bullet in all(bullets) do
     if bullet.muzzle_r >= 0 then
       bullet.muzzle_r -= 1
     end
 
     bullet.y -= bullet_speed
+  end
+end
+
+function handle_enemies()
+  local speed = .5
+  for enemy in all(enemies) do
+    enemy.y += speed
   end
 end
 
@@ -101,11 +107,18 @@ function handle_map_boundaries()
       deli(bullets, i)
     end
   end
+
+  for i = #enemies, 1, -1 do
+    local enemy = enemies[i]
+
+    if enemy.y > map_h then
+      deli(enemies, i)
+    end
+  end
 end
 
 function animate_starfield()
-  for i = 1, #stars do
-    local star = stars[i]
+  for star in all(stars) do
     local current_star_y = star.y
 
     current_star_y += star.speed
