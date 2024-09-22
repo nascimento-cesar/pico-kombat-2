@@ -15,7 +15,7 @@ function draw_game()
   draw_lives()
   draw_ship()
   draw_bullet()
-  -- draw_debug()
+  draw_debug()
 end
 
 function draw_start()
@@ -55,14 +55,17 @@ function draw_ship()
 end
 
 function draw_bullet()
-  spr(sprites.bullet.default, bullet.x, bullet.y)
+  for i = 1, #bullets do
+    local bullet = bullets[i]
+    spr(sprites.bullet.default, bullet.x, bullet.y)
 
-  if bullet.muzzle_r > 0 then
-    draw_muzzle()
+    if bullet.muzzle_r > 0 then
+      draw_muzzle(bullet)
+    end
   end
 end
 
-function draw_muzzle()
+function draw_muzzle(bullet)
   local muzzle_x, muzzle_y = get_ship_front_axes()
   circfill(muzzle_x + tile_w / 2, muzzle_y, bullet.muzzle_r, 7)
 end
@@ -80,20 +83,22 @@ function draw_lives()
 end
 
 function draw_starfield()
-  for i = 1, stars.count do
+  for i = 1, #stars do
+    local star = stars[i]
     local star_color = 7
 
-    if stars.speed[i] < 1 then
+    if star.speed < 1 then
       star_color = 1
-    elseif stars.speed[i] < 1.5 then
+    elseif star.speed < 1.5 then
       star_color = 13
     end
 
-    pset(stars.x[i], stars.y[i], star_color)
+    pset(star.x, star.y, star_color)
   end
 end
 
 function draw_debug()
-  print(ship.x, 0, 0, 7)
-  print(ship.y, 0, 8, 7)
+  print(ship.x, 0, 16, 7)
+  print(ship.y, 0, 24, 7)
+  print(#bullets, 0, 32, 7)
 end

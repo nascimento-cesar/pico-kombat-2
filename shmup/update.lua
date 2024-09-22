@@ -57,15 +57,24 @@ end
 function handle_firing()
   if btnp(❎) then
     sfx(0)
-    bullet.muzzle_r = muzzle_r
-    bullet.x, bullet.y = get_ship_front_axes()
+    local bullet_x, bullet_y = get_ship_front_axes()
+    local new_bullet = {
+      x = bullet_x,
+      y = bullet_y,
+      muzzle_r = muzzle_r
+    }
+    add(bullets, new_bullet)
   end
 
-  if bullet.muzzle_r >= 0 then
-    bullet.muzzle_r -= 1
-  end
+  for i = 1, #bullets do
+    local bullet = bullets[i]
 
-  bullet.y -= bullet.speed
+    if bullet.muzzle_r >= 0 then
+      bullet.muzzle_r -= 1
+    end
+
+    bullet.y -= bullet_speed
+  end
 end
 
 function handle_map_boundaries()
@@ -85,22 +94,28 @@ function handle_map_boundaries()
     ship.y = 0
   end
 
-  if bullet.y > map_w then
+  for i = #bullets, 1, -1 do
+    local bullet = bullets[i]
+
+    if bullet.y < 0 then
+      deli(bullets, i)
+    end
   end
 end
 
 function animate_starfield()
-  for i = 1, stars.count do
-    local current_star_y = stars.y[i]
+  for i = 1, #stars do
+    local star = stars[i]
+    local current_star_y = star.y
 
-    current_star_y += stars.speed[i]
+    current_star_y += star.speed
 
     if current_star_y > map_h then
       current_star_y -= map_h
-      stars.x[i] = flr(rnd(128))
+      star.x = random_axis()
     end
 
-    stars.y[i] = current_star_y
+    star.y = current_star_y
   end
 end
 

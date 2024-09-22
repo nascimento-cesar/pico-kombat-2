@@ -2,7 +2,7 @@ function _init()
   set_global_vars()
   set_sprites()
   set_ship()
-  set_bullet()
+  set_bullets()
   set_stars()
 end
 
@@ -53,26 +53,21 @@ function set_ship()
   }
 end
 
-function set_bullet()
-  bullet = {
-    x = map_w / 2,
-    y = map_h / 2,
-    speed = 4,
-    muzzle_r = muzzle_r
-  }
+function set_bullets()
+  bullet_speed = 4
+  bullets = {}
 end
 
 function set_stars()
-  stars = {
-    count = 100,
-    x = {},
-    y = {},
-    speed = {}
-  }
+  stars = {}
+  local star_count = 100
 
-  for i = 1, stars.count do
-    add(stars.x, flr(rnd(128)))
-    add(stars.y, flr(rnd(128)))
-    add(stars.speed, rnd(1.5) + 0.5)
+  for i = 1, star_count do
+    local new_star = {
+      x = random_axis(),
+      y = random_axis(),
+      speed = rnd(1.5) + 0.5
+    }
+    add(stars, new_star)
   end
 end

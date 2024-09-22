@@ -18,3 +18,7 @@ function start_game()
   _init()
   current_mode = modes.game
 end
+
+function random_axis()
+  return flr(rnd(128))
+end
