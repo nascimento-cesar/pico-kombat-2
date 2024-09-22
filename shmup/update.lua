@@ -67,7 +67,7 @@ end
 function handle_firing()
   if btn(❎) then
     if bullet_cooldown <= 0 then
-      sfx(0)
+      sfx(sounds.fire)
       local bullet_x, bullet_y = get_ship_front_axes()
       local new_bullet = {
         x = bullet_x,
@@ -90,15 +90,34 @@ function handle_firing()
       local hit = objects_collided(bullet, enemy)
 
       if hit then
-        sfx(1)
-        del(enemies, enemy)
-        score += enemy.points
-        set_enemies()
+        del(bullets, bullet)
+        enemy.hp -= 1
+        enemy.flashing_speed = 2
+
+        if enemy.hp > 0 then
+          sfx(sounds.hit)
+        else
+          sfx(sounds.hit_kill)
+          create_explosion(enemy)
+          del(enemies, enemy)
+          score += enemy.points
+          set_enemies()
+        end
       end
     end
 
     bullet.y -= bullet_speed
   end
+end
+
+function create_explosion(enemy)
+  add(
+    explosions, {
+      sprite_i = 1,
+      x = enemy.x,
+      y = enemy.y
+    }
+  )
 end
 
 function handle_enemies()
@@ -169,6 +188,7 @@ function handle_enemy_collision()
     local ship_collided = objects_collided(ship, enemy)
 
     if ship_collided and invincibility_frames <= 0 then
+      sfx(sounds.damage)
       lives -= 1
       invincibility_frames = 30
     end

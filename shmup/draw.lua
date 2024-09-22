@@ -16,6 +16,7 @@ function draw_game()
   draw_ship()
   draw_bullet()
   draw_enemies()
+  draw_explosions()
   draw_debug()
 end
 
@@ -34,11 +35,11 @@ end
 
 function draw_init_instructions()
   local instructions = "press any key to start"
-  print(instructions, hcenter(instructions), tile_h * 4, current_blink_color)
-  current_blink_color += .2
+  print(instructions, hcenter(instructions), tile_h * 4, text_blink_color)
+  text_blink_color += .2
 
-  if current_blink_color > 7 then
-    current_blink_color = 5
+  if text_blink_color > 7 then
+    text_blink_color = 5
   end
 end
 
@@ -114,13 +115,33 @@ function draw_enemies()
       enemy.sprite_i += animation_speed
     end
 
+    if enemy.flashing_speed > 0 then
+      enemy.flashing_speed -= 1
+
+      for i = 1, 15 do
+        pal(i, 7)
+      end
+    end
+
     spr(sprites.enemy[flr(enemy.sprite_i)], enemy.x, enemy.y)
+    pal()
+  end
+end
+
+function draw_explosions()
+  for explosion in all(explosions) do
+    spr(sprites.explosion[flr(explosion.sprite_i)], explosion.x - tile_w / 2, explosion.y - tile_h / 2, 2, 2)
+    local animation_speed = .5
+    explosion.sprite_i += animation_speed
+
+    if explosion.sprite_i > #sprites.explosion + animation_speed then
+      del(explosions, explosion)
+    end
   end
 end
 
 function draw_debug()
-  print(ship.x, 0, 16, 7)
-  print(ship.y, 0, 24, 7)
-  print(#bullets, 0, 32, 7)
-  print(#enemies, 0, 40, 7)
+  print("s_x:" .. ship.x, 0, 16, 7)
+  print("s_y:" .. ship.y, 0, 24, 7)
+  print("enemies:" .. #enemies, 0, 32, 7)
 end

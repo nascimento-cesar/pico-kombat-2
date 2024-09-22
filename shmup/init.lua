@@ -2,10 +2,12 @@ function _init()
   set_global_vars()
   set_flags()
   set_sprites()
+  set_sounds()
   set_ship()
   set_bullets()
   set_stars()
   set_enemies()
+  set_explosions()
 end
 
 function set_global_vars()
@@ -25,7 +27,7 @@ function set_global_vars()
   }
   current_mode = modes.start
   game_title = "big c awesome shmup"
-  current_blink_color = 5
+  text_blink_color = 5
 end
 
 function set_flags()
@@ -47,7 +49,17 @@ function set_sprites()
     lives = {
       default = 7,
       empty = 8
-    }
+    },
+    explosion = { 64, 66, 68, 70, 72 }
+  }
+end
+
+function set_sounds()
+  sounds = {
+    fire = 0,
+    hit = 1,
+    hit_kill = 2,
+    damage = 3
   }
 end
 
@@ -88,7 +100,13 @@ function set_enemies()
     sprite_i = 1,
     x = flr(rnd(128 - tile_w)),
     y = -tile_h,
-    points = 100
+    points = 100,
+    flashing_speed = 0,
+    hp = 2
   }
   add(enemies, new_enemy)
+end
+
+function set_explosions()
+  explosions = {}
 end
