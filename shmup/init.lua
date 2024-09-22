@@ -83,8 +83,9 @@ function set_enemies()
   enemies = {}
   local new_enemy = {
     sprite_i = 1,
-    x = random_axis(),
-    y = 20
+    x = flr(rnd(128 - tile_w)),
+    y = -tile_h,
+    points = 100
   }
   add(enemies, new_enemy)
 end

@@ -77,7 +77,10 @@ function handle_firing()
       local hit = objects_collided(bullet, enemy)
 
       if hit then
+        sfx(1)
         del(enemies, enemy)
+        score += enemy.points
+        set_enemies()
       end
     end
 
