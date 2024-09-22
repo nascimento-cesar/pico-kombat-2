@@ -1,3 +1,7 @@
+function any_key_pressed()
+  return btnp() > 0
+end
+
 function hcenter(s)
   -- screen center minus the
   -- string length times the

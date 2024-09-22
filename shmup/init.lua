@@ -1,4 +1,12 @@
 function _init()
+  set_global_vars()
+  set_sprites()
+  set_ship()
+  set_bullet()
+  set_stars()
+end
+
+function set_global_vars()
   map_h = 127
   map_w = 127
   tile_h = 8
@@ -7,7 +15,17 @@ function _init()
   score = 0
   max_lives = 3
   lives = 3
+  modes = {
+    game = 0,
+    start = 1,
+    over = 2
+  }
+  current_mode = modes.start
+  game_title = "big c awesome shmup"
+  current_blink_color = 5
+end
 
+function set_sprites()
   sprites = {
     ship = {
       default = 2,
@@ -23,7 +41,9 @@ function _init()
       empty = 8
     }
   }
+end
 
+function set_ship()
   ship = {
     x = map_w / 2,
     y = map_h / 2,
@@ -31,14 +51,18 @@ function _init()
     sprite = sprites.ship.default,
     thruster_sprite_i = 1
   }
+end
 
+function set_bullet()
   bullet = {
     x = map_w / 2,
     y = map_h / 2,
     speed = 4,
     muzzle_r = muzzle_r
   }
+end
 
+function set_stars()
   stars = {
     count = 100,
     x = {},

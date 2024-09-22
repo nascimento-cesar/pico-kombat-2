@@ -1,4 +1,14 @@
 function _draw()
+  if is_game_mode() then
+    draw_game()
+  elseif is_start_mode() then
+    draw_start()
+  elseif is_game_over_mode() then
+    draw_game_over()
+  end
+end
+
+function draw_game()
   cls(0)
   draw_starfield()
   draw_score()
@@ -6,6 +16,29 @@ function _draw()
   draw_ship()
   draw_bullet()
   -- draw_debug()
+end
+
+function draw_start()
+  cls(1)
+  print(game_title, hcenter(game_title), tile_h * 2, 10)
+  draw_init_instructions()
+end
+
+function draw_game_over()
+  cls(8)
+  local message = "game over"
+  print(message, hcenter(message), tile_h * 2, 10)
+  draw_init_instructions()
+end
+
+function draw_init_instructions()
+  local instructions = "press any key to start"
+  print(instructions, hcenter(instructions), tile_h * 4, current_blink_color)
+  current_blink_color += .2
+
+  if current_blink_color > 7 then
+    current_blink_color = 5
+  end
 end
 
 function draw_ship()

@@ -1,8 +1,35 @@
 function _update()
+  if is_game_mode() then
+    update_game()
+  elseif is_start_mode() then
+    update_start()
+  elseif is_game_over_mode() then
+    update_game_over()
+  end
+
+  if btnp(🅾️) then
+    lives -= 1
+  end
+end
+
+function update_game()
   handle_ship_controls()
   handle_firing()
   handle_map_boundaries()
   animate_starfield()
+  handle_game_over()
+end
+
+function update_start()
+  if any_key_pressed() then
+    start_game()
+  end
+end
+
+function update_game_over()
+  if any_key_pressed() then
+    start_game()
+  end
 end
 
 function handle_ship_controls()
@@ -62,10 +89,6 @@ function handle_map_boundaries()
   end
 end
 
-function get_ship_front_axes()
-  return ship.x, ship.y - tile_h / 2
-end
-
 function animate_starfield()
   for i = 1, stars.count do
     local current_star_y = stars.y[i]
@@ -78,5 +101,11 @@ function animate_starfield()
     end
 
     stars.y[i] = current_star_y
+  end
+end
+
+function handle_game_over()
+  if lives == 0 then
+    current_mode = modes.over
   end
 end

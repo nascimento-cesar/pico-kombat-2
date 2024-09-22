@@ -4,6 +4,7 @@ __lua__
 #include init.lua
 #include update.lua
 #include draw.lua
+#include utils.lua
 #include ../utils/utils.lua
 
 __gfx__
