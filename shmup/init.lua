@@ -63,6 +63,8 @@ end
 
 function set_bullets()
   bullet_speed = 4
+  bullet_ratio = 6
+  bullet_cooldown = bullet_ratio
   bullets = {}
 end
 

@@ -43,8 +43,17 @@ function draw_init_instructions()
 end
 
 function draw_ship()
-  spr(ship.sprite, ship.x, ship.y)
+  if invincibility_frames > 0 then
+    if sin(invincibility_frames / 5) < 0 then
+      spr(ship.sprite, ship.x, ship.y)
+    end
+  else
+    spr(ship.sprite, ship.x, ship.y)
+    draw_thruster()
+  end
+end
 
+function draw_thruster()
   if ship.thruster_sprite_i >= #sprites.thruster then
     ship.thruster_sprite_i = 1
   else

@@ -65,15 +65,20 @@ function handle_ship_controls()
 end
 
 function handle_firing()
-  if btnp(❎) then
-    sfx(0)
-    local bullet_x, bullet_y = get_ship_front_axes()
-    local new_bullet = {
-      x = bullet_x,
-      y = bullet_y,
-      muzzle_r = muzzle_r
-    }
-    add(bullets, new_bullet)
+  if btn(❎) then
+    if bullet_cooldown <= 0 then
+      sfx(0)
+      local bullet_x, bullet_y = get_ship_front_axes()
+      local new_bullet = {
+        x = bullet_x,
+        y = bullet_y,
+        muzzle_r = muzzle_r
+      }
+      add(bullets, new_bullet)
+      bullet_cooldown = bullet_ratio
+    end
+
+    bullet_cooldown -= 1
   end
 
   for bullet in all(bullets) do
