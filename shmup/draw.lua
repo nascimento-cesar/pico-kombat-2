@@ -72,6 +72,10 @@ function draw_init_instructions()
 end
 
 function draw_ship()
+  if lives <= 0 then
+    return
+  end
+
   if invincibility_frames > 0 then
     if sin(invincibility_frames / 5) < 0 then
       spr(ship.sprite, ship.x, ship.y)
@@ -136,7 +140,9 @@ end
 
 function draw_enemies()
   for enemy in all(enemies) do
-    if enemy.sprite_i >= #sprites.enemy then
+    local sprite = sprites.enemies[enemy.type]
+
+    if enemy.sprite_i >= #sprite.i then
       enemy.sprite_i = 1
     else
       local animation_speed = .1
@@ -151,7 +157,7 @@ function draw_enemies()
       end
     end
 
-    spr(sprites.enemy[flr(enemy.sprite_i)], enemy.x, enemy.y)
+    spr(sprite.i[flr(enemy.sprite_i)], enemy.x, enemy.y, sprite.size, sprite.size)
     pal()
   end
 end

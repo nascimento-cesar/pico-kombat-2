@@ -30,11 +30,6 @@ function is_victory_mode()
   return current_mode == modes.victory
 end
 
-function start_game()
-  _init()
-  current_mode = modes.wave
-end
-
 function random_axis()
   return flr(rnd(128))
 end

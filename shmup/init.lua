@@ -24,10 +24,12 @@ function set_global_vars()
   initial_x = flr(map_w / 2)
   initial_y = map_h - tile_h * 2
   invincibility_frames = 0
-  current_wave = 1
+  current_wave = 0
   wave_time = 0
-  max_waves = 3
+  max_waves = 4
   default_wave_time = 45
+  default_game_over_delay = 30
+  game_over_delay = default_game_over_delay
   start_button_released = false
   modes = {
     game = 0,
@@ -35,6 +37,12 @@ function set_global_vars()
     over = 2,
     wave = 3,
     victory = 4
+  }
+  enemy_types = {
+    green_alien = "green_alien",
+    flaming_guy = "flaming_guy",
+    spinning_ship = "spinning_ship",
+    boss = "boss"
   }
   current_mode = modes.start
   game_title = "big c awesome shmup"
@@ -56,7 +64,12 @@ function set_sprites()
       default = 16
     },
     thruster = { 4, 5, 4, 6, 4 },
-    enemy = { 17, 18, 17, 19, 17 },
+    enemies = {
+      [enemy_types.green_alien] = { size = 1, i = { 17, 18, 17, 19, 17 } },
+      [enemy_types.flaming_guy] = { size = 1, i = { 148, 149, 148 } },
+      [enemy_types.spinning_ship] = { size = 1, i = { 184, 185, 186, 187, 184 } },
+      [enemy_types.boss] = { size = 2, i = { 208, 210, 208 } }
+    },
     lives = {
       default = 7,
       empty = 8
@@ -105,17 +118,8 @@ function set_stars()
   end
 end
 
-function set_enemies()
+function set_enemies(type)
   enemies = {}
-  local new_enemy = {
-    sprite_i = 1,
-    x = flr(rnd(128 - tile_w)),
-    y = -tile_h,
-    points = 100,
-    flashing_speed = 0,
-    hp = 2
-  }
-  add(enemies, new_enemy)
 end
 
 -- function set_explosions()

@@ -20,6 +20,7 @@ function update_game()
   animate_starfield()
   handle_game_over()
   handle_enemy_collision()
+  handle_wave_end()
 end
 
 function update_start()
@@ -47,6 +48,11 @@ function update_victory()
   if handle_start_button_pressed() then
     current_mode = modes.start
   end
+end
+
+function start_game()
+  _init()
+  start_next_wave()
 end
 
 function handle_ship_controls()
@@ -84,6 +90,10 @@ function handle_ship_controls()
 end
 
 function handle_firing()
+  if lives <= 0 then
+    return
+  end
+
   if btn(❎) then
     if bullet_cooldown <= 0 then
       sfx(sounds.fire)
@@ -123,10 +133,6 @@ function handle_firing()
           create_particle(enemy, particle_palletes.enemy)
           del(enemies, enemy)
           score += enemy.points
-
-          if #enemies == 0 then
-            start_next_wave()
-          end
         end
       end
     end
@@ -141,7 +147,16 @@ function start_next_wave()
   if current_wave <= max_waves then
     current_mode = modes.wave
     wave_time = 0
-    set_enemies()
+
+    if current_wave == 1 then
+      add_enemy()
+    elseif current_wave == 2 then
+      add_enemy(enemy_types.flaming_guy)
+    elseif current_wave == 3 then
+      add_enemy(enemy_types.spinning_ship)
+    else
+      add_enemy(enemy_types.boss)
+    end
   else
     current_mode = modes.victory
   end
@@ -252,8 +267,13 @@ function animate_starfield()
 end
 
 function handle_game_over()
-  if lives == 0 then
-    current_mode = modes.over
+  if lives <= 0 then
+    if game_over_delay <= 0 then
+      current_mode = modes.over
+      game_over_delay = default_game_over_delay
+    else
+      game_over_delay -= 1
+    end
   end
 end
 
@@ -291,4 +311,23 @@ function handle_start_button_pressed()
   end
 
   return false
+end
+
+function handle_wave_end()
+  if #enemies == 0 then
+    start_next_wave()
+  end
+end
+
+function add_enemy(type)
+  local new_enemy = {
+    type = type or enemy_types.green_alien,
+    sprite_i = 1,
+    x = flr(rnd(128 - tile_w)),
+    y = -tile_h,
+    points = 100,
+    flashing_speed = 0,
+    hp = 2
+  }
+  add(enemies, new_enemy)
 end
