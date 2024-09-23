@@ -16,9 +16,10 @@ function draw_game()
   draw_ship()
   draw_bullet()
   draw_enemies()
+  draw_shockwaves()
   -- draw_explosions()
   draw_particles()
-  draw_debug()
+  -- draw_debug()
 end
 
 function draw_start()
@@ -137,17 +138,21 @@ function draw_particles()
     particle.speed_y *= 0.9
     particle.lifespan += 1
 
-    local percentage = particle.max_lifespan / 100
+    if particle.spark then
+      pset(particle.x, particle.y, 7)
+    else
+      local percentage = particle.max_lifespan / 100
 
-    if particle.lifespan > percentage * 90 then
-      particle.color = particle.pallete[4]
-    elseif particle.lifespan > percentage * 70 then
-      particle.color = particle.pallete[3]
-    elseif particle.lifespan > percentage * 40 then
-      particle.color = particle.pallete[2]
+      if particle.lifespan > percentage * 90 then
+        particle.color = particle.pallete[4]
+      elseif particle.lifespan > percentage * 70 then
+        particle.color = particle.pallete[3]
+      elseif particle.lifespan > percentage * 40 then
+        particle.color = particle.pallete[2]
+      end
+
+      circfill(particle.x, particle.y, particle.size, particle.color)
     end
-
-    circfill(particle.x, particle.y, particle.size, particle.color)
 
     if particle.lifespan > particle.max_lifespan then
       particle.size -= 0.5
@@ -155,6 +160,17 @@ function draw_particles()
       if particle.size <= 0 then
         del(particles, particle)
       end
+    end
+  end
+end
+
+function draw_shockwaves()
+  for wave in all(shockwaves) do
+    circ(wave.x, wave.y, wave.radius, wave.color)
+    wave.radius += 1.5
+
+    if wave.radius > wave.max_radius then
+      del(shockwaves, wave)
     end
   end
 end

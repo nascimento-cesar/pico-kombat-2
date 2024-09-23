@@ -95,10 +95,12 @@ function handle_firing()
         enemy.flashing_speed = 2
 
         if enemy.hp > 0 then
+          create_shockwave(enemy)
           sfx(sounds.hit)
         else
           sfx(sounds.hit_kill)
           -- create_explosion(enemy)
+          create_shockwave(enemy, true)
           create_particle(enemy, particle_palletes.enemy)
           del(enemies, enemy)
           score += enemy.points
@@ -109,6 +111,20 @@ function handle_firing()
 
     bullet.y -= bullet_speed
   end
+end
+
+function create_shockwave(object, bigger)
+  local ratio = bigger and 2.5 or 1
+
+  add(
+    shockwaves, {
+      x = object.x,
+      y = object.y,
+      radius = 2.5 * ratio,
+      max_radius = 10 * ratio,
+      color = bigger and 7 or 9
+    }
+  )
 end
 
 -- function create_explosion(enemy)
@@ -122,8 +138,11 @@ end
 -- end
 
 function create_particle(object, pallete)
-  local particles_count = 30
+  local particles_count = 60
+
   for i = 1, particles_count do
+    local is_spark = rnd() > 0.5 and true or false
+
     add(
       particles, {
         color = pallete[1],
@@ -133,8 +152,9 @@ function create_particle(object, pallete)
         x = object.x,
         y = object.y,
         pallete = pallete,
-        speed_x = rnd() * 4 - 2,
-        speed_y = rnd() * 4 - 2
+        speed_x = is_spark and (rnd() - 0.5) * 12 or rnd() * 4 - 2,
+        speed_y = is_spark and (rnd() - 0.5) * 12 or rnd() * 4 - 2,
+        spark = is_spark
       }
     )
   end

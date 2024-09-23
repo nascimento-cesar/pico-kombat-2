@@ -9,6 +9,7 @@ function _init()
   set_enemies()
   -- set_explosions()
   set_particles()
+  set_shockwaves()
 end
 
 function set_global_vars()
@@ -120,4 +121,8 @@ function set_particles()
     enemy = { 7, 9, 8, 2 },
     ship = { 7, 14, 1, 2 }
   }
+end
+
+function set_shockwaves()
+  shockwaves = {}
 end
