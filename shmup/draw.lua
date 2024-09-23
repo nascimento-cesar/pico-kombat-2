@@ -140,11 +140,11 @@ function draw_particles()
     local percentage = particle.max_lifespan / 100
 
     if particle.lifespan > percentage * 90 then
-      particle.color = 2
+      particle.color = particle.pallete[4]
     elseif particle.lifespan > percentage * 70 then
-      particle.color = 8
+      particle.color = particle.pallete[3]
     elseif particle.lifespan > percentage * 40 then
-      particle.color = 9
+      particle.color = particle.pallete[2]
     end
 
     circfill(particle.x, particle.y, particle.size, particle.color)

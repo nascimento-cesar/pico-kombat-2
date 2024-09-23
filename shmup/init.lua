@@ -20,6 +20,8 @@ function set_global_vars()
   score = 0
   max_lives = 3
   lives = 3
+  initial_x = flr(map_w / 2)
+  initial_y = map_h - tile_h * 2
   invincibility_frames = 0
   modes = {
     game = 0,
@@ -66,8 +68,8 @@ end
 
 function set_ship()
   ship = {
-    x = flr(map_w / 2),
-    y = flr(map_h / 2),
+    x = initial_x,
+    y = initial_y,
     speed = 1.5,
     sprite = sprites.ship.default,
     thruster_sprite_i = 1
@@ -114,4 +116,8 @@ end
 
 function set_particles()
   particles = {}
+  particle_palletes = {
+    enemy = { 7, 9, 8, 2 },
+    ship = { 7, 14, 1, 2 }
+  }
 end

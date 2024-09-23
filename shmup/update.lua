@@ -99,7 +99,7 @@ function handle_firing()
         else
           sfx(sounds.hit_kill)
           -- create_explosion(enemy)
-          create_particle(enemy)
+          create_particle(enemy, particle_palletes.enemy)
           del(enemies, enemy)
           score += enemy.points
           set_enemies()
@@ -121,17 +121,18 @@ end
 --   )
 -- end
 
-function create_particle(enemy)
+function create_particle(object, pallete)
   local particles_count = 30
   for i = 1, particles_count do
     add(
       particles, {
-        color = 7,
+        color = pallete[1],
         size = 1 + rnd(4),
         lifespan = rnd(5),
         max_lifespan = 10 + rnd(10),
-        x = enemy.x,
-        y = enemy.y,
+        x = object.x,
+        y = object.y,
+        pallete = pallete,
         speed_x = rnd() * 4 - 2,
         speed_y = rnd() * 4 - 2
       }
@@ -208,8 +209,11 @@ function handle_enemy_collision()
 
     if ship_collided and invincibility_frames <= 0 then
       sfx(sounds.damage)
+      create_particle(ship, particle_palletes.ship)
       lives -= 1
       invincibility_frames = 30
+      ship.x = initial_x
+      ship.y = initial_y
     end
   end
 
