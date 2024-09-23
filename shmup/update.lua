@@ -116,7 +116,8 @@ function handle_firing()
     end
 
     for enemy in all(enemies) do
-      local hit = objects_collided(bullet, enemy)
+      local sprite = sprites.enemies[enemy.type]
+      local hit = objects_collided(bullet, enemy, 1, 1, sprite.size, sprite.size)
 
       if hit then
         del(bullets, bullet)
@@ -124,12 +125,12 @@ function handle_firing()
         enemy.flashing_speed = 2
 
         if enemy.hp > 0 then
-          create_shockwave(enemy)
+          create_shockwave(bullet)
           sfx(sounds.hit)
         else
           sfx(sounds.hit_kill)
           -- create_explosion(enemy)
-          create_shockwave(enemy, true)
+          create_shockwave(bullet, true)
           create_particle(enemy, particle_palletes.enemy)
           del(enemies, enemy)
           score += enemy.points
@@ -149,7 +150,7 @@ function start_next_wave()
     wave_time = 0
 
     if current_wave == 1 then
-      add_enemy()
+      add_enemy(enemy_types.green_alien)
     elseif current_wave == 2 then
       add_enemy(enemy_types.flaming_guy)
     elseif current_wave == 3 then
@@ -279,7 +280,8 @@ end
 
 function handle_enemy_collision()
   for enemy in all(enemies) do
-    local ship_collided = objects_collided(ship, enemy)
+    local sprite = sprites.enemies[enemy.type]
+    local ship_collided = objects_collided(ship, enemy, 1, 1, sprite.size, sprite.size)
 
     if ship_collided and invincibility_frames <= 0 then
       explode_ship()
