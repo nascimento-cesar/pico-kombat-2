@@ -7,7 +7,8 @@ function _init()
   set_bullets()
   set_stars()
   set_enemies()
-  set_explosions()
+  -- set_explosions()
+  set_particles()
 end
 
 function set_global_vars()
@@ -49,8 +50,8 @@ function set_sprites()
     lives = {
       default = 7,
       empty = 8
-    },
-    explosion = { 64, 66, 68, 70, 72 }
+    }
+    -- explosion = { 64, 66, 68, 70, 72 }
   }
 end
 
@@ -107,6 +108,10 @@ function set_enemies()
   add(enemies, new_enemy)
 end
 
-function set_explosions()
-  explosions = {}
+-- function set_explosions()
+--   explosions = {}
+-- end
+
+function set_particles()
+  particles = {}
 end

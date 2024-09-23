@@ -98,7 +98,8 @@ function handle_firing()
           sfx(sounds.hit)
         else
           sfx(sounds.hit_kill)
-          create_explosion(enemy)
+          -- create_explosion(enemy)
+          create_particle(enemy)
           del(enemies, enemy)
           score += enemy.points
           set_enemies()
@@ -110,14 +111,32 @@ function handle_firing()
   end
 end
 
-function create_explosion(enemy)
-  add(
-    explosions, {
-      sprite_i = 1,
-      x = enemy.x,
-      y = enemy.y
-    }
-  )
+-- function create_explosion(enemy)
+--   add(
+--     explosions, {
+--       sprite_i = 1,
+--       x = enemy.x,
+--       y = enemy.y
+--     }
+--   )
+-- end
+
+function create_particle(enemy)
+  local particles_count = 30
+  for i = 1, particles_count do
+    add(
+      particles, {
+        color = 7,
+        size = 1 + rnd(4),
+        lifespan = rnd(5),
+        max_lifespan = 10 + rnd(10),
+        x = enemy.x,
+        y = enemy.y,
+        speed_x = rnd() * 4 - 2,
+        speed_y = rnd() * 4 - 2
+      }
+    )
+  end
 end
 
 function handle_enemies()

@@ -16,7 +16,8 @@ function draw_game()
   draw_ship()
   draw_bullet()
   draw_enemies()
-  draw_explosions()
+  -- draw_explosions()
+  draw_particles()
   draw_debug()
 end
 
@@ -128,17 +129,47 @@ function draw_enemies()
   end
 end
 
-function draw_explosions()
-  for explosion in all(explosions) do
-    spr(sprites.explosion[flr(explosion.sprite_i)], explosion.x - tile_w / 2, explosion.y - tile_h / 2, 2, 2)
-    local animation_speed = .5
-    explosion.sprite_i += animation_speed
+function draw_particles()
+  for particle in all(particles) do
+    particle.x += particle.speed_x
+    particle.y += particle.speed_y
+    particle.speed_x *= 0.9
+    particle.speed_y *= 0.9
+    particle.lifespan += 1
 
-    if explosion.sprite_i > #sprites.explosion + animation_speed then
-      del(explosions, explosion)
+    local percentage = particle.max_lifespan / 100
+
+    if particle.lifespan > percentage * 90 then
+      particle.color = 2
+    elseif particle.lifespan > percentage * 70 then
+      particle.color = 8
+    elseif particle.lifespan > percentage * 40 then
+      particle.color = 9
+    end
+
+    circfill(particle.x, particle.y, particle.size, particle.color)
+
+    if particle.lifespan > particle.max_lifespan then
+      particle.size -= 0.5
+
+      if particle.size <= 0 then
+        del(particles, particle)
+      end
     end
   end
 end
+
+-- function draw_explosions()
+--   for explosion in all(explosions) do
+--     spr(sprites.explosion[flr(explosion.sprite_i)], explosion.x - tile_w / 2, explosion.y - tile_h / 2, 2, 2)
+--     local animation_speed = .5
+--     explosion.sprite_i += animation_speed
+
+--     if explosion.sprite_i > #sprites.explosion + animation_speed then
+--       del(explosions, explosion)
+--     end
+--   end
+-- end
 
 function draw_debug()
   print("s_x:" .. ship.x, 0, 16, 7)
