@@ -3,12 +3,14 @@ function _update()
     update_game()
   elseif is_start_mode() then
     update_start()
+  elseif is_wave_mode() then
+    update_wave()
   elseif is_game_over_mode() then
     update_game_over()
   end
 
   if btnp(🅾️) then
-    lives -= 1
+    explode_ship()
   end
 end
 
@@ -25,6 +27,15 @@ end
 function update_start()
   if any_key_pressed() then
     start_game()
+  end
+end
+
+function update_wave()
+  update_game()
+  wave_time += 1
+
+  if wave_time > 45 then
+    current_mode = modes.game
   end
 end
 
@@ -228,14 +239,18 @@ function handle_enemy_collision()
     local ship_collided = objects_collided(ship, enemy)
 
     if ship_collided and invincibility_frames <= 0 then
-      sfx(sounds.damage)
-      create_particle(ship, particle_palletes.ship)
-      lives -= 1
-      invincibility_frames = 30
-      ship.x = initial_x
-      ship.y = initial_y
+      explode_ship()
     end
   end
 
   invincibility_frames -= 1
+end
+
+function explode_ship()
+  sfx(sounds.damage)
+  create_particle(ship, particle_palletes.ship)
+  lives -= 1
+  invincibility_frames = 30
+  ship.x = initial_x
+  ship.y = initial_y
 end

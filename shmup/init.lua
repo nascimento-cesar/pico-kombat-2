@@ -24,12 +24,15 @@ function set_global_vars()
   initial_x = flr(map_w / 2)
   initial_y = map_h - tile_h * 2
   invincibility_frames = 0
+  current_wave = 1
+  wave_time = 0
   modes = {
     game = 0,
     start = 1,
-    over = 2
+    over = 2,
+    wave = 3
   }
-  current_mode = modes.start
+  current_mode = modes.wave
   game_title = "big c awesome shmup"
   text_blink_color = 5
 end

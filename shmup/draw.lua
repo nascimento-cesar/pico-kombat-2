@@ -5,6 +5,8 @@ function _draw()
     draw_start()
   elseif is_game_over_mode() then
     draw_game_over()
+  elseif is_wave_mode() then
+    draw_wave()
   end
 end
 
@@ -19,7 +21,7 @@ function draw_game()
   draw_shockwaves()
   -- draw_explosions()
   draw_particles()
-  -- draw_debug()
+  draw_debug()
 end
 
 function draw_start()
@@ -33,6 +35,17 @@ function draw_game_over()
   local message = "game over"
   print(message, hcenter(message), tile_h * 2, 10)
   draw_init_instructions()
+end
+
+function draw_wave()
+  draw_game()
+  local s = "wave " .. current_wave
+  print(s, hcenter(s), vcenter(s), text_blink_color)
+  text_blink_color += .4
+
+  if text_blink_color > 7 then
+    text_blink_color = 5
+  end
 end
 
 function draw_init_instructions()
@@ -188,7 +201,6 @@ end
 -- end
 
 function draw_debug()
-  print("s_x:" .. ship.x, 0, 16, 7)
-  print("s_y:" .. ship.y, 0, 24, 7)
-  print("enemies:" .. #enemies, 0, 32, 7)
+  print("wave time:" .. wave_time, 0, 16, 7)
+  print("game mode:" .. current_mode, 0, 24, 7)
 end
