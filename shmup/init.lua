@@ -26,13 +26,17 @@ function set_global_vars()
   invincibility_frames = 0
   current_wave = 1
   wave_time = 0
+  max_waves = 3
+  default_wave_time = 45
+  start_button_released = false
   modes = {
     game = 0,
     start = 1,
     over = 2,
-    wave = 3
+    wave = 3,
+    victory = 4
   }
-  current_mode = modes.wave
+  current_mode = modes.start
   game_title = "big c awesome shmup"
   text_blink_color = 5
 end

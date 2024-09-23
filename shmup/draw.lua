@@ -7,6 +7,8 @@ function _draw()
     draw_game_over()
   elseif is_wave_mode() then
     draw_wave()
+  elseif is_victory_mode() then
+    draw_victory()
   end
 end
 
@@ -40,6 +42,17 @@ end
 function draw_wave()
   draw_game()
   local s = "wave " .. current_wave
+  print(s, hcenter(s), vcenter(s), text_blink_color)
+  text_blink_color += .4
+
+  if text_blink_color > 7 then
+    text_blink_color = 5
+  end
+end
+
+function draw_victory()
+  cls()
+  local s = "congratulations"
   print(s, hcenter(s), vcenter(s), text_blink_color)
   text_blink_color += .4
 

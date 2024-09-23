@@ -1,7 +1,3 @@
-function any_key_pressed()
-  return btnp() > 0
-end
-
 function hcenter(s)
   return 64 - #s * 2
 end
@@ -30,8 +26,13 @@ function is_wave_mode()
   return current_mode == modes.wave
 end
 
+function is_victory_mode()
+  return current_mode == modes.victory
+end
+
 function start_game()
   _init()
+  current_mode = modes.wave
 end
 
 function random_axis()

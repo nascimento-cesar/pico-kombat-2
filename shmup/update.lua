@@ -1,16 +1,14 @@
 function _update()
-  if is_game_mode() then
-    update_game()
-  elseif is_start_mode() then
+  if is_start_mode() then
     update_start()
+  elseif is_game_mode() then
+    update_game()
   elseif is_wave_mode() then
     update_wave()
   elseif is_game_over_mode() then
     update_game_over()
-  end
-
-  if btnp(🅾️) then
-    explode_ship()
+  elseif is_victory_mode() then
+    update_victory()
   end
 end
 
@@ -25,7 +23,7 @@ function update_game()
 end
 
 function update_start()
-  if any_key_pressed() then
+  if handle_start_button_pressed() then
     start_game()
   end
 end
@@ -34,14 +32,20 @@ function update_wave()
   update_game()
   wave_time += 1
 
-  if wave_time > 45 then
+  if wave_time > default_wave_time then
     current_mode = modes.game
   end
 end
 
 function update_game_over()
-  if any_key_pressed() then
+  if handle_start_button_pressed() then
     start_game()
+  end
+end
+
+function update_victory()
+  if handle_start_button_pressed() then
+    current_mode = modes.start
   end
 end
 
@@ -72,6 +76,10 @@ function handle_ship_controls()
     ship.y -= ship.speed
   elseif btn(⬇️) then
     ship.y += ship.speed
+  end
+
+  if btnp(🅾️) then
+    explode_ship()
   end
 end
 
@@ -115,12 +123,27 @@ function handle_firing()
           create_particle(enemy, particle_palletes.enemy)
           del(enemies, enemy)
           score += enemy.points
-          set_enemies()
+
+          if #enemies == 0 then
+            start_next_wave()
+          end
         end
       end
     end
 
     bullet.y -= bullet_speed
+  end
+end
+
+function start_next_wave()
+  current_wave += 1
+
+  if current_wave <= max_waves then
+    current_mode = modes.wave
+    wave_time = 0
+    set_enemies()
+  else
+    current_mode = modes.victory
   end
 end
 
@@ -253,4 +276,19 @@ function explode_ship()
   invincibility_frames = 30
   ship.x = initial_x
   ship.y = initial_y
+end
+
+function handle_start_button_pressed()
+  if btn(❎) == false and btn(🅾️) == false then
+    start_button_released = true
+  end
+
+  if start_button_released then
+    if btnp(❎) or btnp(🅾️) then
+      start_button_released = false
+      return true
+    end
+  end
+
+  return false
 end
