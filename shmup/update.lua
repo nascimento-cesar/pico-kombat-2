@@ -151,14 +151,22 @@ function start_next_wave()
     wave_time = 0
 
     if current_wave == 1 then
-      add_enemy(enemy_types.green_alien)
+      spawn_enemies(enemy_types.green_alien, 8)
     elseif current_wave == 2 then
-      add_enemy(enemy_types.flaming_guy)
+      spawn_enemies(enemy_types.flaming_guy, 8)
     elseif current_wave == 3 then
-      add_enemy(enemy_types.spinning_ship)
+      spawn_enemies(enemy_types.spinning_ship, 8)
     else
-      add_enemy(enemy_types.boss)
+      spawn_enemies(enemy_types.boss, 1)
     end
+  end
+end
+
+function spawn_enemies(enemy_type, count)
+  for i = 1, count do
+    enemy = sprites.enemies[enemy_type]
+    x = (128 - tile_w * enemy.size * count) / 2 + (i - 1) * tile_w * enemy.size
+    add_enemy(enemy_type, x)
   end
 end
 
@@ -246,7 +254,6 @@ function handle_map_boundaries()
 
     if enemy.y > map_h then
       deli(enemies, i)
-      set_enemies()
     end
   end
 end
@@ -331,12 +338,12 @@ function handle_wave_end()
   end
 end
 
-function add_enemy(type)
+function add_enemy(type, x, y)
   local new_enemy = {
     type = type or enemy_types.green_alien,
     sprite_i = 1,
-    x = flr(rnd(128 - tile_w)),
-    y = -tile_h,
+    x = x,
+    y = y or tile_h,
     points = 100,
     flashing_speed = 0,
     hp = 2
