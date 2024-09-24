@@ -28,8 +28,8 @@ function set_global_vars()
   wave_time = 0
   max_waves = 4
   default_wave_time = 45
-  default_game_over_delay = 30
-  game_over_delay = default_game_over_delay
+  default_show_screen_delay = 30
+  show_screen_delay = default_show_screen_delay
   start_button_released = false
   modes = {
     game = 0,

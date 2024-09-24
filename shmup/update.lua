@@ -21,6 +21,7 @@ function update_game()
   handle_game_over()
   handle_enemy_collision()
   handle_wave_end()
+  handle_victory()
 end
 
 function update_start()
@@ -99,7 +100,7 @@ function handle_firing()
       sfx(sounds.fire)
       local bullet_x, bullet_y = get_ship_front_axes()
       local new_bullet = {
-        x = bullet_x,
+        x = bullet_x + 1,
         y = bullet_y,
         muzzle_r = muzzle_r
       }
@@ -117,7 +118,7 @@ function handle_firing()
 
     for enemy in all(enemies) do
       local sprite = sprites.enemies[enemy.type]
-      local hit = objects_collided(bullet, enemy, 1, 1, sprite.size, sprite.size)
+      local hit = objects_collided(bullet, enemy, tile_w, tile_h, sprite.size * tile_w, sprite.size * tile_h)
 
       if hit then
         del(bullets, bullet)
@@ -158,8 +159,6 @@ function start_next_wave()
     else
       add_enemy(enemy_types.boss)
     end
-  else
-    current_mode = modes.victory
   end
 end
 
@@ -269,11 +268,22 @@ end
 
 function handle_game_over()
   if lives <= 0 then
-    if game_over_delay <= 0 then
+    if show_screen_delay <= 0 then
       current_mode = modes.over
-      game_over_delay = default_game_over_delay
+      show_screen_delay = default_show_screen_delay
     else
-      game_over_delay -= 1
+      show_screen_delay -= 1
+    end
+  end
+end
+
+function handle_victory()
+  if current_wave > max_waves then
+    if show_screen_delay <= 0 then
+      current_mode = modes.victory
+      show_screen_delay = default_show_screen_delay
+    else
+      show_screen_delay -= 1
     end
   end
 end
@@ -281,7 +291,7 @@ end
 function handle_enemy_collision()
   for enemy in all(enemies) do
     local sprite = sprites.enemies[enemy.type]
-    local ship_collided = objects_collided(ship, enemy, 1, 1, sprite.size, sprite.size)
+    local ship_collided = objects_collided(ship, enemy, tile_w, tile_h, sprite.size * tile_w, sprite.size * tile_h)
 
     if ship_collided and invincibility_frames <= 0 then
       explode_ship()

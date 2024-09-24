@@ -221,5 +221,6 @@ end
 
 function draw_debug()
   print("wave time:" .. wave_time, 0, 16, 7)
-  print("game mode:" .. current_mode, 0, 24, 7)
+  print("wave:" .. current_wave, 0, 24, 7)
+  print("game mode:" .. current_mode, 0, 32, 7)
 end

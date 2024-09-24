@@ -34,21 +34,21 @@ function random_axis()
   return flr(rnd(128))
 end
 
-function objects_collided(c1, c2, c1x_t, c1y_t, c2x_t, c2y_t)
-  local c1x_t = c1x_t or 1
-  local c1y_t = c1y_t or 1
-  local c2x_t = c2x_t or 1
-  local c2y_t = c2y_t or 1
+function objects_collided(c1, c2, c1_w, c1_h, c2_w, c2_h)
+  local c1_w = c1_w or tile_w
+  local c1_h = c1_h or tile_h
+  local c2_w = c2_w or tile_w
+  local c2_h = c2_h or tile_h
 
   local x1 = c1.x
-  local x2 = c1.x + tile_w * c1x_t
+  local x2 = c1.x + c1_w
   local y1 = c1.y
-  local y2 = c1.y + tile_h * c1y_t
+  local y2 = c1.y + c1_h
 
-  local l_col = x1 < c2.x + tile_w * c2x_t and x2 > c2.x
-  local r_col = x2 > c2.x and x1 < c2.x + tile_w * c2x_t
-  local u_col = y1 < c2.y + tile_h * c2y_t and y2 > c2.y
-  local d_col = y2 > c2.y and y1 < c2.y + tile_h * c2y_t
+  local l_col = x1 < c2.x + c2_w and x2 > c2.x
+  local r_col = x2 > c2.x and x1 < c2.x + c2_w
+  local u_col = y1 < c2.y + c2_h and y2 > c2.y
+  local d_col = y2 > c2.y and y1 < c2.y + c2_h
 
   return (r_col or l_col) and (u_col or d_col)
 end
