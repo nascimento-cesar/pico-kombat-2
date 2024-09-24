@@ -151,22 +151,31 @@ function start_next_wave()
     wave_time = 0
 
     if current_wave == 1 then
-      spawn_enemies(enemy_types.green_alien, 8)
+      spawn_enemies(waves.w1)
     elseif current_wave == 2 then
-      spawn_enemies(enemy_types.flaming_guy, 8)
+      spawn_enemies(waves.w2)
     elseif current_wave == 3 then
-      spawn_enemies(enemy_types.spinning_ship, 8)
+      spawn_enemies(waves.w3)
     else
-      spawn_enemies(enemy_types.boss, 1)
+      spawn_enemies(waves.b1)
     end
   end
 end
 
-function spawn_enemies(enemy_type, count)
-  for i = 1, count do
-    enemy = sprites.enemies[enemy_type]
-    x = (128 - tile_w * enemy.size * count) / 2 + (i - 1) * tile_w * enemy.size
-    add_enemy(enemy_type, x)
+function spawn_enemies(enemies_matrix)
+  for row = 1, #enemies_matrix do
+    for col = 1, #enemies_matrix[row] do
+      local enemy_type = enemies_matrix[row][col]
+
+      if enemy_type != nil then
+        local enemy = sprites.enemies[enemy_type]
+        local x = (128 + 4 - tile_w * enemy.size * 1.5 * #enemies_matrix[row]) / 2 + (col - 1) * tile_w * enemy.size * 1.5
+        local y = 0 - tile_h * col -- - (#enemies_matrix - row) * tile_h * 2
+        local final_y = (row - 1) * enemy.size * tile_h * 2 + tile_h * 2
+        local spawn_delay = col
+        add_enemy(enemy_type, x, y, final_y, spawn_delay)
+      end
+    end
   end
 end
 
@@ -218,9 +227,17 @@ function create_particle(object, pallete)
 end
 
 function handle_enemies()
-  local speed = 1
-  for enemy in all(enemies) do
-    enemy.y += speed
+  if wave_time > default_wave_time then
+    for enemy in all(enemies) do
+      if enemy.spawn_delay <= 0 then
+        if enemy.y < enemy.final_y then
+          local spawn_speed = (enemy.final_y - enemy.y) / 10
+          enemy.y += spawn_speed
+        end
+      else
+        enemy.spawn_delay -= 1
+      end
+    end
   end
 end
 
@@ -338,12 +355,14 @@ function handle_wave_end()
   end
 end
 
-function add_enemy(type, x, y)
+function add_enemy(type, x, y, final_y, spawn_delay)
   local new_enemy = {
     type = type or enemy_types.green_alien,
     sprite_i = 1,
+    spawn_delay = spawn_delay,
     x = x,
-    y = y or tile_h,
+    y = y,
+    final_y = final_y,
     points = 100,
     flashing_speed = 0,
     hp = 2

@@ -23,7 +23,7 @@ function draw_game()
   draw_shockwaves()
   -- draw_explosions()
   draw_particles()
-  draw_debug()
+  -- draw_debug()
 end
 
 function draw_start()

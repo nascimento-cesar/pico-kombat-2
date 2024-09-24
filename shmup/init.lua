@@ -10,6 +10,7 @@ function _init()
   -- set_explosions()
   set_particles()
   set_shockwaves()
+  set_waves()
 end
 
 function set_global_vars()
@@ -136,4 +137,29 @@ end
 
 function set_shockwaves()
   shockwaves = {}
+end
+
+function set_waves()
+  waves = {
+    w1 = {
+      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
+      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+    },
+    w2 = {
+      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
+      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+    },
+    w3 = {
+      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
+      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+    },
+    b1 = {
+      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
+      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+    }
+  }
 end
