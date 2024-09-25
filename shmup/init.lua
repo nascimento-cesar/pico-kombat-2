@@ -29,6 +29,7 @@ function set_global_vars()
   wave_time = 0
   max_waves = 4
   default_wave_time = 45
+  wave_sound_played = false
   default_show_screen_delay = 30
   show_screen_delay = default_show_screen_delay
   start_button_released = false
@@ -84,7 +85,8 @@ function set_sounds()
     fire = 0,
     hit = 1,
     hit_kill = 2,
-    damage = 3
+    damage = 3,
+    wave_start = 4
   }
 end
 
@@ -142,24 +144,23 @@ end
 function set_waves()
   waves = {
     w1 = {
-      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
-      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
-      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
+      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
     },
     w2 = {
-      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
-      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
-      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+      { enemy_types.green_alien, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.green_alien },
+      { enemy_types.green_alien, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.green_alien },
+      { enemy_types.green_alien, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.green_alien },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
     },
     w3 = {
-      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
-      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
-      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
+      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
     },
     b1 = {
-      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
-      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
-      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+      { enemy_types.boss }
     }
   }
 end

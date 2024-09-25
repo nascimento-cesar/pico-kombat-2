@@ -149,6 +149,7 @@ function start_next_wave()
   if current_wave <= max_waves then
     current_mode = modes.wave
     wave_time = 0
+    wave_sound_played = false
 
     if current_wave == 1 then
       spawn_enemies(waves.w1)
@@ -228,6 +229,11 @@ end
 
 function handle_enemies()
   if wave_time > default_wave_time then
+    if wave_sound_played == false then
+      sfx(sounds.wave_start)
+      wave_sound_played = true
+    end
+
     for enemy in all(enemies) do
       if enemy.spawn_delay <= 0 then
         if enemy.y < enemy.final_y then
