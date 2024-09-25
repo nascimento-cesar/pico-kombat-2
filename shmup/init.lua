@@ -30,6 +30,8 @@ function set_global_vars()
   max_waves = 4
   default_wave_time = 45
   wave_sound_played = false
+  default_offensive_delay = 30
+  offensive_delay = default_offensive_delay
   default_show_screen_delay = 30
   show_screen_delay = default_show_screen_delay
   start_button_released = false

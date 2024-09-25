@@ -246,9 +246,21 @@ function handle_enemies()
           local y_spawn_speed = (enemy.final_y - enemy.y) / 10
           enemy.y += y_spawn_speed
         end
+
+        if enemy.attack_mode then
+          enemy.y += 1
+        end
       else
         enemy.spawn_delay -= 1
       end
+    end
+
+    if offensive_delay <= 0 then
+      local enemy = rnd(enemies)
+      enemy.attack_mode = true
+      offensive_delay = default_offensive_delay
+    else
+      offensive_delay -= 1
     end
   end
 end
@@ -376,6 +388,7 @@ function add_enemy(type, x, y, final_x, final_y, spawn_delay)
     final_x = final_x,
     y = y,
     final_y = final_y,
+    attack_mode = false,
     points = 100,
     flashing_speed = 0,
     hp = 2
