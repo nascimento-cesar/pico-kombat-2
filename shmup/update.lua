@@ -170,11 +170,12 @@ function spawn_enemies(enemies_matrix)
 
       if enemy_type != nil then
         local enemy = sprites.enemies[enemy_type]
-        local x = (128 + 4 - tile_w * enemy.size * 1.5 * #enemies_matrix[row]) / 2 + (col - 1) * tile_w * enemy.size * 1.5
+        local x = 0 - tile_w * col
+        local final_x = (128 + 4 - tile_w * enemy.size * 1.5 * #enemies_matrix[row]) / 2 + (col - 1) * tile_w * enemy.size * 1.5
         local y = 0 - tile_h * col -- - (#enemies_matrix - row) * tile_h * 2
         local final_y = (row - 1) * enemy.size * tile_h * 2 + tile_h * 2
         local spawn_delay = col
-        add_enemy(enemy_type, x, y, final_y, spawn_delay)
+        add_enemy(enemy_type, x, y, final_x, final_y, spawn_delay)
       end
     end
   end
@@ -236,9 +237,14 @@ function handle_enemies()
 
     for enemy in all(enemies) do
       if enemy.spawn_delay <= 0 then
+        if enemy.x < enemy.final_x then
+          local x_spawn_speed = (enemy.final_x - enemy.x) / 10
+          enemy.x += x_spawn_speed
+        end
+
         if enemy.y < enemy.final_y then
-          local spawn_speed = (enemy.final_y - enemy.y) / 10
-          enemy.y += spawn_speed
+          local y_spawn_speed = (enemy.final_y - enemy.y) / 10
+          enemy.y += y_spawn_speed
         end
       else
         enemy.spawn_delay -= 1
@@ -361,12 +367,13 @@ function handle_wave_end()
   end
 end
 
-function add_enemy(type, x, y, final_y, spawn_delay)
+function add_enemy(type, x, y, final_x, final_y, spawn_delay)
   local new_enemy = {
     type = type or enemy_types.green_alien,
     sprite_i = 1,
     spawn_delay = spawn_delay,
     x = x,
+    final_x = final_x,
     y = y,
     final_y = final_y,
     points = 100,
