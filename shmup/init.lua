@@ -146,9 +146,9 @@ end
 function set_waves()
   waves = {
     w1 = {
-      { enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy },
-      { enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship },
-      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.green_alien, enemy_types.green_alien },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.green_alien, enemy_types.green_alien },
+      { enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien, enemy_types.green_alien }
     },
     w2 = {
       { enemy_types.green_alien, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.spinning_ship, enemy_types.spinning_ship, enemy_types.flaming_guy, enemy_types.flaming_guy, enemy_types.green_alien },

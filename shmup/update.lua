@@ -152,30 +152,30 @@ function start_next_wave()
     wave_sound_played = false
 
     if current_wave == 1 then
-      spawn_enemies(waves.w1)
+      spawn_enemies(waves.w1, 1)
     elseif current_wave == 2 then
-      spawn_enemies(waves.w2)
+      spawn_enemies(waves.w2, 2)
     elseif current_wave == 3 then
-      spawn_enemies(waves.w3)
+      spawn_enemies(waves.w3, 3)
     else
-      spawn_enemies(waves.b1)
+      spawn_enemies(waves.b1, 10)
     end
   end
 end
 
-function spawn_enemies(enemies_matrix)
+function spawn_enemies(enemies_matrix, hp)
   for row = 1, #enemies_matrix do
     for col = 1, #enemies_matrix[row] do
       local enemy_type = enemies_matrix[row][col]
 
       if enemy_type != nil then
         local enemy = sprites.enemies[enemy_type]
-        local x = 0 - tile_w * col
+        local x = 0 - tile_w * enemy.size * col
         local final_x = (128 + 4 - tile_w * enemy.size * 1.5 * #enemies_matrix[row]) / 2 + (col - 1) * tile_w * enemy.size * 1.5
-        local y = 0 - tile_h * col -- - (#enemies_matrix - row) * tile_h * 2
+        local y = 0 - tile_h * enemy.size * col
         local final_y = (row - 1) * enemy.size * tile_h * 2 + tile_h * 2
         local spawn_delay = col
-        add_enemy(enemy_type, x, y, final_x, final_y, spawn_delay)
+        add_enemy(enemy_type, x, y, final_x, final_y, spawn_delay, hp or 2)
       end
     end
   end
@@ -236,22 +236,28 @@ function handle_enemies()
     end
 
     for enemy in all(enemies) do
-      if enemy.spawn_delay <= 0 then
-        if enemy.x < enemy.final_x then
-          local x_spawn_speed = (enemy.final_x - enemy.x) / 10
-          enemy.x += x_spawn_speed
-        end
+      if enemy.spawned != true then
+        if enemy.spawn_delay <= 0 then
+          if enemy.x < enemy.final_x then
+            local x_spawn_speed = (enemy.final_x - enemy.x) / 10
+            enemy.x += x_spawn_speed
+          end
 
-        if enemy.y < enemy.final_y then
-          local y_spawn_speed = (enemy.final_y - enemy.y) / 10
-          enemy.y += y_spawn_speed
-        end
+          if enemy.y < enemy.final_y then
+            local y_spawn_speed = (enemy.final_y - enemy.y) / 10
+            enemy.y += y_spawn_speed
+          end
 
-        if enemy.attack_mode then
-          enemy.y += 1
+          if enemy.x >= enemy.final_x - 0.1 and enemy.y >= enemy.final_y - 0.1 then
+            enemy.spawned = true
+          end
+        else
+          enemy.spawn_delay -= 1
         end
       else
-        enemy.spawn_delay -= 1
+        if enemy.attack_mode then
+          handle_enemy_attack(enemy)
+        end
       end
     end
 
@@ -263,6 +269,36 @@ function handle_enemies()
       offensive_delay -= 1
     end
   end
+end
+
+function handle_enemy_attack(enemy)
+  if enemy.type == enemy_types.green_alien then
+    enemy.speed_x = sin(enemy.y / 25)
+    enemy.speed_y = 1
+  elseif enemy.type == enemy_types.spinning_ship then
+    if enemy.triggered != true then
+      if enemy.y >= ship.y then
+        enemy.speed_x = enemy.x >= ship.x and -1 or 1
+        enemy.speed_y = 0
+        enemy.triggered = true
+      else
+        enemy.speed_x = 0
+        enemy.speed_y = 1
+      end
+    end
+  elseif enemy.type == enemy_types.flaming_guy then
+    enemy.speed_x = sin(enemy.y / 25)
+    enemy.speed_y = 2
+  elseif enemy.type == enemy_types.boss then
+    enemy.speed_x = 0
+    enemy.speed_y = 0.5
+  else
+    enemy.speed_x = 1
+    enemy.speed_y = 1
+  end
+
+  enemy.x += enemy.speed_x
+  enemy.y += enemy.speed_y
 end
 
 function handle_map_boundaries()
@@ -379,7 +415,7 @@ function handle_wave_end()
   end
 end
 
-function add_enemy(type, x, y, final_x, final_y, spawn_delay)
+function add_enemy(type, x, y, final_x, final_y, spawn_delay, hp)
   local new_enemy = {
     type = type or enemy_types.green_alien,
     sprite_i = 1,
@@ -391,7 +427,7 @@ function add_enemy(type, x, y, final_x, final_y, spawn_delay)
     attack_mode = false,
     points = 100,
     flashing_speed = 0,
-    hp = 2
+    hp = hp
   }
   add(enemies, new_enemy)
 end
