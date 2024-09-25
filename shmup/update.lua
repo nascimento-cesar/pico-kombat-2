@@ -15,6 +15,7 @@ end
 function update_game()
   handle_ship_controls()
   handle_firing()
+  handle_enemy_firing()
   handle_enemies()
   handle_map_boundaries()
   animate_starfield()
@@ -144,6 +145,19 @@ function handle_firing()
   end
 end
 
+function handle_enemy_firing()
+  for bullet in all(enemy_bullets) do
+    local hit = objects_collided(bullet, ship, 6, 6, tile_w, tile_h)
+
+    if hit then
+      del(bullets, bullet)
+      explode_ship()
+    end
+
+    bullet.y += 2
+  end
+end
+
 function start_next_wave()
   current_wave += 1
 
@@ -269,13 +283,35 @@ function handle_enemies()
 
     if offensive_delay <= 0 then
       local enemy = rnd(enemies)
-      enemy.attack_mode = true
-      enemy.offensive_delay = 30
-      offensive_delay = default_offensive_delay
+
+      if enemy.attack_mode != true then
+        enemy.attack_mode = true
+        enemy.offensive_delay = 30
+        offensive_delay = default_offensive_delay
+      end
     else
       offensive_delay -= 1
     end
+
+    if time() % 1 == 0 then
+      local enemy = rnd(enemies)
+      if enemy.spawned == true then
+        trigger_enemy_fire(enemy)
+      end
+    end
   end
+end
+
+function trigger_enemy_fire(enemy)
+  enemy.fire_flashing_speed = 5
+  local bullet_x, bullet_y = get_enemy_front_axes(enemy)
+  local new_bullet = {
+    x = bullet_x + 1,
+    y = bullet_y,
+    muzzle_r = muzzle_r,
+    sprite_i = 1
+  }
+  add(enemy_bullets, new_bullet)
 end
 
 function handle_enemy_attack(enemy)
@@ -333,10 +369,18 @@ function handle_map_boundaries()
     end
   end
 
+  for i = #enemy_bullets, 1, -1 do
+    local bullet = enemy_bullets[i]
+
+    if bullet.y > map_h then
+      deli(enemy_bullets, i)
+    end
+  end
+
   for i = #enemies, 1, -1 do
     local enemy = enemies[i]
 
-    if enemy.y > map_h then
+    if enemy.spawned and (enemy.y > map_h or enemy.x > map_w or enemy.x + tile_w < 0) then
       deli(enemies, i)
     end
   end

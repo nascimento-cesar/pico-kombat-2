@@ -10,6 +10,10 @@ function get_ship_front_axes()
   return ship.x, ship.y - tile_h / 2
 end
 
+function get_enemy_front_axes(enemy)
+  return enemy.x, enemy.y + tile_h / 2
+end
+
 function is_game_mode()
   return current_mode == modes.game
 end

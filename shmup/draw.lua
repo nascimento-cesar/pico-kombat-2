@@ -18,12 +18,13 @@ function draw_game()
   draw_score()
   draw_lives()
   draw_ship()
-  draw_bullet()
+  draw_bullets()
+  draw_enemy_bullets()
   draw_enemies()
   draw_shockwaves()
   -- draw_explosions()
   draw_particles()
-  -- draw_debug()
+  draw_debug()
 end
 
 function draw_start()
@@ -97,13 +98,26 @@ function draw_thruster()
   spr(sprites.thruster[flr(ship.thruster_sprite_i)], ship.x, ship.y + 8)
 end
 
-function draw_bullet()
+function draw_bullets()
   for bullet in all(bullets) do
     spr(sprites.bullet.default, bullet.x, bullet.y)
 
     if bullet.muzzle_r > 0 then
       draw_muzzle(bullet)
     end
+  end
+end
+
+function draw_enemy_bullets()
+  for bullet in all(enemy_bullets) do
+    if bullet.sprite_i >= #sprites.bullet.enemy then
+      bullet.sprite_i = 1
+    else
+      local animation_speed = .1
+      bullet.sprite_i += animation_speed
+    end
+
+    spr(sprites.bullet.enemy[flr(bullet.sprite_i)], bullet.x, bullet.y)
   end
 end
 
@@ -154,6 +168,18 @@ function draw_enemies()
 
       for i = 1, 15 do
         pal(i, 7)
+      end
+    end
+
+    if enemy.fire_flashing_speed != nil and enemy.fire_flashing_speed > 0 then
+      enemy.fire_flashing_speed -= 0.5
+
+      for i = 1, 15 do
+        if enemy.fire_flashing_speed % 2 == 0 then
+          pal(i, 7)
+        else
+          pal()
+        end
       end
     end
 
@@ -220,8 +246,4 @@ end
 -- end
 
 function draw_debug()
-  print("wave time:" .. wave_time, 0, 16, 7)
-  print("wave:" .. current_wave, 0, 24, 7)
-  print("game mode:" .. current_mode, 0, 32, 7)
-  print("enemies:" .. map_w - map_w / 4, 0, 40, 7)
 end

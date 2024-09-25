@@ -65,7 +65,8 @@ function set_sprites()
       right = 3
     },
     bullet = {
-      default = 16
+      default = 16,
+      enemy = { 32, 33, 34, 33, 32 }
     },
     thruster = { 4, 5, 4, 6, 4 },
     enemies = {
@@ -107,6 +108,7 @@ function set_bullets()
   bullet_ratio = 6
   bullet_cooldown = bullet_ratio
   bullets = {}
+  enemy_bullets = {}
 end
 
 function set_stars()
