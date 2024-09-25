@@ -135,6 +135,7 @@ function handle_firing()
           create_particle(enemy, particle_palletes.enemy)
           del(enemies, enemy)
           score += enemy.points
+          offensive_delay = 0
         end
       end
     end
@@ -256,7 +257,12 @@ function handle_enemies()
         end
       else
         if enemy.attack_mode then
-          handle_enemy_attack(enemy)
+          if enemy.offensive_delay <= 0 then
+            handle_enemy_attack(enemy)
+          else
+            enemy.x += sin(enemy.offensive_delay / 5)
+            enemy.offensive_delay -= 1
+          end
         end
       end
     end
@@ -264,6 +270,7 @@ function handle_enemies()
     if offensive_delay <= 0 then
       local enemy = rnd(enemies)
       enemy.attack_mode = true
+      enemy.offensive_delay = 30
       offensive_delay = default_offensive_delay
     else
       offensive_delay -= 1
