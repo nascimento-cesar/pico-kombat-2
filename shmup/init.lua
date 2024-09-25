@@ -35,6 +35,8 @@ function set_global_vars()
   default_show_screen_delay = 30
   show_screen_delay = default_show_screen_delay
   start_button_released = false
+  default_camera_shake_time = 15
+  camera_shake_time = 0
   modes = {
     game = 0,
     start = 1,

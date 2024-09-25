@@ -23,6 +23,7 @@ function update_game()
   handle_enemy_collision()
   handle_wave_end()
   handle_victory()
+  handle_camera()
 end
 
 function update_start()
@@ -136,6 +137,7 @@ function handle_firing()
           create_particle(enemy, particle_palletes.enemy)
           del(enemies, enemy)
           score += enemy.points
+          camera_shake_time = default_camera_shake_time
           offensive_delay = 0
         end
       end
@@ -481,4 +483,13 @@ function add_enemy(type, x, y, final_x, final_y, spawn_delay, hp)
     hp = hp
   }
   add(enemies, new_enemy)
+end
+
+function handle_camera()
+  if camera_shake_time > 0 then
+    local x = rnd(4)
+    local y = rnd(4)
+    camera(x, y)
+    camera_shake_time -= 1
+  end
 end
