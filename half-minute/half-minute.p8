@@ -1,9 +1,17 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+#include classes/battle.lua
+#include classes/countdown.lua
+#include classes/enemy.lua
+#include classes/enums.lua
+#include classes/game.lua
+#include classes/hero.lua
+
+#include draw.lua
 #include init.lua
 #include update.lua
-#include draw.lua
+
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
