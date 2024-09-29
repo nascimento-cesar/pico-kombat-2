@@ -1,102 +1,34 @@
 function _init()
-  player = {
-    x = 14,
-    y = 16,
-    current_sprite = "a",
-    max_bombs = 1
-  }
-
-  bombs = {}
-
-  sprites = {
-    player = {
-      base = "55200000777707cfc07fff01110",
-      a = "250ddd020002",
-      b = "252ddd000002",
-      c = "250ddd220000"
-    },
-    bomb = {
-      a = "53009080116111111",
-      b = "53900080116111111"
-    },
-    brick = "886666666d6dddddd16dddddd16dddddd16dddddd16dddddd16dddddd1d1111111"
-  }
-
-  maze = {
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-    { 1, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1 },
-    { 1, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, 1 },
-    { 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1 },
-    { 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 },
-    { 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
-    { 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 },
-    { 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
-    { 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 },
-    { 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
-    { 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 },
-    { 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 },
-    { 1, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, 1 },
-    { 1, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1 },
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
-  }
+  s_v()
+  g_s()
 end
 
 function _update()
-  if btnp(❎) and #bombs < player.max_bombs then
-    add(bombs, { x = player.x, y = player.y + 2, timer = 3 })
-  end
-
-  if btn(⬅️) then
-    player.x -= 1
-  elseif btn(➡️) then
-    player.x += 1
-  elseif btn(⬆️) then
-    player.y -= 1
-  elseif btn(⬇️) then
-    player.y += 1
-  end
-
-  for bomb in all(bombs) do
-    if time() % 1 == 0 then
-      bomb.timer -= 1
-
-      if bomb.timer <= 0 then
-        del(bombs, bomb)
-      end
-    end
-  end
+  h_c()
+  u_o()
 end
 
 function _draw()
   cls(3)
 
-  for r = 1, 15 do
-    for c = 1, 15 do
-      local s = maze[r][c]
+  d_p()
+  d_b()
+  d_m()
+end
 
-      if s > 0 then
-        if s == 1 then
-          pal(6, 14)
-          pal(13, 2)
-        end
-
-        draw_sprite(sprites.brick, (c - 1) * 8 + 4, r * 8)
-        pal()
-      end
-    end
-  end
-
-  if btn(⬅️) or btn(⬆️) or btn(➡️) or btn(⬇️) then
-    player.current_sprite = sin(time() / 0.5) >= 0 and "b" or "c"
+function d_p()
+  if btn() & 15 > 0 then
+    p.cs = sin(time() / 0.5) >= 0 and 1 or 2
   else
-    player.current_sprite = "a"
+    p.cs = 0
   end
 
-  draw_sprite(sprites.player.base, player.x, player.y)
-  draw_sprite(sprites.player[player.current_sprite], player.x, player.y + 5)
+  spr(p.cs, p.x, p.y)
+end
 
-  for bomb in all(bombs) do
-    if bomb.timer <= 1 then
+function d_b()
+  for b in all(bs) do
+    if b.t <= 1 then
       if sin(time() / 0.1) >= 0 then
         for i = 1, 15 do
           pal(i, 7)
@@ -104,19 +36,81 @@ function _draw()
       end
     end
 
-    draw_sprite(sin(time() / 0.75) >= 0 and sprites.bomb.a or sprites.bomb.b, bomb.x, bomb.y)
+    spr(sin(time() / 0.75) >= 0 and 3 or 4, b.x, b.y)
+
     pal()
   end
 end
 
-function draw_sprite(code, x, y)
-  for row = 1, code[1] do
-    for column = 1, code[2] do
-      local color = code[2 + (row - 1) * code[2] + column]
+function d_m()
+  for r = 1, 17 do
+    for c = 1, 17 do
+      local s
+      if r == 1 or r == 17 then s = 6 end
+      if c == 1 or c == 17 or r == 1 or r == 17 or c % 2 == 1 and r % 2 == 1 then s = 6 end
+      if r % 2 == 0 and c > 1 and c < 17 then s = 5 end
+      if r % 2 == 1 and c % 2 == 0 and r != 1 and r != 17 then s = 5 end
+      if (r == 2 or r == 16) and (c >= 2 and c <= 3 or c >= 15 and c <= 16) then s = nil end
+      if (c == 2 or c == 16) and (r >= 2 and r <= 3 or r >= 15 and r <= 16) then s = nil end
 
-      if color != "0" then
-        pset(x + column - 1, y + row - 1, tonum("0x0" .. color))
+      if s != nil then spr(s, (c - 1) * 7 + 4.5, (r - 1) * 7 + 4.5) end
+    end
+  end
+end
+
+function s_v()
+  p = {
+    x = 12.5,
+    y = 12.5,
+    mb = 1
+  }
+  es = {}
+  bs = {}
+  m = {}
+end
+
+function h_c()
+  if btn(0) then
+    p.x -= 1
+  elseif btn(1) then
+    p.x += 1
+  elseif btn(2) then
+    p.y -= 1
+  elseif btn(3) then
+    p.y += 1
+  end
+
+  if btnp(4) and #bs < p.mb then
+    add(bs, { x = p.x, y = p.y + 2, t = 3 })
+  end
+end
+
+function u_o()
+  for b in all(bs) do
+    if time() % 1 == 0 then
+      b.t -= 1
+
+      if b.t <= 0 then
+        del(bs, b)
       end
+    end
+  end
+end
+
+function g_s()
+  for i, s in ipairs({ "0111020002", "2111000002", "0111220000" }) do
+    c_s("2777707cfc07fff" .. s, i - 1, 5, 5)
+  end
+  c_s("009080116111111", 3, 3, 5)
+  c_s("900080116111111", 4, 3, 5)
+  c_s("666666d6ddddd16ddddd16ddddd16ddddd16ddddd1d111111", 5, 7, 7)
+  c_s("eeeeee2e222221e222221e222221e222221e2222212111111", 6, 7, 7)
+end
+
+function c_s(s, i, w, h)
+  for r = 1, h do
+    for c = 1, w do
+      sset((i + 1 % 16 - 1) * 8 + c - 1, flr(i / 16) * 8 + r - 1, tonum("0x0" .. s[(r - 1) * w + c]))
     end
   end
 end
