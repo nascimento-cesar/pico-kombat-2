@@ -8,26 +8,32 @@ function _init()
     },
     punch = {
       i = 2,
-      s = { 3, 4, 3 },
+      s = { 4, 5, 4 },
       f = 3,
       l = true
     },
     kick = {
       i = 3,
-      s = { 5, 6, 5 },
+      s = { 6, 7, 6 },
       f = 3,
       l = true
     },
     backward = {
       i = 4,
-      s = { 1, 2, 1, 0 },
-      f = 3,
+      s = { 1, 2, 3, 2, 1 },
+      f = 4,
       l = false
     },
     forward = {
       i = 5,
-      s = { 1, 2, 1, 0 },
-      f = 3,
+      s = { 1, 2, 3, 2, 1 },
+      f = 4,
+      l = false
+    },
+    crouch = {
+      i = 6,
+      s = { 9, 10 },
+      f = 4,
       l = false
     }
   }
@@ -36,13 +42,15 @@ function _init()
     right = 1
   }
   player = {
-    x = 63,
+    x = 8,
     y = 63,
     is_action_locked = false,
     current_action = actions.idle,
     current_sprite = 0,
     frames_counter = 0,
-    direction = directions.right
+    direction = directions.right,
+    is_pixel_shifted = false
   }
+  pixel_shift = 2
   actions_stack = {}
 end

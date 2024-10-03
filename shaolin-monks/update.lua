@@ -1,7 +1,7 @@
 function _update()
-  update_frames()
   handle_controls()
   handle_actions()
+  update_frames()
 end
 
 function handle_controls()
@@ -14,6 +14,10 @@ function handle_controls()
 
     if btn(1) then
       set_current_action(actions.forward)
+    end
+
+    if btn(3) then
+      set_current_action(actions.crouch)
     end
 
     if btnp(5) then
@@ -31,6 +35,12 @@ function handle_actions()
     handle_backward()
   elseif player.current_action == actions.forward then
     handle_forward()
+  elseif player.current_action == actions.crouch then
+    handle_crouch()
+  elseif player.current_action == actions.punch then
+    handle_punch()
+  elseif player.current_action == actions.kick then
+    handle_kick()
   end
 end
 
@@ -41,6 +51,7 @@ end
 function check_idle_state()
   if is_current_action_finished() then
     set_current_action(actions.idle)
+    shift_pixel(true)
   end
 end
 
@@ -72,9 +83,39 @@ function is_current_action_finished()
 end
 
 function handle_forward()
-  player.x += 0.25 * player.direction
+  move_x(0.5)
 end
 
 function handle_backward()
-  player.x -= 0.25 * player.direction
+  move_x(-0.5)
+end
+
+function handle_crouch()
+  -- player.x += 0.25 * player.direction
+end
+
+function handle_punch()
+  shift_pixel()
+end
+
+function handle_kick()
+  shift_pixel()
+end
+
+function shift_pixel(unshift)
+  if unshift then
+    if player.is_pixel_shifted then
+      move_x(-pixel_shift)
+      player.is_pixel_shifted = false
+    end
+  else
+    if player.is_pixel_shifted == false then
+      move_x(pixel_shift)
+      player.is_pixel_shifted = true
+    end
+  end
+end
+
+function move_x(x)
+  player.x += x * player.direction
 end
