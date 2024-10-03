@@ -17,7 +17,23 @@ function _init()
       s = { 5, 6, 5 },
       f = 3,
       l = true
+    },
+    backward = {
+      i = 4,
+      s = { 1, 2, 1, 0 },
+      f = 3,
+      l = false
+    },
+    forward = {
+      i = 5,
+      s = { 1, 2, 1, 0 },
+      f = 3,
+      l = false
     }
+  }
+  directions = {
+    left = -1,
+    right = 1
   }
   player = {
     x = 63,
@@ -25,7 +41,8 @@ function _init()
     is_action_locked = false,
     current_action = actions.idle,
     current_sprite = 0,
-    frames_counter = 0
+    frames_counter = 0,
+    direction = directions.right
   }
   actions_stack = {}
 end

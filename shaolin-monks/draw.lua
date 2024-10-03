@@ -1,6 +1,8 @@
 function _draw()
   cls(3)
 
+  print(player.x, 0, 0)
+
   -- for i = 1, #actions_stack do
   --   print(actions_stack[i], i * 10, 0)
   -- end

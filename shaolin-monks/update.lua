@@ -1,12 +1,21 @@
 function _update()
   update_frames()
-  update_current_action()
+  handle_controls()
+  handle_actions()
 end
 
-function update_current_action()
+function handle_controls()
   check_idle_state()
 
   if player.is_action_locked == false then
+    if btn(0) then
+      set_current_action(actions.backward)
+    end
+
+    if btn(1) then
+      set_current_action(actions.forward)
+    end
+
     if btnp(5) then
       set_current_action(actions.kick)
     end
@@ -17,17 +26,29 @@ function update_current_action()
   end
 end
 
+function handle_actions()
+  if player.current_action == actions.backward then
+    handle_backward()
+  elseif player.current_action == actions.forward then
+    handle_forward()
+  end
+end
+
 function update_frames()
   player.frames_counter += 1
 end
 
 function check_idle_state()
-  if player.frames_counter >= player.current_action.f * #player.current_action.s - 1 then
+  if is_current_action_finished() then
     set_current_action(actions.idle)
   end
 end
 
 function set_current_action(action)
+  if action == player.current_action then
+    return
+  end
+
   if action != actions.idle then
     record_action(action)
     -- poke(0x5f5c, action.l and 255 or 0)
@@ -44,4 +65,16 @@ function record_action(action)
   if #actions_stack > 10 then
     deli(actions_stack, 1)
   end
+end
+
+function is_current_action_finished()
+  return player.frames_counter > player.current_action.f * #player.current_action.s - 1
+end
+
+function handle_forward()
+  player.x += 0.25 * player.direction
+end
+
+function handle_backward()
+  player.x -= 0.25 * player.direction
 end
