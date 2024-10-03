@@ -1,12 +1,7 @@
 function _draw()
   cls(3)
 
-  print(player.x, 0, 0)
-
-  -- for i = 1, #actions_stack do
-  --   print(actions_stack[i], i * 10, 0)
-  -- end
-
+  draw_debug()
   draw_player()
 end
 
@@ -20,4 +15,12 @@ end
 
 function set_player_sprite()
   player.current_sprite = player.current_action.s[flr(player.frames_counter / player.current_action.f) + 1]
+end
+
+function draw_debug()
+  local i = 1
+  for k, v in pairs(debug) do
+    print(k .. ": " .. v, 0, (i - 1) * 10)
+    i += 1
+  end
 end

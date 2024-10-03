@@ -1,66 +1,51 @@
 function _update()
-  handle_controls()
-  handle_actions()
-  update_frames()
+  update_frames_counter()
+  finish_previous_action()
+  handle_inputs()
+  handle_current_action()
 end
 
-function handle_controls()
-  check_idle_state()
-
+function handle_inputs()
   if player.is_action_locked == false then
-    if btn(0) then
-      set_current_action(actions.backward)
-    end
-
-    if btn(1) then
-      set_current_action(actions.forward)
-    end
-
-    if btn(3) then
-      set_current_action(actions.crouch)
-    end
-
-    if btnp(5) then
-      set_current_action(actions.kick)
-    end
-
-    if btnp(4) then
-      set_current_action(actions.punch)
+    for input, handler in pairs(input_handlers) do
+      if btn(input) then
+        handler()
+      end
     end
   end
 end
 
-function handle_actions()
-  if player.current_action == actions.backward then
-    handle_backward()
-  elseif player.current_action == actions.forward then
-    handle_forward()
-  elseif player.current_action == actions.crouch then
-    handle_crouch()
-  elseif player.current_action == actions.punch then
-    handle_punch()
-  elseif player.current_action == actions.kick then
-    handle_kick()
-  end
+function handle_current_action()
+  local handler = action_handlers[player.current_action]
+  return handler and handler()
 end
 
-function update_frames()
+function update_frames_counter()
   player.frames_counter += 1
 end
 
-function check_idle_state()
+function finish_previous_action()
   if is_current_action_finished() then
-    set_current_action(actions.idle)
+    if player.current_action == actions.crouch then
+      if btn(⬇️) then
+        -- set_current_action(actions.crouch)
+      else
+        set_current_action(actions.stand)
+      end
+    else
+      set_current_action(actions.idle)
+    end
+
     shift_pixel(true)
   end
 end
 
-function set_current_action(action)
+function set_current_action(action, holdable)
   if action == player.current_action then
     return
   end
 
-  if action != actions.idle then
+  if action.r then
     record_action(action)
     -- poke(0x5f5c, action.l and 255 or 0)
   end
@@ -80,6 +65,26 @@ end
 
 function is_current_action_finished()
   return player.frames_counter > player.current_action.f * #player.current_action.s - 1
+end
+
+function handle_⬅️()
+  set_current_action(actions.backward)
+end
+
+function handle_➡️()
+  set_current_action(actions.forward)
+end
+
+function handle_⬇️()
+  set_current_action(actions.crouch)
+end
+
+function handle_🅾️()
+  set_current_action(actions.punch)
+end
+
+function handle_❎()
+  set_current_action(actions.kick)
 end
 
 function handle_forward()
