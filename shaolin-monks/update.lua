@@ -1,126 +1,141 @@
 function _update()
   update_frames_counter()
+  update_current_action_status()
   handle_inputs()
-  handle_current_action()
+  -- handle_next_action()
 end
 
 function handle_inputs()
-  if player.is_action_locked == false then
-    for input, handler in pairs(input_handlers) do
-      if btn(input) then
-        return handler()
-      end
+  for input, handler in pairs(input_handlers) do
+    if btn(input) then
+      handler()
     end
   end
-
-  finish_previous_action()
 end
 
-function handle_current_action()
-  local handler = action_handlers[player.current_action]
+function handle_next_action()
+  local handler = action_handlers[player.action.current]
   return handler and handler()
 end
 
 function update_frames_counter()
-  player.frames_counter += 1
+  player.rendering.frames_counter += 1
 end
 
-function finish_previous_action()
-  if is_current_action_finished() then
-    if player.current_action == actions.crouch then
-      set_current_action(actions.stand)
-    else
-      set_current_action(actions.idle)
+function update_current_action_status()
+  player.action.is_finished = is_current_action_finished()
+end
+
+function process_movement(action)
+end
+
+function process_action(action)
+  if player.action.is_finished or player.action.current.is_cancelable then
+    if action.is_recordable then
+      record_action(action)
     end
 
-    shift_pixel(true)
+    unshift_pixel()
+    player.action.current = action
+    player.action.is_finished = false
+    player.action.is_held = false
+    player.rendering.frames_counter = 0
   end
 end
 
-function set_current_action(action)
-  if action == player.current_action and action.h then
-    player.is_action_held = action.h
+-- function finish_previous_action()
+--   if is_current_action_finished() then
+--     if player.current_action == actions.crouch then
+--       set_current_action(actions.stand)
+--     else
+--       set_current_action(actions.idle)
+--     end
 
-    return
-  end
+--     shift_pixel(true)
+--   end
+-- end
 
-  if action.r then
-    record_action(action)
-    -- poke(0x5f5c, action.l and 255 or 0)
-  end
+-- function set_current_action(action)
+--   if action == player.current_action and action.h then
+--     player.is_action_held = action.h
 
-  shift_pixel(true)
-  player.current_action = action
-  player.frames_counter = 0
-  player.is_action_held = false
-  player.is_action_locked = action.l or false
-end
+--     return
+--   end
+
+--   if action.r then
+--     record_action(action)
+--     -- poke(0x5f5c, action.l and 255 or 0)
+--   end
+
+--   shift_pixel(true)
+--   player.current_action = action
+--   player.frames_counter = 0
+--   player.is_action_held = false
+--   player.is_action_locked = action.l or false
+-- end
 
 function record_action(action)
-  add(general.actions_stack, action.i)
+  add(player.action.stack, action)
 
-  if #general.actions_stack > 10 then
-    deli(general.actions_stack, 1)
+  if #player.action.stack > 5 then
+    deli(player.action.stack, 1)
   end
 end
 
 function is_current_action_finished()
-  return player.frames_counter > player.current_action.f * #player.current_action.s - 1
+  return player.rendering.frames_counter > player.action.current.frames_per_sprite * #player.action.current.sprites - 1
 end
 
 function handle_⬅️()
-  set_current_action(actions.backward)
 end
 
 function handle_➡️()
-  set_current_action(actions.forward)
 end
 
 function handle_⬇️()
-  set_current_action(actions.crouch)
 end
 
 function handle_🅾️()
-  set_current_action(actions.kick)
+  process_action(actions.kick)
 end
 
 function handle_❎()
-  set_current_action(actions.punch)
+  process_action(actions.punch)
 end
 
 function handle_forward()
-  move_x(0.5)
+  -- move_x(0.5)
 end
 
 function handle_backward()
-  move_x(-0.5)
+  -- move_x(-0.5)
 end
 
 function handle_crouch()
 end
 
 function handle_punch()
-  shift_pixel()
+  -- shift_pixel()
 end
 
 function handle_kick()
-  shift_pixel()
+  -- shift_pixel()
 end
 
-function shift_pixel(unshift)
-  if unshift then
-    if player.is_pixel_shifted then
-      move_x(-general.pixel_shift)
-      player.is_pixel_shifted = false
-    end
-  else
-    if player.is_pixel_shifted == false then
-      move_x(general.pixel_shift)
-      player.is_pixel_shifted = true
-    end
+function shift_pixel()
+  if not player.rendering.is_pixel_shifted then
+    move_x(general.pixel_shift)
+    player.rendering.is_pixel_shifted = true
+  end
+end
+
+function unshift_pixel()
+  if player.rendering.is_pixel_shifted then
+    move_x(-general.pixel_shift)
+    player.rendering.is_pixel_shifted = false
   end
 end
 
 function move_x(x)
-  player.x += x * player.direction
+  player.rendering.x += x * player.rendering.facing
 end

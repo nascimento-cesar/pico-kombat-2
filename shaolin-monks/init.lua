@@ -13,30 +13,34 @@ function configure_general()
       left = -1,
       right = 1
     },
-    pixel_shift = 2,
-    actions_stack = {}
+    pixel_shift = 2
   }
 end
 
 function configure_player()
   return {
-    x = 8,
-    y = 63,
-    is_action_locked = false,
-    is_action_held = false,
-    current_action = actions.idle,
-    current_sprite = 0,
-    frames_counter = 0,
-    direction = general.directions.right,
-    is_pixel_shifted = false
+    action = {
+      current = actions.idle,
+      is_finished = true,
+      is_held = false,
+      stack = {}
+    },
+    rendering = {
+      x = 8,
+      y = 63,
+      current_sprite = 0,
+      frames_counter = 0,
+      facing = general.directions.right,
+      is_pixel_shifted = false
+    }
   }
 end
 
 function configure_actions()
   return {
     idle = set_action(1, { 0 }, 1, false, false, false),
-    punch = set_action(2, { 4, 5, 4 }, 3, true, true, false),
-    kick = set_action(3, { 6, 7, 6 }, 3, true, true, false),
+    punch = set_action(2, { 4, 5, 4 }, 3, false, true, false),
+    kick = set_action(3, { 6, 7, 6 }, 3, false, true, false),
     backward = set_action(4, { 1, 2, 3, 2, 1 }, 4, false, true, false),
     forward = set_action(5, { 1, 2, 3, 2, 1 }, 4, false, true, false),
     crouch = set_action(6, { 9, 10 }, 2, false, true, true),
@@ -53,6 +57,7 @@ function configure_action_handlers()
     [actions.kick] = handle_kick
   }
 end
+
 function configure_input_handlers()
   return {
     [⬅️] = handle_⬅️,
@@ -63,13 +68,13 @@ function configure_input_handlers()
   }
 end
 
-function set_action(index, sprites, frames_per_sprite, locks_actions, recordable, holdable)
+function set_action(index, sprites, frames_per_sprite, is_cancelable, is_recordable, is_holdable)
   return {
-    i = index,
-    s = sprites,
-    f = frames_per_sprite,
-    l = locks_actions,
-    r = recordable,
-    h = holdable
+    index = index,
+    sprites = sprites,
+    frames_per_sprite = frames_per_sprite,
+    is_cancelable = is_cancelable,
+    is_recordable = is_recordable,
+    is_holdable = is_holdable
   }
 end
