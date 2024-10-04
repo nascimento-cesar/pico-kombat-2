@@ -1,6 +1,5 @@
 function _update()
   update_frames_counter()
-  finish_previous_action()
   handle_inputs()
   handle_current_action()
 end
@@ -9,10 +8,12 @@ function handle_inputs()
   if player.is_action_locked == false then
     for input, handler in pairs(input_handlers) do
       if btn(input) then
-        handler()
+        return handler()
       end
     end
   end
+
+  finish_previous_action()
 end
 
 function handle_current_action()
@@ -27,11 +28,7 @@ end
 function finish_previous_action()
   if is_current_action_finished() then
     if player.current_action == actions.crouch then
-      if btn(⬇️) then
-        -- set_current_action(actions.crouch)
-      else
-        set_current_action(actions.stand)
-      end
+      set_current_action(actions.stand)
     else
       set_current_action(actions.idle)
     end
@@ -40,8 +37,10 @@ function finish_previous_action()
   end
 end
 
-function set_current_action(action, holdable)
-  if action == player.current_action then
+function set_current_action(action)
+  if action == player.current_action and action.h then
+    player.is_action_held = action.h
+
     return
   end
 
@@ -50,16 +49,18 @@ function set_current_action(action, holdable)
     -- poke(0x5f5c, action.l and 255 or 0)
   end
 
+  shift_pixel(true)
   player.current_action = action
   player.frames_counter = 0
+  player.is_action_held = false
   player.is_action_locked = action.l or false
 end
 
 function record_action(action)
-  add(actions_stack, action.i)
+  add(general.actions_stack, action.i)
 
-  if #actions_stack > 10 then
-    deli(actions_stack, 1)
+  if #general.actions_stack > 10 then
+    deli(general.actions_stack, 1)
   end
 end
 
@@ -80,11 +81,11 @@ function handle_⬇️()
 end
 
 function handle_🅾️()
-  set_current_action(actions.punch)
+  set_current_action(actions.kick)
 end
 
 function handle_❎()
-  set_current_action(actions.kick)
+  set_current_action(actions.punch)
 end
 
 function handle_forward()
@@ -96,7 +97,6 @@ function handle_backward()
 end
 
 function handle_crouch()
-  -- player.x += 0.25 * player.direction
 end
 
 function handle_punch()
@@ -110,12 +110,12 @@ end
 function shift_pixel(unshift)
   if unshift then
     if player.is_pixel_shifted then
-      move_x(-pixel_shift)
+      move_x(-general.pixel_shift)
       player.is_pixel_shifted = false
     end
   else
     if player.is_pixel_shifted == false then
-      move_x(pixel_shift)
+      move_x(general.pixel_shift)
       player.is_pixel_shifted = true
     end
   end

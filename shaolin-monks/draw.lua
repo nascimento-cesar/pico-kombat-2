@@ -14,7 +14,15 @@ function draw_player()
 end
 
 function set_player_sprite()
-  player.current_sprite = player.current_action.s[flr(player.frames_counter / player.current_action.f) + 1]
+  local sprite_index
+
+  if player.is_action_held then
+    sprite_index = #player.current_action.s
+  else
+    sprite_index = flr(player.frames_counter / player.current_action.f) + 1
+  end
+
+  player.current_sprite = player.current_action.s[sprite_index]
 end
 
 function draw_debug()
