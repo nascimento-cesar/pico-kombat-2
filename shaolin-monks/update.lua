@@ -1,4 +1,7 @@
 function _update()
+  if debug.s == nil then
+    debug.s = 0
+  end
   update_frames_counter()
   update_previous_action_status()
   process_inputs()
@@ -20,6 +23,18 @@ function process_inputs()
   local button_pressed = btn() > 0
 
   if button_pressed then
+    if btn(⬇️) then
+      if btnp(🅾️) then
+        setup_action(actions.hook)
+      else
+        setup_action(actions.crouch)
+      end
+    elseif btn(⬅️) and not btn(➡️) then
+      setup_action(actions.backward)
+    elseif btn(➡️) and not btn(⬅️) then
+      setup_action(actions.forward)
+    end
+
     if btn(🅾️) and btn(❎) then
     end
 
@@ -29,14 +44,6 @@ function process_inputs()
 
     if btnp(❎) then
       setup_action(actions.kick)
-    end
-
-    if btn(⬇️) then
-      setup_action(actions.crouch)
-    elseif btn(⬅️) and not btn(➡️) then
-      setup_action(actions.backward)
-    elseif btn(➡️) and not btn(⬅️) then
-      setup_action(actions.forward)
     end
   else
     handle_no_key_press()
@@ -59,11 +66,13 @@ function handle_no_key_press()
 end
 
 function setup_action(next_action)
+  debug.acction = next_action.index
   local previous_action = player.current_action.action
   local is_previous_action_finished = player.current_action.is_finished
   local should_trigger_action = false
 
   if is_previous_action_finished then
+    debug.s += 1
     should_trigger_action = true
   elseif previous_action ~= next_action then
     if previous_action.is_movement then
@@ -84,16 +93,6 @@ end
 
 function is_current_action_finished()
   return player.rendering.frames_counter > player.current_action.action.frames_per_sprite * #player.current_action.action.sprites - 1
-end
-
-function record_action(action)
-  if action.is_recordable then
-    add(player.action_stack, action)
-
-    if #player.action_stack > 5 then
-      deli(player.action_stack, 1)
-    end
-  end
 end
 
 function shift_pixel(unshift)
@@ -125,6 +124,9 @@ function punch()
 end
 
 function kick()
+end
+
+function hook()
 end
 
 function move_x(x)

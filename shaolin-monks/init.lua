@@ -38,13 +38,14 @@ end
 
 function configure_actions()
   return {
-    idle = set_action(1, { 0 }, 1, false, false, false),
-    punch = set_action(2, { 4, 5, 4 }, 3, false, true, true),
-    kick = set_action(3, { 6, 7, 6 }, 3, false, true, true),
-    backward = set_action(4, { 1, 2, 3, 2 }, 4, true, true, false),
-    forward = set_action(5, { 1, 2, 3, 2 }, 4, true, true, false),
-    crouch = set_action(6, { 9, 10 }, 2, false, true, false),
-    stand = set_action(7, { 9 }, 2, false, false, false)
+    idle = set_action(1, { 0 }, 1, false, false),
+    punch = set_action(2, { 4, 5, 4 }, 3, false, true),
+    kick = set_action(3, { 6, 7, 6 }, 3, false, true),
+    backward = set_action(4, { 1, 2, 3, 2 }, 4, true, false),
+    forward = set_action(5, { 1, 2, 3, 2 }, 4, true, false),
+    crouch = set_action(6, { 9, 10 }, 2, false, false),
+    stand = set_action(7, { 9 }, 2, false, false),
+    hook = set_action(8, { 16, 17, 18, 18, 18, 18, 18, 17, 0 }, 2, false, true)
   }
 end
 
@@ -54,17 +55,17 @@ function configure_action_handlers()
     [actions.forward] = forward,
     [actions.crouch] = crouch,
     [actions.punch] = punch,
-    [actions.kick] = kick
+    [actions.kick] = kick,
+    [actions.hook] = hook
   }
 end
 
-function set_action(index, sprites, frames_per_sprite, is_movement, is_recordable, is_pixel_shiftable)
+function set_action(index, sprites, frames_per_sprite, is_movement, is_pixel_shiftable)
   return {
     index = index,
     sprites = sprites,
     frames_per_sprite = frames_per_sprite,
     is_movement = is_movement,
-    is_recordable = is_recordable,
     is_pixel_shiftable = is_pixel_shiftable
   }
 end
