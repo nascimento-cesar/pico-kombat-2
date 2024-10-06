@@ -21,29 +21,44 @@ end
 
 function process_inputs()
   local button_pressed = btn() > 0
+  local block_pressed = btn(🅾️) and btn(❎)
+  local punch_pressed = btn(🅾️)
+  local kick_pressed = btn(❎)
+  local crouch_pressed = btn(⬇️)
+  local backward_pressed = btn(⬅️)
+  local forward_pressed = btn(➡️)
 
   if button_pressed then
-    if btn(⬇️) then
-      if btnp(🅾️) then
+    if crouch_pressed then
+      if punch_pressed then
         setup_action(actions.hook)
       else
         setup_action(actions.crouch)
       end
-    elseif btn(⬅️) and not btn(➡️) then
-      setup_action(actions.backward)
-    elseif btn(➡️) and not btn(⬅️) then
-      setup_action(actions.forward)
+    elseif backward_pressed and not forward_pressed then
+      if block_pressed then
+        setup_action(actions.block)
+      else
+        setup_action(actions.backward)
+      end
+    elseif forward_pressed and not backward_pressed then
+      if block_pressed then
+        setup_action(actions.block)
+      else
+        setup_action(actions.forward)
+      end
     end
 
-    if btn(🅾️) and btn(❎) then
-    end
+    if block_pressed then
+      setup_action(actions.block)
+    else
+      if punch_pressed then
+        setup_action(actions.punch)
+      end
 
-    if btnp(🅾️) then
-      setup_action(actions.punch)
-    end
-
-    if btnp(❎) then
-      setup_action(actions.kick)
+      if kick_pressed then
+        setup_action(actions.kick)
+      end
     end
   else
     handle_no_key_press()
@@ -60,16 +75,18 @@ function handle_no_key_press()
     setup_action(actions.idle)
   elseif player.current_action.action == actions.crouch and player.current_action.is_finished then
     setup_action(actions.stand)
+  elseif player.current_action.action == actions.block and player.current_action.is_finished then
+    setup_action(actions.unblock)
   elseif player.current_action.is_finished then
     setup_action(actions.idle)
   end
 end
 
 function setup_action(next_action)
-  debug.acction = next_action.index
   local previous_action = player.current_action.action
   local is_previous_action_finished = player.current_action.is_finished
   local should_trigger_action = false
+  local is_action_held = previous_action == next_action and is_previous_action_finished and previous_action ~= actions.idle
 
   if is_previous_action_finished then
     debug.s += 1
@@ -79,13 +96,15 @@ function setup_action(next_action)
       should_trigger_action = true
     elseif previous_action == actions.crouch and not next_action.is_movement then
       should_trigger_action = true
+    elseif previous_action == actions.block and not next_action.is_movement then
+      should_trigger_action = true
     end
   end
 
   if should_trigger_action then
     player.current_action.action = next_action
     player.current_action.is_finished = false
-    player.current_action.is_held = previous_action == next_action and is_previous_action_finished
+    player.current_action.is_held = is_action_held
     player.rendering.frames_counter = 0
     shift_pixel(not next_action.is_pixel_shiftable)
   end
@@ -127,6 +146,12 @@ function kick()
 end
 
 function hook()
+end
+
+function block()
+end
+
+function unblock()
 end
 
 function move_x(x)

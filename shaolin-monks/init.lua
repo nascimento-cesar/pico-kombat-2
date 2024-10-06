@@ -45,7 +45,9 @@ function configure_actions()
     forward = set_action(5, { 1, 2, 3, 2 }, 4, true, false),
     crouch = set_action(6, { 9, 10 }, 2, false, false),
     stand = set_action(7, { 9 }, 2, false, false),
-    hook = set_action(8, { 16, 17, 18, 18, 18, 18, 18, 17, 0 }, 2, false, true)
+    hook = set_action(8, { 16, 17, 18, 18, 18, 18, 18, 17 }, 2, false, true),
+    block = set_action(9, { 19, 20 }, 2, false, false),
+    unblock = set_action(10, { 19 }, 2, false, false)
   }
 end
 
@@ -56,7 +58,9 @@ function configure_action_handlers()
     [actions.crouch] = crouch,
     [actions.punch] = punch,
     [actions.kick] = kick,
-    [actions.hook] = hook
+    [actions.hook] = hook,
+    [actions.block] = block,
+    [actions.unblock] = unblock
   }
 end
 
