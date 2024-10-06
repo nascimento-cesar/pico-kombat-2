@@ -3,28 +3,33 @@ function _update()
     debug.s = 0
   end
 
-  update_frames_counter()
-  update_previous_action_status()
-  process_inputs()
-  perform_current_action()
-end
-
-function update_frames_counter()
-  player.rendering.frames_counter += 1
-end
-
-function update_previous_action_status()
-  if is_current_action_finished() then
-    player.current_action.is_finished = true
-    shift_pixel(true)
+  for p in all(players) do
+    if not p.is_npc then
+      update_frames_counter(p)
+      update_previous_action_status(p)
+      process_inputs(p)
+      perform_current_action(p)
+    end
   end
 end
 
-function process_inputs()
+function update_frames_counter(p)
+  p.rendering.frames_counter += 1
+end
+
+function update_previous_action_status(p)
+  if is_current_action_finished(p) then
+    p.current_action.is_finished = true
+    shift_pixel(p, true)
+  end
+end
+
+function process_inputs(p)
   local button_pressed = btn() > 0
   local h🅾️❎ = btn(🅾️) and btn(❎)
   local p🅾️ = btnp(🅾️)
   local p❎ = btnp(❎)
+  local h⬆️ = btn(⬆️)
   local h⬇️ = btn(⬇️)
   local h⬅️ = btn(⬅️)
   local h➡️ = btn(➡️)
@@ -32,66 +37,68 @@ function process_inputs()
   if button_pressed then
     if h⬇️ then
       if h🅾️❎ then
-        setup_action(actions.block)
+        setup_action(actions.block, p)
       elseif p🅾️ then
-        setup_action(actions.hook)
+        setup_action(actions.hook, p)
       else
-        setup_action(actions.crouch)
+        setup_action(actions.crouch, p)
       end
+    elseif h⬆️ then
+      setup_action(actions.jump, p)
     elseif h⬅️ and not h➡️ then
       if h🅾️❎ then
-        setup_action(actions.block)
+        setup_action(actions.block, p)
       elseif p🅾️ then
-        setup_action(actions.punch)
+        setup_action(actions.punch, p)
       elseif p❎ then
-        setup_action(actions.kick)
+        setup_action(actions.kick, p)
       else
-        setup_action(actions.backward)
+        setup_action(actions.backward, p)
       end
     elseif h➡️ and not h⬅️ then
       if h🅾️❎ then
-        setup_action(actions.block)
+        setup_action(actions.block, p)
       elseif p🅾️ then
-        setup_action(actions.punch)
+        setup_action(actions.punch, p)
       elseif p❎ then
-        setup_action(actions.kick)
+        setup_action(actions.kick, p)
       else
-        setup_action(actions.forward)
+        setup_action(actions.forward, p)
       end
     elseif h🅾️❎ then
-      setup_action(actions.block)
+      setup_action(actions.block, p)
     else
       if p🅾️ then
-        setup_action(actions.punch)
+        setup_action(actions.punch, p)
       elseif p❎ then
-        setup_action(actions.kick)
+        setup_action(actions.kick, p)
       end
     end
   else
-    handle_no_key_press()
+    handle_no_key_press(p)
   end
 end
 
-function perform_current_action()
-  local handler = action_handlers[player.current_action.action]
-  return handler and handler()
+function perform_current_action(p)
+  local handler = action_handlers[p.current_action.action]
+  return handler and handler(p)
 end
 
-function handle_no_key_press()
-  if player.current_action.action.is_movement then
-    setup_action(actions.idle)
-  elseif player.current_action.action == actions.crouch and player.current_action.is_finished then
-    setup_action(actions.stand)
-  elseif player.current_action.action == actions.block and player.current_action.is_finished then
-    setup_action(actions.unblock)
-  elseif player.current_action.is_finished then
-    setup_action(actions.idle)
+function handle_no_key_press(p)
+  if p.current_action.action.is_movement then
+    setup_action(actions.idle, p)
+  elseif p.current_action.action == actions.crouch and p.current_action.is_finished then
+    setup_action(actions.stand, p)
+  elseif p.current_action.action == actions.block and p.current_action.is_finished then
+    setup_action(actions.unblock, p)
+  elseif p.current_action.is_finished then
+    setup_action(actions.idle, p)
   end
 end
 
-function setup_action(next_action)
-  local previous_action = player.current_action.action
-  local is_previous_action_finished = player.current_action.is_finished
+function setup_action(next_action, p)
+  local previous_action = p.current_action.action
+  local is_previous_action_finished = p.current_action.is_finished
   local should_trigger_action = false
   local is_action_held = previous_action == next_action and is_previous_action_finished and previous_action ~= actions.idle
 
@@ -108,58 +115,68 @@ function setup_action(next_action)
   end
 
   if should_trigger_action then
-    player.current_action.action = next_action
-    player.current_action.is_finished = false
-    player.current_action.is_held = is_action_held
-    player.rendering.frames_counter = 0
-    shift_pixel(not next_action.is_pixel_shiftable)
+    p.current_action.action = next_action
+    p.current_action.is_finished = false
+    p.current_action.is_held = is_action_held
+    p.rendering.frames_counter = 0
+    shift_pixel(p, not next_action.is_pixel_shiftable)
   end
 end
 
-function is_current_action_finished()
-  return player.rendering.frames_counter > player.current_action.action.frames_per_sprite * #player.current_action.action.sprites - 1
+function is_current_action_finished(p)
+  return p.rendering.frames_counter > p.current_action.action.frames_per_sprite * #p.current_action.action.sprites - 1
 end
 
-function shift_pixel(unshift)
+function shift_pixel(p, unshift)
   if unshift then
-    if player.rendering.is_pixel_shifted then
-      move_x(-general.pixel_shift)
-      player.rendering.is_pixel_shifted = false
+    if p.rendering.is_pixel_shifted then
+      move_x(p, -general.pixel_shift)
+      p.rendering.is_pixel_shifted = false
     end
   else
-    if player.rendering.is_pixel_shifted == false then
-      move_x(general.pixel_shift)
-      player.rendering.is_pixel_shifted = true
+    if p.rendering.is_pixel_shifted == false then
+      move_x(p, general.pixel_shift)
+      p.rendering.is_pixel_shifted = true
     end
   end
 end
 
-function forward()
-  move_x(0.5)
+function backward(p)
+  move_x(p, -0.5)
 end
 
-function backward()
-  move_x(-0.5)
+function forward(p)
+  move_x(p, 0.5)
 end
 
-function crouch()
+function jump(p)
 end
 
-function punch()
+function jump_backward(p)
 end
 
-function kick()
+function jump_forward(p)
 end
 
-function hook()
+function crouch(p)
 end
 
-function block()
+function punch(p)
 end
 
-function unblock()
+function kick(p)
 end
 
-function move_x(x)
-  player.rendering.x += x * player.rendering.facing
+function hook(p)
+end
+
+function block(p)
+end
+
+function move_x(p, x)
+  p.rendering.x += x * p.rendering.facing
+end
+
+function move_y(p, y)
+  p.rendering.y += y
 end
