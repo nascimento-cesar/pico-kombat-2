@@ -2,6 +2,7 @@ function _update()
   if debug.s == nil then
     debug.s = 0
   end
+
   update_frames_counter()
   update_previous_action_status()
   process_inputs()
@@ -21,42 +22,48 @@ end
 
 function process_inputs()
   local button_pressed = btn() > 0
-  local block_pressed = btn(🅾️) and btn(❎)
-  local punch_pressed = btn(🅾️)
-  local kick_pressed = btn(❎)
-  local crouch_pressed = btn(⬇️)
-  local backward_pressed = btn(⬅️)
-  local forward_pressed = btn(➡️)
+  local h🅾️❎ = btn(🅾️) and btn(❎)
+  local p🅾️ = btnp(🅾️)
+  local p❎ = btnp(❎)
+  local h⬇️ = btn(⬇️)
+  local h⬅️ = btn(⬅️)
+  local h➡️ = btn(➡️)
 
   if button_pressed then
-    if crouch_pressed then
-      if punch_pressed then
+    if h⬇️ then
+      if h🅾️❎ then
+        setup_action(actions.block)
+      elseif p🅾️ then
         setup_action(actions.hook)
       else
         setup_action(actions.crouch)
       end
-    elseif backward_pressed and not forward_pressed then
-      if block_pressed then
+    elseif h⬅️ and not h➡️ then
+      if h🅾️❎ then
         setup_action(actions.block)
+      elseif p🅾️ then
+        setup_action(actions.punch)
+      elseif p❎ then
+        setup_action(actions.kick)
       else
         setup_action(actions.backward)
       end
-    elseif forward_pressed and not backward_pressed then
-      if block_pressed then
+    elseif h➡️ and not h⬅️ then
+      if h🅾️❎ then
         setup_action(actions.block)
+      elseif p🅾️ then
+        setup_action(actions.punch)
+      elseif p❎ then
+        setup_action(actions.kick)
       else
         setup_action(actions.forward)
       end
-    end
-
-    if block_pressed then
+    elseif h🅾️❎ then
       setup_action(actions.block)
     else
-      if punch_pressed then
+      if p🅾️ then
         setup_action(actions.punch)
-      end
-
-      if kick_pressed then
+      elseif p❎ then
         setup_action(actions.kick)
       end
     end
@@ -89,7 +96,6 @@ function setup_action(next_action)
   local is_action_held = previous_action == next_action and is_previous_action_finished and previous_action ~= actions.idle
 
   if is_previous_action_finished then
-    debug.s += 1
     should_trigger_action = true
   elseif previous_action ~= next_action then
     if previous_action.is_movement then
