@@ -2,7 +2,7 @@ function _init()
   debug = {}
   general = configure_general()
   actions = configure_actions()
-  p1 = configure_player(general.characters.c1)
+  p1 = configure_player(general.characters.c2)
   players = { p1 }
   action_handlers = configure_action_handlers()
   disable_hold_function()

@@ -4,6 +4,8 @@ function _update()
   end
 
   for p in all(players) do
+    debug.p_frames = p.rendering.frames_counter
+
     if not p.is_npc then
       update_frames_counter(p)
       update_previous_action_status(p)
@@ -67,12 +69,12 @@ function process_inputs(p)
       end
     elseif h🅾️❎ then
       setup_action(actions.block, p)
+    elseif p🅾️ then
+      setup_action(actions.punch, p)
+    elseif p❎ then
+      setup_action(actions.kick, p)
     else
-      if p🅾️ then
-        setup_action(actions.punch, p)
-      elseif p❎ then
-        setup_action(actions.kick, p)
-      end
+      handle_no_key_press(p)
     end
   else
     handle_no_key_press(p)

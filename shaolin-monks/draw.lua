@@ -23,7 +23,7 @@ function set_player_sprite(p)
     sprite_index = flr(p.rendering.frames_counter / p.current_action.action.frames_per_sprite) + 1
   end
 
-  p.rendering.current_sprite = p.current_action.action.sprites[sprite_index]
+  p.rendering.current_sprite = p.current_action.action.sprites[sprite_index] + p.character
 end
 
 function draw_debug()
