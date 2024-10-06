@@ -4,7 +4,6 @@ function _init()
   actions = configure_actions()
   player = configure_player()
   action_handlers = configure_action_handlers()
-
   disable_hold_function()
 end
 
@@ -20,12 +19,12 @@ end
 
 function configure_player()
   return {
-    action = {
-      previous = actions.idle,
-      current = actions.idle,
+    current_action = {
+      action = actions.idle,
       is_finished = true,
-      stack = {}
+      is_held = false
     },
+    action_stack = {},
     rendering = {
       x = 8,
       y = 63,
@@ -39,13 +38,13 @@ end
 
 function configure_actions()
   return {
-    idle = set_action(1, { 0 }, 1, false, true, false, false),
-    punch = set_action(2, { 4, 5, 4 }, 3, false, false, true, true),
-    kick = set_action(3, { 6, 7, 6 }, 3, false, false, true, true),
-    backward = set_action(4, { 1, 2, 3, 2, 1 }, 4, true, true, true, false),
-    forward = set_action(5, { 1, 2, 3, 2, 1 }, 4, true, true, true, false),
-    crouch = set_action(6, { 9, 10 }, 2, false, false, true, false),
-    stand = set_action(7, { 9 }, 2, false, true, false, false)
+    idle = set_action(1, { 0 }, 1, false, false, false),
+    punch = set_action(2, { 4, 5, 4 }, 3, false, true, true),
+    kick = set_action(3, { 6, 7, 6 }, 3, false, true, true),
+    backward = set_action(4, { 1, 2, 3, 2 }, 4, true, true, false),
+    forward = set_action(5, { 1, 2, 3, 2 }, 4, true, true, false),
+    crouch = set_action(6, { 9, 10 }, 2, false, true, false),
+    stand = set_action(7, { 9 }, 2, false, false, false)
   }
 end
 
@@ -59,13 +58,12 @@ function configure_action_handlers()
   }
 end
 
-function set_action(index, sprites, frames_per_sprite, is_movement, is_cancelable, is_recordable, is_pixel_shiftable)
+function set_action(index, sprites, frames_per_sprite, is_movement, is_recordable, is_pixel_shiftable)
   return {
     index = index,
     sprites = sprites,
     frames_per_sprite = frames_per_sprite,
     is_movement = is_movement,
-    is_cancelable = is_cancelable,
     is_recordable = is_recordable,
     is_pixel_shiftable = is_pixel_shiftable
   }

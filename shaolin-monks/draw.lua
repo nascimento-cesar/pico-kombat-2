@@ -14,8 +14,14 @@ end
 
 function set_player_sprite()
   local sprite_index
-  sprite_index = flr(player.rendering.frames_counter / player.action.current.frames_per_sprite) + 1
-  player.rendering.current_sprite = player.action.current.sprites[sprite_index]
+
+  if player.current_action.is_held and not player.current_action.action.is_movement then
+    sprite_index = #player.current_action.action.sprites
+  else
+    sprite_index = flr(player.rendering.frames_counter / player.current_action.action.frames_per_sprite) + 1
+  end
+
+  player.rendering.current_sprite = player.current_action.action.sprites[sprite_index]
 end
 
 function draw_debug()

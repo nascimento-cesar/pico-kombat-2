@@ -185,7 +185,7 @@ function spawn_enemies(enemies_matrix, hp)
     for col = 1, #enemies_matrix[row] do
       local enemy_type = enemies_matrix[row][col]
 
-      if enemy_type != nil then
+      if enemy_type ~= nil then
         local enemy = sprites.enemies[enemy_type]
         local x = 0 - tile_w * enemy.size * col
         local final_x = (128 + 4 - tile_w * enemy.size * 1.5 * #enemies_matrix[row]) / 2 + (col - 1) * tile_w * enemy.size * 1.5
@@ -253,7 +253,7 @@ function handle_enemies()
     end
 
     for enemy in all(enemies) do
-      if enemy.spawned != true then
+      if enemy.spawned ~= true then
         if enemy.spawn_delay <= 0 then
           if enemy.x < enemy.final_x then
             local x_spawn_speed = (enemy.final_x - enemy.x) / 10
@@ -286,7 +286,7 @@ function handle_enemies()
     if offensive_delay <= 0 then
       local enemy = rnd(enemies)
 
-      if enemy.attack_mode != true then
+      if enemy.attack_mode ~= true then
         enemy.attack_mode = true
         enemy.offensive_delay = 30
         offensive_delay = default_offensive_delay
@@ -321,7 +321,7 @@ function handle_enemy_attack(enemy)
     enemy.speed_x = sin(enemy.y / 25)
     enemy.speed_y = 1
   elseif enemy.type == enemy_types.spinning_ship then
-    if enemy.triggered != true then
+    if enemy.triggered ~= true then
       if enemy.y >= ship.y then
         enemy.speed_x = enemy.x >= ship.x and -1 or 1
         enemy.speed_y = 0
