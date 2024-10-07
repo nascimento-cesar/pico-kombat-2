@@ -49,19 +49,19 @@ end
 
 function configure_actions()
   return {
-    idle = set_action({ 0 }, 1, false, false),
-    backward = set_action({ 1, 2, 3, 2 }, 4, true, false),
-    forward = set_action({ 1, 2, 3, 2 }, 4, true, false),
-    jump = set_action({ 23, 24, 23 }, 4, false, false),
-    jump_backward = set_action({ 23, 24, 23 }, 4, false, false),
-    jump_forward = set_action({ 23, 24, 23 }, 4, false, false),
-    crouch = set_action({ 9, 10 }, 2, false, false),
-    stand = set_action({ 9 }, 2, false, false),
-    punch = set_action({ 4, 5, 4 }, 3, false, true),
-    kick = set_action({ 6, 7, 6 }, 3, false, true),
-    hook = set_action({ 16, 17, 18, 18, 18, 18, 18, 17 }, 2, false, true),
-    block = set_action({ 19, 20 }, 2, false, false),
-    unblock = set_action({ 19 }, 2, false, false)
+    idle = set_action({ 0 }, 1, false, false, false),
+    backward = set_action({ 1, 2, 3, 2 }, 4, true, false, false),
+    forward = set_action({ 1, 2, 3, 2 }, 4, true, false, false),
+    jump = set_action({ 0 }, 4, false, false, false),
+    jump_backward = set_action({ 0 }, 4, false, false, false),
+    jump_forward = set_action({ 0 }, 4, false, false, false),
+    crouch = set_action({ 4, 5 }, 2, false, false, true),
+    stand = set_action({ 5 }, 2, false, false, false),
+    punch = set_action({ 7, 9, 7 }, 3, false, true, false),
+    kick = set_action({ 12, 13, 12 }, 3, false, true, false),
+    hook = set_action({ 6, 7, 8, 8, 8, 8, 8, 7 }, 2, false, true, false),
+    block = set_action({ 10, 11 }, 2, false, false, true),
+    unblock = set_action({ 10 }, 2, false, false, false)
   }
 end
 
@@ -80,12 +80,13 @@ function configure_action_handlers()
   }
 end
 
-function set_action(sprites, frames_per_sprite, is_movement, is_pixel_shiftable)
+function set_action(sprites, frames_per_sprite, is_movement, is_pixel_shiftable, is_holdable)
   return {
     sprites = sprites,
     frames_per_sprite = frames_per_sprite,
     is_movement = is_movement,
-    is_pixel_shiftable = is_pixel_shiftable
+    is_pixel_shiftable = is_pixel_shiftable,
+    is_holdable = is_holdable
   }
 end
 

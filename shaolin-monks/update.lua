@@ -102,7 +102,7 @@ function setup_action(next_action, p)
   local previous_action = p.current_action.action
   local is_previous_action_finished = p.current_action.is_finished
   local should_trigger_action = false
-  local is_action_held = previous_action == next_action and is_previous_action_finished and previous_action ~= actions.idle
+  local is_action_held = previous_action == next_action and is_previous_action_finished and previous_action.is_holdable
 
   if is_previous_action_finished then
     should_trigger_action = true
