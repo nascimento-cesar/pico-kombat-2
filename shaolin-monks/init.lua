@@ -1,92 +1,77 @@
 function _init()
-  debug = {}
-  general = configure_general()
-  actions = configure_actions()
-  p1 = configure_player(general.characters.c2)
-  players = { p1 }
-  action_handlers = configure_action_handlers()
+  define_global_variables()
+  define_actions()
+  define_players()
   disable_hold_function()
 end
 
-function configure_general()
-  return {
-    characters = {
-      c1 = 0,
-      c2 = 32
-    },
-    directions = {
-      left = -1,
-      right = 1
-    },
-    pixel_shift = 2,
-    axes = {
-      x = { left_limit = 0, right_limit = 127 },
-      y = { bottom_limit = 63, top_limit = 63 - 16 }
-    }
+function define_global_variables()
+  action_states = {
+    finished = 1,
+    held = 2,
+    in_progress = 3,
+    released = 4
+  }
+  action_types = {
+    attack = 1,
+    movement = 2,
+    other = 3
+  }
+  characters = {
+    c1 = 0,
+    c2 = 32
+  }
+  debug = {}
+  directions = {
+    backward = -1,
+    forward = 1
+  }
+  p = {}
+  pixel_shift = 2
+end
+
+function define_actions()
+  actions = {
+    block = create_action(2, nil, true, false, { 10, 11 }, action_types.other),
+    crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
+    hook = create_action(3, nil, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
+    idle = create_action(1, nil, false, false, { 0 }, action_types.other),
+    jump = create_action(4, nil, false, false, { 0 }, action_types.movement),
+    kick = create_action(3, nil, false, true, { 12, 13, 12 }, action_types.attack),
+    punch = create_action(3, nil, false, true, { 7, 9, 7 }, action_types.attack),
+    walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
 
-function configure_player(character, is_npc)
+function create_action(frames_per_sprite, handler, is_holdable, is_pixel_shiftable, sprites, type)
   return {
-    action_stack = {},
-    character = character,
-    current_action = {
-      action = actions.idle,
-      is_finished = true,
-      is_held = false
-    },
-    is_npc = is_npc or false,
-    rendering = {
-      x = 8,
-      y = 63,
-      current_sprite = 0,
-      frames_counter = 0,
-      facing = general.directions.right,
-      is_pixel_shifted = false
-    }
-  }
-end
-
-function configure_actions()
-  return {
-    idle = set_action({ 0 }, 1, false, false, false),
-    backward = set_action({ 1, 2, 3, 2 }, 4, true, false, false),
-    forward = set_action({ 1, 2, 3, 2 }, 4, true, false, false),
-    jump = set_action({ 0 }, 4, false, false, false),
-    jump_backward = set_action({ 0 }, 4, false, false, false),
-    jump_forward = set_action({ 0 }, 4, false, false, false),
-    crouch = set_action({ 4, 5 }, 2, false, false, true),
-    stand = set_action({ 5 }, 2, false, false, false),
-    punch = set_action({ 7, 9, 7 }, 3, false, true, false),
-    kick = set_action({ 12, 13, 12 }, 3, false, true, false),
-    hook = set_action({ 6, 7, 8, 8, 8, 8, 8, 7 }, 2, false, true, false),
-    block = set_action({ 10, 11 }, 2, false, false, true),
-    unblock = set_action({ 10 }, 2, false, false, false)
-  }
-end
-
-function configure_action_handlers()
-  return {
-    [actions.backward] = backward,
-    [actions.forward] = forward,
-    [actions.jump] = jump,
-    [actions.jump_backward] = jump_backward,
-    [actions.jump_forward] = jump_forward,
-    [actions.crouch] = crouch,
-    [actions.punch] = punch,
-    [actions.kick] = kick,
-    [actions.hook] = hook,
-    [actions.block] = block
-  }
-end
-
-function set_action(sprites, frames_per_sprite, is_movement, is_pixel_shiftable, is_holdable)
-  return {
-    sprites = sprites,
     frames_per_sprite = frames_per_sprite,
-    is_movement = is_movement,
+    handler = handler,
     is_pixel_shiftable = is_pixel_shiftable,
-    is_holdable = is_holdable
+    is_holdable = is_holdable,
+    sprites = sprites,
+    type = type
+  }
+end
+
+function define_players()
+  p1 = create_player(characters.c1)
+  players = { p1 }
+end
+
+function create_player(character, is_npc)
+  return {
+    character = character,
+    current_action = actions.idle,
+    current_action_params = {},
+    current_action_state = action_states.in_progress,
+    current_sprite = 0,
+    facing = directions.forward,
+    frames_counter = 0,
+    is_npc = is_npc or false,
+    is_pixel_shifted = false,
+    x = 8,
+    y = 63
   }
 end
 

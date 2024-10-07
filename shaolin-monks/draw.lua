@@ -1,7 +1,7 @@
 function _draw()
   cls(2)
-  draw_players()
   draw_debug()
+  draw_players()
 end
 
 function draw_players()
@@ -9,7 +9,7 @@ function draw_players()
     pal(5, 0)
     pal(13, 5)
     set_player_sprite(p)
-    spr(p.rendering.current_sprite, p.rendering.x, p.rendering.y)
+    spr(p.current_sprite, p.x, p.y)
     pal()
   end
 end
@@ -17,13 +17,17 @@ end
 function set_player_sprite(p)
   local sprite_index
 
-  if p.current_action.is_held and not p.current_action.action.is_movement then
-    sprite_index = #p.current_action.action.sprites
+  if is_action_held(p) then
+    sprite_index = #p.current_action.sprites
   else
-    sprite_index = flr(p.rendering.frames_counter / p.current_action.action.frames_per_sprite) + 1
+    sprite_index = flr(p.frames_counter / p.current_action.frames_per_sprite) + 1
+
+    if is_action_released(p) then
+      sprite_index = #p.current_action.sprites - sprite_index + 1
+    end
   end
 
-  p.rendering.current_sprite = p.current_action.action.sprites[sprite_index] + p.character
+  p.current_sprite = p.current_action.sprites[sprite_index] + p.character
 end
 
 function draw_debug()

@@ -3,30 +3,30 @@ function _update()
     debug.s = 0
   end
 
-  for p in all(players) do
-    debug.p_frames = p.rendering.frames_counter
+  for player in all(players) do
+    p = player
 
     if not p.is_npc then
-      update_frames_counter(p)
-      update_previous_action_status(p)
-      process_inputs(p)
-      perform_current_action(p)
+      update_frames_counter()
+      update_previous_action_state()
+      process_inputs()
+      perform_current_action()
     end
   end
 end
 
-function update_frames_counter(p)
-  p.rendering.frames_counter += 1
+function update_frames_counter()
+  p.frames_counter += 1
 end
 
-function update_previous_action_status(p)
-  if is_current_action_finished(p) then
-    p.current_action.is_finished = true
-    shift_pixel(p, true)
+function update_previous_action_state()
+  if is_action_animation_finished() then
+    p.current_action_state = action_states.finished
+    shift_pixel(true)
   end
 end
 
-function process_inputs(p)
+function process_inputs()
   local button_pressed = btn() > 0
   local h🅾️❎ = btn(🅾️) and btn(❎)
   local p🅾️ = btnp(🅾️)
@@ -39,146 +39,122 @@ function process_inputs(p)
   if button_pressed then
     if h⬇️ then
       if h🅾️❎ then
-        setup_action(actions.block, p)
+        setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(actions.hook, p)
+        setup_action(actions.hook)
       else
-        setup_action(actions.crouch, p)
+        setup_action(actions.crouch)
       end
     elseif h⬆️ then
-      setup_action(actions.jump, p)
+      setup_action(actions.jump)
     elseif h⬅️ and not h➡️ then
       if h🅾️❎ then
-        setup_action(actions.block, p)
+        setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(actions.punch, p)
+        setup_action(actions.punch)
       elseif p❎ then
-        setup_action(actions.kick, p)
+        setup_action(actions.kick)
       else
-        setup_action(actions.backward, p)
+        setup_action(actions.walk, { direction = directions.backward })
       end
     elseif h➡️ and not h⬅️ then
       if h🅾️❎ then
-        setup_action(actions.block, p)
+        setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(actions.punch, p)
+        setup_action(actions.punch)
       elseif p❎ then
-        setup_action(actions.kick, p)
+        setup_action(actions.kick)
       else
-        setup_action(actions.forward, p)
+        setup_action(actions.walk, { direction = directions.forward })
       end
     elseif h🅾️❎ then
-      setup_action(actions.block, p)
+      setup_action(actions.block)
     elseif p🅾️ then
-      setup_action(actions.punch, p)
+      setup_action(actions.punch)
     elseif p❎ then
-      setup_action(actions.kick, p)
+      setup_action(actions.kick)
     else
-      handle_no_key_press(p)
+      handle_no_key_press()
     end
   else
-    handle_no_key_press(p)
+    handle_no_key_press()
   end
 end
 
-function perform_current_action(p)
-  local handler = action_handlers[p.current_action.action]
-  return handler and handler(p)
+function perform_current_action()
+  return p.current_action.handler and p.current_action.handler()
 end
 
-function handle_no_key_press(p)
-  if p.current_action.action.is_movement then
-    setup_action(actions.idle, p)
-  elseif p.current_action.action == actions.crouch and p.current_action.is_finished then
-    setup_action(actions.stand, p)
-  elseif p.current_action.action == actions.block and p.current_action.is_finished then
-    setup_action(actions.unblock, p)
-  elseif p.current_action.is_finished then
-    setup_action(actions.idle, p)
+function handle_no_key_press()
+  if p.current_action.type == action_types.movement then
+    setup_action(actions.idle)
+  elseif p.current_action.is_holdable and is_action_held() then
+    setup_action(p.current_action, { is_released = true })
+  elseif is_action_finished() then
+    setup_action(actions.idle)
   end
 end
 
-function setup_action(next_action, p)
-  local previous_action = p.current_action.action
-  local is_previous_action_finished = p.current_action.is_finished
+function setup_action(next_action, params)
   local should_trigger_action = false
-  local is_action_held = previous_action == next_action and is_previous_action_finished and previous_action.is_holdable
+  local next_action_state = action_states.in_progress
+  params = params or {}
 
-  if is_previous_action_finished then
+  if p.current_action == next_action then
+    if is_action_finished() and p.current_action.is_holdable then
+      next_action_state = action_states.held
+    elseif is_action_held() and params.is_released then
+      next_action_state = action_states.released
+    end
+  end
+
+  if is_action_finished() then
     should_trigger_action = true
-  elseif previous_action ~= next_action then
-    if previous_action.is_movement then
+  elseif next_action_state == action_states.released then
+    should_trigger_action = true
+  elseif p.current_action ~= next_action then
+    if p.current_action.type == action_types.movement then
       should_trigger_action = true
-    elseif previous_action == actions.crouch and not next_action.is_movement then
+    elseif is_action_held() and next_action.type == action_types.attack then
       should_trigger_action = true
-    elseif previous_action == actions.block and not next_action.is_movement then
+    end
+  elseif p.current_action == next_action then
+    if p.current_action.type == action_types.movement and p.current_action_params.direction ~= params.direction then
       should_trigger_action = true
     end
   end
 
   if should_trigger_action then
-    p.current_action.action = next_action
-    p.current_action.is_finished = false
-    p.current_action.is_held = is_action_held
-    p.rendering.frames_counter = 0
-    shift_pixel(p, not next_action.is_pixel_shiftable)
+    p.current_action = next_action
+    p.current_action_state = next_action_state
+    p.current_action_params = params or {}
+    p.frames_counter = 0
+    shift_pixel(not next_action.is_pixel_shiftable)
   end
 end
 
-function is_current_action_finished(p)
-  return p.rendering.frames_counter > p.current_action.action.frames_per_sprite * #p.current_action.action.sprites - 1
-end
-
-function shift_pixel(p, unshift)
+function shift_pixel(unshift)
   if unshift then
-    if p.rendering.is_pixel_shifted then
-      move_x(p, -general.pixel_shift)
-      p.rendering.is_pixel_shifted = false
+    if p.is_pixel_shifted then
+      move_x(-pixel_shift)
+      p.is_pixel_shifted = false
     end
   else
-    if p.rendering.is_pixel_shifted == false then
-      move_x(p, general.pixel_shift)
-      p.rendering.is_pixel_shifted = true
+    if p.is_pixel_shifted == false then
+      move_x(pixel_shift)
+      p.is_pixel_shifted = true
     end
   end
 end
 
-function backward(p)
-  move_x(p, -0.5)
+function walk()
+  move_x(0.5 * p.current_action_params.direction)
 end
 
-function forward(p)
-  move_x(p, 0.5)
+function move_x(x)
+  p.x += x * p.facing
 end
 
-function jump(p)
-end
-
-function jump_backward(p)
-end
-
-function jump_forward(p)
-end
-
-function crouch(p)
-end
-
-function punch(p)
-end
-
-function kick(p)
-end
-
-function hook(p)
-end
-
-function block(p)
-end
-
-function move_x(p, x)
-  p.rendering.x += x * p.rendering.facing
-end
-
-function move_y(p, y)
-  p.rendering.y += y
+function move_y(y)
+  p.y += y
 end
