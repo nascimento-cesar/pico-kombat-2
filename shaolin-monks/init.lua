@@ -26,8 +26,11 @@ function define_global_variables()
     backward = -1,
     forward = 1
   }
+  jump_speed = 1
   p = {}
   pixel_shift = 2
+  y_bottom_limit = 63
+  y_upper_limit = 63 - 16
 end
 
 function define_actions()
@@ -36,7 +39,7 @@ function define_actions()
     crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
     hook = create_action(3, nil, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
     idle = create_action(1, nil, false, false, { 0 }, action_types.other),
-    jump = create_action(4, nil, false, false, { 0 }, action_types.movement),
+    jump = create_action(4, nil, false, false, { 0 }, action_types.other),
     kick = create_action(3, nil, false, true, { 12, 13, 12 }, action_types.attack),
     punch = create_action(3, nil, false, true, { 7, 9, 7 }, action_types.attack),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)

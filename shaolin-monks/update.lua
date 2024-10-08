@@ -8,9 +8,10 @@ function _update()
 
     if not p.is_npc then
       update_frames_counter()
-      update_previous_action_state()
+      update_previous_action()
       process_inputs()
       perform_current_action()
+      perform_jumping()
     end
   end
 end
@@ -19,10 +20,14 @@ function update_frames_counter()
   p.frames_counter += 1
 end
 
-function update_previous_action_state()
+function update_previous_action()
   if is_action_animation_finished() then
-    p.current_action_state = action_states.finished
-    shift_pixel(true)
+    if p.current_action == actions.jump and not p.current_action_params.has_landed then
+      p.frames_counter = 0
+    else
+      p.current_action_state = action_states.finished
+      shift_pixel(true)
+    end
   end
 end
 
@@ -46,7 +51,13 @@ function process_inputs()
         setup_action(actions.crouch)
       end
     elseif h⬆️ then
-      setup_action(actions.jump)
+      if h⬅️ then
+        setup_action(actions.jump, { direction = directions.backward })
+      elseif h➡️ then
+        setup_action(actions.jump, { direction = directions.forward })
+      else
+        setup_action(actions.jump)
+      end
     elseif h⬅️ and not h➡️ then
       if h🅾️❎ then
         setup_action(actions.block)
@@ -85,8 +96,28 @@ function perform_current_action()
   return p.current_action.handler and p.current_action.handler()
 end
 
+function perform_jumping()
+  if p.current_action == actions.jump then
+    if p.current_action_params.is_landing then
+      move_y(jump_speed)
+      move_x(jump_speed * (p.current_action_params.direction or 0))
+
+      if p.y >= y_bottom_limit then
+        p.current_action_params.has_landed = true
+      end
+    else
+      move_y(-jump_speed)
+      move_x(jump_speed * (p.current_action_params.direction or 0))
+
+      if p.y <= y_upper_limit then
+        p.current_action_params.is_landing = true
+      end
+    end
+  end
+end
+
 function handle_no_key_press()
-  if p.current_action.type == action_types.movement then
+  if p.current_action == actions.walk then
     setup_action(actions.idle)
   elseif p.current_action.is_holdable and is_action_held() then
     setup_action(p.current_action, { is_released = true })
@@ -99,7 +130,6 @@ function setup_action(next_action, params)
   local should_trigger_action = false
   local next_action_state = action_states.in_progress
   params = params or {}
-
   if p.current_action == next_action then
     if is_action_finished() and p.current_action.is_holdable then
       next_action_state = action_states.held
