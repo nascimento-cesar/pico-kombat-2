@@ -2,6 +2,7 @@ function _update()
   if debug.s == nil then
     debug.s = 0
   end
+  debug.stack = p.action_stack
   debug.x = p.x
   debug.y = p.y
 
@@ -25,12 +26,11 @@ end
 function update_previous_action()
   if is_action_animation_finished() then
     if is_aerial() and not p.current_action_params.has_landed then
-      p.frames_counter = 0
+      restart_action()
     elseif is_aerial_attacking() and not p.current_action_params.has_landed then
-      p.current_action_state = action_states.held
+      hold_action()
     else
-      p.current_action_state = action_states.finished
-      shift_pixel(true)
+      finish_action()
     end
   end
 end
@@ -84,9 +84,9 @@ function process_inputs()
       if h🅾️❎ then
         setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(actions.punch)
+        setup_action(is_aerial() and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_action(actions.kick)
+        setup_action(is_aerial() and actions.flying_kick or actions.kick)
       else
         setup_action(actions.walk, { direction = directions.backward })
       end
@@ -94,26 +94,18 @@ function process_inputs()
       if h🅾️❎ then
         setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(actions.punch)
+        setup_action(is_aerial() and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_action(actions.kick)
+        setup_action(is_aerial() and actions.flying_kick or actions.kick)
       else
         setup_action(actions.walk, { direction = directions.forward })
       end
     elseif h🅾️❎ then
       setup_action(actions.block)
     elseif p🅾️ then
-      if is_aerial() then
-        setup_action(actions.flying_punch)
-      else
-        setup_action(actions.punch)
-      end
+      setup_action(is_aerial() and actions.flying_punch or actions.punch)
     elseif p❎ then
-      if is_aerial() then
-        setup_action(actions.flying_kick)
-      else
-        setup_action(actions.kick)
-      end
+      setup_action(is_aerial() and actions.flying_kick or actions.kick)
     else
       handle_no_key_press()
     end
@@ -164,50 +156,100 @@ function handle_no_key_press()
 end
 
 function setup_action(next_action, params)
-  local should_trigger_action = false
-  local next_action_state = action_states.in_progress
   params = params or {}
-
-  if p.current_action == next_action then
-    if is_action_finished() and p.current_action.is_holdable then
-      next_action_state = action_states.held
-    elseif is_action_held() and params.is_released then
-      next_action_state = action_states.released
-    end
-  end
 
   if is_aerial() and next_action.type == action_types.aerial_attack then
     params = p.current_action_params
   end
 
   if is_action_finished() then
-    should_trigger_action = true
+    if p.current_action == next_action then
+      if p.current_action.is_holdable then
+        hold_action()
+      elseif is_moving() then
+        restart_action()
+      else
+        start_action(next_action, params)
+      end
+    else
+      start_action(next_action, params)
+    end
   elseif p.current_action == next_action then
-    if is_moving() and p.current_action_params.direction ~= params.direction then
-      should_trigger_action = true
+    if is_action_held() and params.is_released then
+      release_action()
+    elseif is_moving() and p.current_action_params.direction ~= params.direction then
+      start_action(next_action, params)
     end
   elseif p.current_action ~= next_action then
     if is_aerial() then
       if next_action.type == action_types.aerial_attack or next_action == actions.idle then
-        should_trigger_action = true
+        start_action(next_action, params)
       end
     elseif is_moving() then
-      should_trigger_action = true
+      start_action(next_action, params)
     elseif is_action_held() then
       if not is_aerial_attacking() and next_action.type == action_types.attack then
-        should_trigger_action = true
+        start_action(next_action, params)
       end
     end
-  elseif next_action_state == action_states.released then
-    should_trigger_action = true
+  end
+end
+
+function start_action(action, params)
+  record_action(action, params)
+  p.current_action = action
+  p.current_action_state = action_states.in_progress
+  p.current_action_params = params
+  p.frames_counter = 0
+  shift_pixel(not action.is_pixel_shiftable)
+end
+
+function hold_action()
+  p.current_action_state = action_states.held
+  p.frames_counter = 0
+end
+
+function release_action()
+  p.current_action_state = action_states.released
+  p.current_action_params = { is_released = true }
+  p.frames_counter = 0
+end
+
+function finish_action()
+  p.current_action_state = action_states.finished
+  shift_pixel(true)
+end
+
+function restart_action()
+  p.current_action_state = action_states.in_progress
+  p.frames_counter = 0
+end
+
+function record_action(action, params)
+  local recordable_action
+
+  if action == actions.block then
+    recordable_action = recordable_actions.block
+  elseif action == actions.crouch then
+    recordable_action = recordable_actions.down
+  elseif action == actions.hook then
+    recordable_action = recordable_actions.punch
+  elseif action == actions.jump then
+    recordable_action = recordable_actions.up
+  elseif action == actions.kick then
+    recordable_action = recordable_actions.kick
+  elseif action == actions.punch then
+    recordable_action = recordable_actions.punch
+  elseif action == actions.walk then
+    recordable_action = params.direction == directions.forward and recordable_actions.forward or recordable_actions.backward
   end
 
-  if should_trigger_action then
-    p.current_action = next_action
-    p.current_action_state = next_action_state
-    p.current_action_params = params or {}
-    p.frames_counter = 0
-    shift_pixel(not next_action.is_pixel_shiftable)
+  if recordable_action then
+    add(p.action_stack, recordable_action)
+
+    if #p.action_stack > 10 then
+      deli(p.action_stack, 1)
+    end
   end
 end
 

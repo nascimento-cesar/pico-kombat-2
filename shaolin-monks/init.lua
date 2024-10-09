@@ -31,6 +31,15 @@ function define_global_variables()
   jump_speed = 2
   p = {}
   pixel_shift = 2
+  recordable_actions = {
+    backward = 1,
+    block = 2,
+    down = 3,
+    forward = 4,
+    kick = 5,
+    punch = 6,
+    up = 7
+  }
   y_bottom_limit = 127 - 16
   y_upper_limit = 127 - 16 - 20
 end
@@ -68,6 +77,7 @@ end
 
 function create_player(character, is_npc)
   return {
+    action_stack = {},
     character = character,
     current_action = actions.idle,
     current_action_params = {},

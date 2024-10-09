@@ -46,8 +46,24 @@ end
 
 function draw_debug()
   local i = 1
+
   for k, v in pairs(debug) do
-    print(k .. ": " .. v, 0, (i - 1) * 10)
+    local s = ""
+
+    if type(v) == "table" then
+      for v2 in all(v) do
+        if s ~= "" then
+          s = s and s .. ", " .. v2 or v2
+        else
+          s = v2
+        end
+      end
+    else
+      s = v
+    end
+
+    print(k .. ": " .. s, 0, (i - 1) * 10)
+
     i += 1
   end
 end
