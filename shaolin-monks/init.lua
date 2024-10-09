@@ -31,18 +31,19 @@ function define_global_variables()
   jump_speed = 2
   p = {}
   pixel_shift = 2
-  y_bottom_limit = 63
-  y_upper_limit = 63 - 20
+  y_bottom_limit = 127 - 16
+  y_upper_limit = 127 - 16 - 20
 end
 
 function define_actions()
   actions = {
     block = create_action(2, nil, true, false, { 10, 11 }, action_types.other),
     crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
-    flying_kick = create_action(3, nil, false, true, { 12, 14 }, action_types.aerial_attack),
+    flying_kick = create_action(3, nil, false, true, { 14 }, action_types.aerial_attack),
+    flying_punch = create_action(3, nil, false, true, { 15 }, action_types.aerial_attack),
     hook = create_action(3, nil, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
     idle = create_action(1, nil, false, false, { 0 }, action_types.other),
-    jump = create_action(3, nil, false, false, { 16, 17, { 16, true, true }, { 17, true, true } }, action_types.aerial),
+    jump = create_action(2, nil, false, false, { 16, 17, { 16, true, true }, { 17, true, true } }, action_types.aerial),
     kick = create_action(4, nil, false, true, { 12, 13, 12 }, action_types.attack),
     punch = create_action(3, nil, false, true, { 7, 9, 7 }, action_types.attack),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
@@ -77,7 +78,7 @@ function create_player(character, is_npc)
     is_pixel_shifted = false,
     jump_acceleration = 0,
     x = 8,
-    y = 63
+    y = y_bottom_limit
   }
 end
 

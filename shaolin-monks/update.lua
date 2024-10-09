@@ -58,19 +58,25 @@ function process_inputs()
       if h⬅️ then
         setup_action(actions.jump, { direction = directions.backward })
 
-        if p❎ then
+        if p🅾️ then
+          setup_action(actions.flying_punch)
+        elseif p❎ then
           setup_action(actions.flying_kick)
         end
       elseif h➡️ then
         setup_action(actions.jump, { direction = directions.forward })
 
-        if p❎ then
+        if p🅾️ then
+          setup_action(actions.flying_punch)
+        elseif p❎ then
           setup_action(actions.flying_kick)
         end
       else
         setup_action(actions.jump)
 
-        if p❎ then
+        if p🅾️ then
+          setup_action(actions.flying_punch)
+        elseif p❎ then
           setup_action(actions.flying_kick)
         end
       end
@@ -97,7 +103,11 @@ function process_inputs()
     elseif h🅾️❎ then
       setup_action(actions.block)
     elseif p🅾️ then
-      setup_action(actions.punch)
+      if is_aerial() then
+        setup_action(actions.flying_punch)
+      else
+        setup_action(actions.punch)
+      end
     elseif p❎ then
       if is_aerial() then
         setup_action(actions.flying_kick)
@@ -118,7 +128,7 @@ end
 
 function perform_jumping()
   if is_aerial() or is_aerial_attacking() then
-    local x_speed = jump_speed * (p.current_action_params.direction or 0)
+    local x_speed = jump_speed * (p.current_action_params.direction or 0) / 2
     local y_speed = jump_speed
 
     if p.current_action_params.is_landing then
