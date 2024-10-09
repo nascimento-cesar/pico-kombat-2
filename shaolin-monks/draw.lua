@@ -40,7 +40,7 @@ function draw_player(p)
 
   pal(5, 0)
   pal(13, 5)
-  spr(id + p.character, p.x, p.y, 1, 1, flip_x, flip_y)
+  spr(id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_x, flip_y)
   pal()
 end
 

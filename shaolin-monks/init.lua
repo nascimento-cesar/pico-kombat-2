@@ -10,18 +10,24 @@ function define_global_variables()
     finished = 1,
     held = 2,
     in_progress = 3,
-    released = 4
+    released = 4,
+    special_move = 5
   }
   action_types = {
     aerial = 1,
     aerial_attack = 2,
     attack = 3,
     movement = 4,
-    other = 5
+    other = 5,
+    special_attack = 6
   }
   characters = {
-    c1 = 0,
-    c2 = 32
+    c1 = {
+      sprite_offset = 0,
+      special_moves = {
+        projectile = "➡️➡️🅾️"
+      }
+    }
   }
   debug = {}
   directions = {
@@ -31,15 +37,6 @@ function define_global_variables()
   jump_speed = 2
   p = {}
   pixel_shift = 2
-  recordable_actions = {
-    backward = 1,
-    block = 2,
-    down = 3,
-    forward = 4,
-    kick = 5,
-    punch = 6,
-    up = 7
-  }
   y_bottom_limit = 127 - 16
   y_upper_limit = 127 - 16 - 20
 end
@@ -55,6 +52,7 @@ function define_actions()
     jump = create_action(2, nil, false, false, { 16, 17, { 16, true, true }, { 17, true, true } }, action_types.aerial),
     kick = create_action(4, nil, false, true, { 12, 13, 12 }, action_types.attack),
     punch = create_action(3, nil, false, true, { 7, 9, 7 }, action_types.attack),
+    projectile = create_action(4, nil, false, true, { 18, 19 }, action_types.special_attack),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
@@ -77,7 +75,7 @@ end
 
 function create_player(character, is_npc)
   return {
-    action_stack = {},
+    action_stack = "",
     character = character,
     current_action = actions.idle,
     current_action_params = {},

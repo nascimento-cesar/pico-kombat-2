@@ -29,6 +29,8 @@ function update_previous_action()
       restart_action()
     elseif is_aerial_attacking() and not p.current_action_params.has_landed then
       hold_action()
+    elseif is_special_attacking() then
+      hold_action()
     else
       finish_action()
     end
@@ -188,15 +190,26 @@ function setup_action(next_action, params)
     elseif is_moving() then
       start_action(next_action, params)
     elseif is_action_held() then
-      if not is_aerial_attacking() and next_action.type == action_types.attack then
+      if not is_aerial_attacking() and not is_special_attacking() and next_action.type == action_types.attack then
         start_action(next_action, params)
       end
     end
   end
 end
 
-function start_action(action, params)
-  record_action(action, params)
+function start_action(action, params, skip_record)
+  if not skip_record then
+    record_action(action, params)
+
+    for k, special_move in pairs(p.character.special_moves) do
+      local sequence = sub(p.action_stack, #p.action_stack - #special_move + 1, #p.action_stack)
+
+      if sequence == special_move then
+        return start_action(actions[k], {}, true)
+      end
+    end
+  end
+
   p.current_action = action
   p.current_action_state = action_states.in_progress
   p.current_action_params = params
@@ -226,29 +239,27 @@ function restart_action()
 end
 
 function record_action(action, params)
-  local recordable_action
+  local key
 
-  if action == actions.block then
-    recordable_action = recordable_actions.block
-  elseif action == actions.crouch then
-    recordable_action = recordable_actions.down
+  if action == actions.crouch then
+    key = "⬇️"
   elseif action == actions.hook then
-    recordable_action = recordable_actions.punch
+    key = "🅾️"
   elseif action == actions.jump then
-    recordable_action = recordable_actions.up
+    key = "⬆️"
   elseif action == actions.kick then
-    recordable_action = recordable_actions.kick
+    key = "❎"
   elseif action == actions.punch then
-    recordable_action = recordable_actions.punch
+    key = "🅾️"
   elseif action == actions.walk then
-    recordable_action = params.direction == directions.forward and recordable_actions.forward or recordable_actions.backward
+    key = params.direction == directions.forward and "➡️" or "⬅️"
   end
 
-  if recordable_action then
-    add(p.action_stack, recordable_action)
+  if key then
+    p.action_stack = p.action_stack .. key
 
     if #p.action_stack > 10 then
-      deli(p.action_stack, 1)
+      p.action_stack = sub(p.action_stack, 2, 11)
     end
   end
 end

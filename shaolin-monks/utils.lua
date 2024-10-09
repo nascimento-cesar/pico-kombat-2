@@ -25,3 +25,7 @@ end
 function is_moving()
   return p.current_action.type == action_types.movement
 end
+
+function is_special_attacking()
+  return p.current_action.type == action_types.special_attack
+end
