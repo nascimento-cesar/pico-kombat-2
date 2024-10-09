@@ -37,6 +37,8 @@ function define_global_variables()
   jump_speed = 2
   p = {}
   pixel_shift = 2
+  sprite_h = 8
+  sprite_w = 8
   y_bottom_limit = 127 - 16
   y_upper_limit = 127 - 16 - 20
 end

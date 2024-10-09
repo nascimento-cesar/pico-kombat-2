@@ -22,6 +22,14 @@ function is_aerial()
   return p.current_action.type == action_types.aerial
 end
 
+function is_limit_left()
+  return p.x <= 0
+end
+
+function is_limit_right()
+  return p.x + sprite_w >= 127
+end
+
 function is_moving()
   return p.current_action.type == action_types.movement
 end

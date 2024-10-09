@@ -271,7 +271,7 @@ function shift_pixel(unshift)
       p.is_pixel_shifted = false
     end
   else
-    if p.is_pixel_shifted == false then
+    if not p.is_pixel_shifted and not is_limit_right() then
       move_x(pixel_shift)
       p.is_pixel_shifted = true
     end
@@ -284,6 +284,12 @@ end
 
 function move_x(x)
   p.x += x * p.facing
+
+  if is_limit_left() then
+    p.x = 0
+  elseif is_limit_right() then
+    p.x = 127 - sprite_w
+  end
 end
 
 function move_y(y)
