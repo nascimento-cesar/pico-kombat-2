@@ -2,7 +2,6 @@ function _update()
   if debug.s == nil then
     debug.s = 0
   end
-  debug.stack = p.action_stack
   debug.x = p.x
   debug.y = p.y
 
@@ -15,6 +14,7 @@ function _update()
       process_inputs()
       perform_current_action()
       perform_jumping()
+      update_projectile()
     end
   end
 end
@@ -147,6 +147,18 @@ function perform_jumping()
   end
 end
 
+function update_projectile()
+  if p.projectile then
+    p.projectile.x += projectile_speed
+    p.projectile.frames_counter += 1
+
+    if is_limit_right(p.projectile) then
+      p.projectile = nil
+      start_action(actions.idle)
+    end
+  end
+end
+
 function handle_no_key_press()
   if p.current_action == actions.walk then
     setup_action(actions.idle)
@@ -197,16 +209,16 @@ function setup_action(next_action, params)
   end
 end
 
-function start_action(action, params, skip_record)
-  if not skip_record then
-    record_action(action, params)
+function start_action(action, params)
+  record_action(action, params)
 
-    for k, special_move in pairs(p.character.special_moves) do
-      local sequence = sub(p.action_stack, #p.action_stack - #special_move + 1, #p.action_stack)
+  for _, special_attack in pairs(p.character.special_attacks) do
+    local current_sequence = sub(p.action_stack, #p.action_stack - #special_attack.sequence + 1, #p.action_stack)
 
-      if sequence == special_move then
-        return start_action(actions[k], {}, true)
-      end
+    if current_sequence == special_attack.sequence then
+      p.action_stack = ""
+
+      return start_action(special_attack.action, {}, true)
     end
   end
 
@@ -271,10 +283,20 @@ function shift_pixel(unshift)
       p.is_pixel_shifted = false
     end
   else
-    if not p.is_pixel_shifted and not is_limit_right() then
+    if not p.is_pixel_shifted and not is_limit_right(p) then
       move_x(pixel_shift)
       p.is_pixel_shifted = true
     end
+  end
+end
+
+function fire_projectile()
+  if not p.projectile then
+    p.projectile = {
+      frames_counter = 0,
+      x = p.x + sprite_w,
+      y = p.y
+    }
   end
 end
 
@@ -285,9 +307,9 @@ end
 function move_x(x)
   p.x += x * p.facing
 
-  if is_limit_left() then
+  if is_limit_left(p) then
     p.x = 0
-  elseif is_limit_right() then
+  elseif is_limit_right(p) then
     p.x = 127 - sprite_w
   end
 end

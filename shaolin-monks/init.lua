@@ -1,6 +1,7 @@
 function _init()
   define_global_variables()
-  define_actions()
+  define_global_actions()
+  define_characters()
   define_players()
   disable_hold_function()
 end
@@ -10,8 +11,7 @@ function define_global_variables()
     finished = 1,
     held = 2,
     in_progress = 3,
-    released = 4,
-    special_move = 5
+    released = 4
   }
   action_types = {
     aerial = 1,
@@ -21,14 +21,6 @@ function define_global_variables()
     other = 5,
     special_attack = 6
   }
-  characters = {
-    c1 = {
-      sprite_offset = 0,
-      special_moves = {
-        projectile = "➡️➡️🅾️"
-      }
-    }
-  }
   debug = {}
   directions = {
     backward = -1,
@@ -37,13 +29,29 @@ function define_global_variables()
   jump_speed = 2
   p = {}
   pixel_shift = 2
+  projectile_speed = 3
   sprite_h = 8
   sprite_w = 8
   y_bottom_limit = 127 - 16
   y_upper_limit = 127 - 16 - 20
 end
 
-function define_actions()
+function define_characters()
+  characters = {
+    c1 = {
+      projectile = {
+        sprites = { 48, 49, 50, 51, 50, 49 },
+        frames_per_sprite = 2
+      },
+      sprite_offset = 0,
+      special_attacks = {
+        fireball = create_special_attack("➡️➡️🅾️", { 18, 19 }, fire_projectile)
+      }
+    }
+  }
+end
+
+function define_global_actions()
   actions = {
     block = create_action(2, nil, true, false, { 10, 11 }, action_types.other),
     crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
@@ -54,7 +62,6 @@ function define_actions()
     jump = create_action(2, nil, false, false, { 16, 17, { 16, true, true }, { 17, true, true } }, action_types.aerial),
     kick = create_action(4, nil, false, true, { 12, 13, 12 }, action_types.attack),
     punch = create_action(3, nil, false, true, { 7, 9, 7 }, action_types.attack),
-    projectile = create_action(4, nil, false, true, { 18, 19 }, action_types.special_attack),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
@@ -70,6 +77,13 @@ function create_action(frames_per_sprite, handler, is_holdable, is_pixel_shiftab
   }
 end
 
+function create_special_attack(sequence, sprites, handler)
+  return {
+    action = create_action(4, handler, false, false, sprites, action_types.special_attack),
+    sequence = sequence
+  }
+end
+
 function define_players()
   p1 = create_player(characters.c1)
   players = { p1 }
@@ -82,6 +96,7 @@ function create_player(character, is_npc)
     current_action = actions.idle,
     current_action_params = {},
     current_action_state = action_states.in_progress,
+    current_projectile = nil,
     facing = directions.forward,
     frames_counter = 0,
     is_npc = is_npc or false,

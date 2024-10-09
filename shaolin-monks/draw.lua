@@ -1,12 +1,13 @@
 function _draw()
   cls(1)
   draw_debug()
-  draw_players()
-end
 
-function draw_players()
   for p in all(players) do
     draw_player(p)
+
+    if p.projectile then
+      draw_projectile(p)
+    end
   end
 end
 
@@ -42,6 +43,20 @@ function draw_player(p)
   pal(13, 5)
   spr(id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_x, flip_y)
   pal()
+end
+
+function draw_projectile(p)
+  local index
+  local sprites = p.character.projectile.sprites
+
+  index = flr(p.projectile.frames_counter / p.character.projectile.frames_per_sprite) + 1
+
+  if index > #sprites then
+    index = 1
+    p.projectile.frames_counter = 0
+  end
+
+  spr(sprites[index], p.projectile.x, p.projectile.y)
 end
 
 function draw_debug()
