@@ -24,8 +24,10 @@ end
 
 function update_previous_action()
   if is_action_animation_finished() then
-    if p.current_action == actions.jump and not p.current_action_params.has_landed then
+    if is_aerial() and not p.current_action_params.has_landed then
       p.frames_counter = 0
+    elseif is_aerial_attacking() and not p.current_action_params.has_landed then
+      p.current_action_state = action_states.held
     else
       p.current_action_state = action_states.finished
       shift_pixel(true)
@@ -55,10 +57,22 @@ function process_inputs()
     elseif h⬆️ and not h🅾️❎ then
       if h⬅️ then
         setup_action(actions.jump, { direction = directions.backward })
+
+        if p❎ then
+          setup_action(actions.flying_kick)
+        end
       elseif h➡️ then
         setup_action(actions.jump, { direction = directions.forward })
+
+        if p❎ then
+          setup_action(actions.flying_kick)
+        end
       else
         setup_action(actions.jump)
+
+        if p❎ then
+          setup_action(actions.flying_kick)
+        end
       end
     elseif h⬅️ and not h➡️ then
       if h🅾️❎ then
@@ -85,7 +99,11 @@ function process_inputs()
     elseif p🅾️ then
       setup_action(actions.punch)
     elseif p❎ then
-      setup_action(actions.kick)
+      if is_aerial() then
+        setup_action(actions.flying_kick)
+      else
+        setup_action(actions.kick)
+      end
     else
       handle_no_key_press()
     end
@@ -99,7 +117,7 @@ function perform_current_action()
 end
 
 function perform_jumping()
-  if p.current_action == actions.jump then
+  if is_aerial() or is_aerial_attacking() then
     local x_speed = jump_speed * (p.current_action_params.direction or 0)
     local y_speed = jump_speed
 
@@ -148,21 +166,27 @@ function setup_action(next_action, params)
     end
   end
 
+  if is_aerial() and next_action.type == action_types.aerial_attack then
+    params = p.current_action_params
+  end
+
   if is_action_finished() then
     should_trigger_action = true
   elseif p.current_action == next_action then
-    if p.current_action.type == action_types.movement and p.current_action_params.direction ~= params.direction then
+    if is_moving() and p.current_action_params.direction ~= params.direction then
       should_trigger_action = true
     end
   elseif p.current_action ~= next_action then
-    if p.current_action.type == action_types.aerial then
-      if next_action.type == action_types.attack or next_action == actions.idle then
+    if is_aerial() then
+      if next_action.type == action_types.aerial_attack or next_action == actions.idle then
         should_trigger_action = true
       end
-    elseif p.current_action.type == action_types.movement then
+    elseif is_moving() then
       should_trigger_action = true
-    elseif is_action_held() and next_action.type == action_types.attack then
-      should_trigger_action = true
+    elseif is_action_held() then
+      if not is_aerial_attacking() and next_action.type == action_types.attack then
+        should_trigger_action = true
+      end
     end
   elseif next_action_state == action_states.released then
     should_trigger_action = true

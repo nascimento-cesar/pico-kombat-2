@@ -1,5 +1,5 @@
 function _draw()
-  cls(2)
+  cls(1)
   draw_debug()
   draw_players()
 end
