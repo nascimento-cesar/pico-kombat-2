@@ -2,6 +2,8 @@ function _update()
   if debug.s == nil then
     debug.s = 0
   end
+  debug.x = p.x
+  debug.y = p.y
 
   for player in all(players) do
     p = player
@@ -50,7 +52,7 @@ function process_inputs()
       else
         setup_action(actions.crouch)
       end
-    elseif h⬆️ then
+    elseif h⬆️ and not h🅾️❎ then
       if h⬅️ then
         setup_action(actions.jump, { direction = directions.backward })
       elseif h➡️ then
@@ -98,19 +100,26 @@ end
 
 function perform_jumping()
   if p.current_action == actions.jump then
+    local x_speed = jump_speed * (p.current_action_params.direction or 0)
+    local y_speed = jump_speed
+
     if p.current_action_params.is_landing then
-      move_y(jump_speed)
-      move_x(jump_speed * (p.current_action_params.direction or 0))
+      move_y(y_speed)
+      move_x(x_speed)
 
       if p.y >= y_bottom_limit then
         p.current_action_params.has_landed = true
+        p.current_action_params.is_landing = false
+        setup_action(actions.idle)
       end
     else
-      move_y(-jump_speed)
-      move_x(jump_speed * (p.current_action_params.direction or 0))
+      if not p.current_action_params.has_landed then
+        move_y(-y_speed)
+        move_x(x_speed)
 
-      if p.y <= y_upper_limit then
-        p.current_action_params.is_landing = true
+        if p.y <= y_upper_limit then
+          p.current_action_params.is_landing = true
+        end
       end
     end
   end
@@ -130,6 +139,7 @@ function setup_action(next_action, params)
   local should_trigger_action = false
   local next_action_state = action_states.in_progress
   params = params or {}
+
   if p.current_action == next_action then
     if is_action_finished() and p.current_action.is_holdable then
       next_action_state = action_states.held
@@ -140,18 +150,22 @@ function setup_action(next_action, params)
 
   if is_action_finished() then
     should_trigger_action = true
-  elseif next_action_state == action_states.released then
-    should_trigger_action = true
-  elseif p.current_action ~= next_action then
-    if p.current_action.type == action_types.movement then
-      should_trigger_action = true
-    elseif is_action_held() and next_action.type == action_types.attack then
-      should_trigger_action = true
-    end
   elseif p.current_action == next_action then
     if p.current_action.type == action_types.movement and p.current_action_params.direction ~= params.direction then
       should_trigger_action = true
     end
+  elseif p.current_action ~= next_action then
+    if p.current_action.type == action_types.aerial then
+      if next_action.type == action_types.attack or next_action == actions.idle then
+        should_trigger_action = true
+      end
+    elseif p.current_action.type == action_types.movement then
+      should_trigger_action = true
+    elseif is_action_held() and next_action.type == action_types.attack then
+      should_trigger_action = true
+    end
+  elseif next_action_state == action_states.released then
+    should_trigger_action = true
   end
 
   if should_trigger_action then

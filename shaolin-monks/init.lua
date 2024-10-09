@@ -13,9 +13,10 @@ function define_global_variables()
     released = 4
   }
   action_types = {
-    attack = 1,
-    movement = 2,
-    other = 3
+    aerial = 1,
+    attack = 2,
+    movement = 3,
+    other = 4
   }
   characters = {
     c1 = 0,
@@ -26,11 +27,11 @@ function define_global_variables()
     backward = -1,
     forward = 1
   }
-  jump_speed = 1
+  jump_speed = 2
   p = {}
   pixel_shift = 2
   y_bottom_limit = 63
-  y_upper_limit = 63 - 16
+  y_upper_limit = 63 - 20
 end
 
 function define_actions()
@@ -39,8 +40,8 @@ function define_actions()
     crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
     hook = create_action(3, nil, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
     idle = create_action(1, nil, false, false, { 0 }, action_types.other),
-    jump = create_action(4, nil, false, false, { 0 }, action_types.other),
-    kick = create_action(3, nil, false, true, { 12, 13, 12 }, action_types.attack),
+    jump = create_action(2, nil, false, false, { 4, 21, { 4, true, true }, { 21, true, true } }, action_types.aerial),
+    kick = create_action(4, nil, false, true, { 12, 13, 12 }, action_types.attack),
     punch = create_action(3, nil, false, true, { 7, 9, 7 }, action_types.attack),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
@@ -68,11 +69,11 @@ function create_player(character, is_npc)
     current_action = actions.idle,
     current_action_params = {},
     current_action_state = action_states.in_progress,
-    current_sprite = 0,
     facing = directions.forward,
     frames_counter = 0,
     is_npc = is_npc or false,
     is_pixel_shifted = false,
+    jump_acceleration = 0,
     x = 8,
     y = 63
   }
