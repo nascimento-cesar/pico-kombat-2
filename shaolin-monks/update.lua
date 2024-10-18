@@ -2,8 +2,14 @@ function _update()
   if debug.s == nil then
     debug.s = 0
   end
-  debug.x = p.x
-  debug.y = p.y
+  debug.x = p1.x
+  debug.y = p1.y
+
+  if has_collision(p1, p2) then
+    debug.hit = "true"
+  else
+    debug.hit = "false"
+  end
 
   for player in all(players) do
     p = player
@@ -222,7 +228,7 @@ function start_action(action, params)
     if current_sequence == special_attack.sequence then
       p.action_stack = ""
 
-      return start_action(special_attack.action, {}, true)
+      return start_action(special_attack.action, {})
     end
   end
 
@@ -252,6 +258,16 @@ end
 function restart_action()
   p.current_action_state = action_states.in_progress
   p.frames_counter = 0
+end
+
+function has_collision(attack, target, attack_w, attack_h)
+  local attack_w = attack_w or sprite_w
+  local attack_h = attack_h or sprite_h
+
+  local horizontal_collision = attack.x + attack_w > target.x and attack.x < target.x
+  local vertical_collision = attack.y + attack_h > target.y
+
+  return horizontal_collision and vertical_collision
 end
 
 function record_action(action, params)
@@ -305,7 +321,7 @@ function fire_projectile()
 end
 
 function walk()
-  move_x(0.5 * p.current_action_params.direction)
+  move_x(walk_speed * p.current_action_params.direction)
 end
 
 function move_x(x)

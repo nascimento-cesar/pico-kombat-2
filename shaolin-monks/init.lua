@@ -32,6 +32,7 @@ function define_global_variables()
   projectile_speed = 3
   sprite_h = 8
   sprite_w = 8
+  walk_speed = 1
   y_bottom_limit = 127 - 16
   y_upper_limit = 127 - 16 - 20
 end
@@ -85,8 +86,8 @@ function create_special_attack(sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(characters.c1, true)
-  p2 = create_player(characters.c1, false, true)
+  p1 = create_player(characters.c1, false)
+  p2 = create_player(characters.c1, true, true)
   players = { p1, p2 }
 end
 
@@ -100,6 +101,9 @@ function create_player(character, is_npc, is_challenger)
     current_projectile = nil,
     facing = is_challenger and directions.backward or directions.forward,
     frames_counter = 0,
+    hp = 100,
+    is_attacking = false,
+    is_blocking = false,
     is_npc = is_npc or false,
     is_pixel_shifted = false,
     jump_acceleration = 0,
