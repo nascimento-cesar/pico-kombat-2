@@ -39,6 +39,10 @@ function draw_player(p)
     id = sprite
   end
 
+  if p.facing == directions.backward then
+    flip_x = not flip_x
+  end
+
   pal(5, 0)
   pal(13, 5)
   spr(id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_x, flip_y)
@@ -46,6 +50,7 @@ function draw_player(p)
 end
 
 function draw_projectile(p)
+  local flip_x = false
   local index
   local sprites = p.character.projectile.sprites
 
@@ -56,7 +61,11 @@ function draw_projectile(p)
     p.projectile.frames_counter = 0
   end
 
-  spr(sprites[index], p.projectile.x, p.projectile.y)
+  if p.facing == directions.backward then
+    flip_x = not flip_x
+  end
+
+  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, flip_x)
 end
 
 function draw_debug()

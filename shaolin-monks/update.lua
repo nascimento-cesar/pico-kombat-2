@@ -8,14 +8,18 @@ function _update()
   for player in all(players) do
     p = player
 
+    update_frames_counter()
+    update_previous_action()
+
     if not p.is_npc then
-      update_frames_counter()
-      update_previous_action()
       process_inputs()
-      perform_current_action()
-      perform_jumping()
-      update_projectile()
+    else
+      setup_action(actions.idle)
     end
+
+    perform_current_action()
+    perform_jumping()
+    update_projectile()
   end
 end
 
@@ -58,7 +62,7 @@ function process_inputs()
       end
     elseif h⬆️ and not h🅾️❎ then
       if h⬅️ then
-        setup_action(actions.jump, { direction = directions.backward })
+        setup_action(actions.jump, { direction = p.facing * -1 })
 
         if p🅾️ then
           setup_action(actions.flying_punch)
@@ -66,7 +70,7 @@ function process_inputs()
           setup_action(actions.flying_kick)
         end
       elseif h➡️ then
-        setup_action(actions.jump, { direction = directions.forward })
+        setup_action(actions.jump, { direction = p.facing })
 
         if p🅾️ then
           setup_action(actions.flying_punch)
@@ -90,7 +94,7 @@ function process_inputs()
       elseif p❎ then
         setup_action(is_aerial() and actions.flying_kick or actions.kick)
       else
-        setup_action(actions.walk, { direction = directions.backward })
+        setup_action(actions.walk, { direction = p.facing * -1 })
       end
     elseif h➡️ and not h⬅️ then
       if h🅾️❎ then
@@ -100,7 +104,7 @@ function process_inputs()
       elseif p❎ then
         setup_action(is_aerial() and actions.flying_kick or actions.kick)
       else
-        setup_action(actions.walk, { direction = directions.forward })
+        setup_action(actions.walk, { direction = p.facing })
       end
     elseif h🅾️❎ then
       setup_action(actions.block)
@@ -149,10 +153,10 @@ end
 
 function update_projectile()
   if p.projectile then
-    p.projectile.x += projectile_speed
+    p.projectile.x += projectile_speed * p.facing
     p.projectile.frames_counter += 1
 
-    if is_limit_right(p.projectile) then
+    if is_limit_right(p.projectile) or is_limit_left(p.projectile) then
       p.projectile = nil
       start_action(actions.idle)
     end
@@ -294,8 +298,8 @@ function fire_projectile()
   if not p.projectile then
     p.projectile = {
       frames_counter = 0,
-      x = p.x + sprite_w,
-      y = p.y
+      x = p.x + sprite_w * p.facing,
+      y = p.y + 3
     }
   end
 end
