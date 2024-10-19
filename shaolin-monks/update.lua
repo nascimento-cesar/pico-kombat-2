@@ -159,6 +159,12 @@ function update_projectile()
       p.projectile = nil
       start_action(actions.idle)
     end
+
+    if has_collision(p.projectile, vs) then
+      p.projectile = nil
+      start_action(actions.idle)
+      deal_damage(vs)
+    end
   end
 end
 
@@ -317,11 +323,15 @@ function fire_projectile()
   end
 end
 
+function deal_damage(player)
+  player.hp -= 10
+end
+
 function attack()
   if p.current_action_params.is_attacking and has_collision(p, vs) then
     if vs.is_blocking then
     else
-      vs.hp -= 10
+      deal_damage(vs)
       p.current_action_params.is_attacking = false
     end
   end
