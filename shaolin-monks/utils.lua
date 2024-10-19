@@ -22,6 +22,10 @@ function is_aerial()
   return p.current_action.type == action_types.aerial
 end
 
+function is_attacking()
+  return p.current_action.type == action_types.attack
+end
+
 function is_limit_left(obj)
   return obj.x <= 0
 end

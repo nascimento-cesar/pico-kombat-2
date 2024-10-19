@@ -1,32 +1,25 @@
 function _update()
-  if debug.s == nil then
-    debug.s = 0
-  end
-  debug.x = p1.x
-  debug.y = p1.y
+  update_debug()
+  update_player(p1, p2)
+  update_player(p2, p1)
+end
 
-  if has_collision(p1, p2) then
-    debug.hit = "true"
+function update_player(player, versus)
+  p = player
+  vs = versus
+
+  update_frames_counter()
+  update_previous_action()
+
+  if not p.is_npc then
+    process_inputs()
   else
-    debug.hit = "false"
+    setup_action(actions.idle)
   end
 
-  for player in all(players) do
-    p = player
-
-    update_frames_counter()
-    update_previous_action()
-
-    if not p.is_npc then
-      process_inputs()
-    else
-      setup_action(actions.idle)
-    end
-
-    perform_current_action()
-    perform_jumping()
-    update_projectile()
-  end
+  perform_current_action()
+  perform_jumping()
+  update_projectile()
 end
 
 function update_frames_counter()
@@ -62,7 +55,7 @@ function process_inputs()
       if h🅾️❎ then
         setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(actions.hook)
+        setup_attack(actions.hook)
       else
         setup_action(actions.crouch)
       end
@@ -71,34 +64,34 @@ function process_inputs()
         setup_action(actions.jump, { direction = p.facing * -1 })
 
         if p🅾️ then
-          setup_action(actions.flying_punch)
+          setup_attack(actions.flying_punch)
         elseif p❎ then
-          setup_action(actions.flying_kick)
+          setup_attack(actions.flying_kick)
         end
       elseif h➡️ then
         setup_action(actions.jump, { direction = p.facing })
 
         if p🅾️ then
-          setup_action(actions.flying_punch)
+          setup_attack(actions.flying_punch)
         elseif p❎ then
-          setup_action(actions.flying_kick)
+          setup_attack(actions.flying_kick)
         end
       else
         setup_action(actions.jump)
 
         if p🅾️ then
-          setup_action(actions.flying_punch)
+          setup_attack(actions.flying_punch)
         elseif p❎ then
-          setup_action(actions.flying_kick)
+          setup_attack(actions.flying_kick)
         end
       end
     elseif h⬅️ and not h➡️ then
       if h🅾️❎ then
         setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(is_aerial() and actions.flying_punch or actions.punch)
+        setup_attack(is_aerial() and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_action(is_aerial() and actions.flying_kick or actions.kick)
+        setup_attack(is_aerial() and actions.flying_kick or actions.kick)
       else
         setup_action(actions.walk, { direction = p.facing * -1 })
       end
@@ -106,18 +99,18 @@ function process_inputs()
       if h🅾️❎ then
         setup_action(actions.block)
       elseif p🅾️ then
-        setup_action(is_aerial() and actions.flying_punch or actions.punch)
+        setup_attack(is_aerial() and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_action(is_aerial() and actions.flying_kick or actions.kick)
+        setup_attack(is_aerial() and actions.flying_kick or actions.kick)
       else
         setup_action(actions.walk, { direction = p.facing })
       end
     elseif h🅾️❎ then
       setup_action(actions.block)
     elseif p🅾️ then
-      setup_action(is_aerial() and actions.flying_punch or actions.punch)
+      setup_attack(is_aerial() and actions.flying_punch or actions.punch)
     elseif p❎ then
-      setup_action(is_aerial() and actions.flying_kick or actions.kick)
+      setup_attack(is_aerial() and actions.flying_kick or actions.kick)
     else
       handle_no_key_press()
     end
@@ -219,6 +212,10 @@ function setup_action(next_action, params)
   end
 end
 
+function setup_attack(next_action)
+  setup_action(next_action, { is_attacking = true })
+end
+
 function start_action(action, params)
   record_action(action, params)
 
@@ -260,12 +257,12 @@ function restart_action()
   p.frames_counter = 0
 end
 
-function has_collision(attack, target, attack_w, attack_h)
-  local attack_w = attack_w or sprite_w
-  local attack_h = attack_h or sprite_h
+function has_collision(attacker, target, attacker_w, attacker_h)
+  local attacker_w = attacker_w or sprite_w
+  local attacker_h = attacker_h or sprite_h
 
-  local horizontal_collision = attack.x + attack_w > target.x and attack.x < target.x
-  local vertical_collision = attack.y + attack_h > target.y
+  local horizontal_collision = attacker.x + attacker_w > target.x and attacker.x < target.x
+  local vertical_collision = attacker.y + attacker_h > target.y
 
   return horizontal_collision and vertical_collision
 end
@@ -320,6 +317,16 @@ function fire_projectile()
   end
 end
 
+function attack()
+  if p.current_action_params.is_attacking and has_collision(p, vs) then
+    if vs.is_blocking then
+    else
+      vs.hp -= 10
+      p.current_action_params.is_attacking = false
+    end
+  end
+end
+
 function walk()
   move_x(walk_speed * p.current_action_params.direction)
 end
@@ -336,4 +343,20 @@ end
 
 function move_y(y)
   p.y += y
+end
+
+function update_debug()
+  if debug.s == nil then
+    debug.s = 0
+  end
+  debug.x = p1.x
+  debug.y = p1.y
+
+  if has_collision(p1, p2) then
+    debug.hit = "true"
+  else
+    debug.hit = "false"
+  end
+
+  debug.attacking = p1.is_attacking and 'true' or 'false'
 end

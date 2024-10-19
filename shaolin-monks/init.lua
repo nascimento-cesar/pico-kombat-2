@@ -56,13 +56,13 @@ function define_global_actions()
   actions = {
     block = create_action(2, nil, true, false, { 10, 11 }, action_types.other),
     crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
-    flying_kick = create_action(3, nil, false, true, { 14 }, action_types.aerial_attack),
-    flying_punch = create_action(3, nil, false, true, { 15 }, action_types.aerial_attack),
-    hook = create_action(3, nil, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
+    flying_kick = create_action(3, attack, false, true, { 14 }, action_types.aerial_attack),
+    flying_punch = create_action(3, attack, false, true, { 15 }, action_types.aerial_attack),
+    hook = create_action(3, attack, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
     idle = create_action(1, nil, false, false, { 0 }, action_types.other),
     jump = create_action(2, nil, false, false, { 16, 17, { 16, true, true }, { 17, true, true } }, action_types.aerial),
-    kick = create_action(4, nil, false, true, { 12, 13, 12 }, action_types.attack),
-    punch = create_action(3, nil, false, true, { 7, 9, 7 }, action_types.attack),
+    kick = create_action(4, attack, false, true, { 12, 13, 12 }, action_types.attack),
+    punch = create_action(3, attack, false, true, { 7, 9, 7 }, action_types.attack),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
@@ -102,8 +102,6 @@ function create_player(character, is_npc, is_challenger)
     facing = is_challenger and directions.backward or directions.forward,
     frames_counter = 0,
     hp = 100,
-    is_attacking = false,
-    is_blocking = false,
     is_npc = is_npc or false,
     is_pixel_shifted = false,
     jump_acceleration = 0,
