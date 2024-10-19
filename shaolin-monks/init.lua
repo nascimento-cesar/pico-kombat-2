@@ -27,12 +27,10 @@ function define_global_variables()
     forward = 1
   }
   jump_speed = 2
-  pp = {}
   pixel_shift = 2
   projectile_speed = 3
   sprite_h = 8
   sprite_w = 8
-  vs = {}
   walk_speed = 1
   y_bottom_limit = 127 - 16
   y_upper_limit = 127 - 16 - 20
@@ -57,6 +55,7 @@ function define_global_actions()
   actions = {
     block = create_action(2, nil, true, false, { 10, 11 }, action_types.other),
     crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
+    flinch = create_action(1, flinch, false, false, { 34 }, action_types.other),
     flying_kick = create_action(3, attack, false, true, { 14 }, action_types.aerial_attack),
     flying_punch = create_action(3, attack, false, true, { 15 }, action_types.aerial_attack),
     hook = create_action(3, attack, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),

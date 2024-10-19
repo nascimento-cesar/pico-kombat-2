@@ -5,20 +5,20 @@ function _draw()
   draw_player(p2)
 end
 
-function draw_player(player)
+function draw_player(p)
   local flip_x = false
   local flip_y = false
   local id
   local index
   local sprite
-  local sprites = player.current_action.sprites
+  local sprites = p.current_action.sprites
 
-  if is_action_held(player) then
+  if is_action_held(p) then
     index = #sprites
   else
-    index = flr(player.frames_counter / player.current_action.frames_per_sprite) + 1
+    index = flr(p.frames_counter / p.current_action.frames_per_sprite) + 1
 
-    if is_action_released(player) then
+    if is_action_released(p) then
       index = #sprites - index + 1
     end
   end
@@ -33,38 +33,38 @@ function draw_player(player)
     id = sprite
   end
 
-  if player.facing == directions.backward then
+  if p.facing == directions.backward then
     flip_x = not flip_x
   end
 
   pal(5, 0)
   pal(13, 5)
-  spr(id + player.character.sprite_offset, player.x, player.y, 1, 1, flip_x, flip_y)
-  print(player.hp, player.x, player.y - 8)
+  spr(id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_x, flip_y)
+  print(p.hp, p.x, p.y - 8)
   pal()
 
-  if player.projectile then
-    draw_projectile(player)
+  if p.projectile then
+    draw_projectile(p)
   end
 end
 
-function draw_projectile(player)
+function draw_projectile(p)
   local flip_x = false
   local index
-  local sprites = player.character.projectile.sprites
+  local sprites = p.character.projectile.sprites
 
-  index = flr(player.projectile.frames_counter / player.character.projectile.frames_per_sprite) + 1
+  index = flr(p.projectile.frames_counter / p.character.projectile.frames_per_sprite) + 1
 
   if index > #sprites then
     index = 1
-    player.projectile.frames_counter = 0
+    p.projectile.frames_counter = 0
   end
 
-  if player.facing == directions.backward then
+  if p.facing == directions.backward then
     flip_x = not flip_x
   end
 
-  spr(sprites[index], player.projectile.x, player.projectile.y, 1, 1, flip_x)
+  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, flip_x)
 end
 
 function draw_debug()
