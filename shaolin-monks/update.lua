@@ -11,7 +11,7 @@ function update_player(p, vs)
   if not p.is_npc then
     process_inputs(p)
   else
-    setup_action(p, actions.idle)
+    handle_no_key_press(p)
   end
 
   perform_current_action(p, vs)
@@ -226,7 +226,7 @@ function start_action(p, action, params)
     if current_sequence == special_attack.sequence then
       p.action_stack = ""
 
-      return start_action(p, special_attack.action, {})
+      return start_action(p, special_attack.action)
     end
   end
 
@@ -324,8 +324,10 @@ function deal_damage(p)
 end
 
 function flinch(p)
-  start_action(p, actions.flinch, {})
-  move_x(p, -0.1)
+  if p.current_action ~= actions.flinch then
+    start_action(p, actions.flinch)
+    move_x(p, -flinch_speed)
+  end
 end
 
 function attack(p, vs)
