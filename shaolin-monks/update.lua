@@ -27,12 +27,12 @@ function update_frames_counter()
 end
 
 function update_previous_action()
-  if is_action_animation_finished() then
-    if is_aerial() and not p.current_action_params.has_landed then
+  if is_action_animation_finished(p) then
+    if is_aerial(p) and not p.current_action_params.has_landed then
       restart_action()
-    elseif is_aerial_attacking() and not p.current_action_params.has_landed then
+    elseif is_aerial_attacking(p) and not p.current_action_params.has_landed then
       hold_action()
-    elseif is_special_attacking() then
+    elseif is_special_attacking(p) then
       hold_action()
     else
       finish_action()
@@ -89,9 +89,9 @@ function process_inputs()
       if h🅾️❎ then
         setup_action(actions.block)
       elseif p🅾️ then
-        setup_attack(is_aerial() and actions.flying_punch or actions.punch)
+        setup_attack(is_aerial(p) and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_attack(is_aerial() and actions.flying_kick or actions.kick)
+        setup_attack(is_aerial(p) and actions.flying_kick or actions.kick)
       else
         setup_action(actions.walk, { direction = p.facing * -1 })
       end
@@ -99,18 +99,18 @@ function process_inputs()
       if h🅾️❎ then
         setup_action(actions.block)
       elseif p🅾️ then
-        setup_attack(is_aerial() and actions.flying_punch or actions.punch)
+        setup_attack(is_aerial(p) and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_attack(is_aerial() and actions.flying_kick or actions.kick)
+        setup_attack(is_aerial(p) and actions.flying_kick or actions.kick)
       else
         setup_action(actions.walk, { direction = p.facing })
       end
     elseif h🅾️❎ then
       setup_action(actions.block)
     elseif p🅾️ then
-      setup_attack(is_aerial() and actions.flying_punch or actions.punch)
+      setup_attack(is_aerial(p) and actions.flying_punch or actions.punch)
     elseif p❎ then
-      setup_attack(is_aerial() and actions.flying_kick or actions.kick)
+      setup_attack(is_aerial(p) and actions.flying_kick or actions.kick)
     else
       handle_no_key_press()
     end
@@ -124,7 +124,7 @@ function perform_current_action()
 end
 
 function perform_jumping()
-  if is_aerial() or is_aerial_attacking() then
+  if is_aerial(p) or is_aerial_attacking(p) then
     local x_speed = jump_speed * (p.current_action_params.direction or 0) / 2
     local y_speed = jump_speed
 
@@ -165,9 +165,9 @@ end
 function handle_no_key_press()
   if p.current_action == actions.walk then
     setup_action(actions.idle)
-  elseif p.current_action.is_holdable and is_action_held() then
+  elseif p.current_action.is_holdable and is_action_held(p) then
     setup_action(p.current_action, { is_released = true })
-  elseif is_action_finished() then
+  elseif is_action_finished(p) then
     setup_action(actions.idle)
   end
 end
@@ -175,15 +175,15 @@ end
 function setup_action(next_action, params)
   params = params or {}
 
-  if is_aerial() and next_action.type == action_types.aerial_attack then
-    params = p.current_action_params
+  if is_aerial(p) and next_action.type == action_types.aerial_attack then
+    merge(params, p.current_action_params)
   end
 
-  if is_action_finished() then
+  if is_action_finished(p) then
     if p.current_action == next_action then
       if p.current_action.is_holdable then
         hold_action()
-      elseif is_moving() then
+      elseif is_moving(p) then
         restart_action()
       else
         start_action(next_action, params)
@@ -192,20 +192,20 @@ function setup_action(next_action, params)
       start_action(next_action, params)
     end
   elseif p.current_action == next_action then
-    if is_action_held() and params.is_released then
+    if is_action_held(p) and params.is_released then
       release_action()
-    elseif is_moving() and p.current_action_params.direction ~= params.direction then
+    elseif is_moving(p) and p.current_action_params.direction ~= params.direction then
       start_action(next_action, params)
     end
   elseif p.current_action ~= next_action then
-    if is_aerial() then
+    if is_aerial(p) then
       if next_action.type == action_types.aerial_attack or next_action == actions.idle then
         start_action(next_action, params)
       end
-    elseif is_moving() then
+    elseif is_moving(p) then
       start_action(next_action, params)
-    elseif is_action_held() then
-      if not is_aerial_attacking() and not is_special_attacking() and next_action.type == action_types.attack then
+    elseif is_action_held(p) then
+      if not is_aerial_attacking(p) and not is_special_attacking(p) and next_action.type == action_types.attack then
         start_action(next_action, params)
       end
     end
@@ -349,14 +349,13 @@ function update_debug()
   if debug.s == nil then
     debug.s = 0
   end
+
   debug.x = p1.x
   debug.y = p1.y
 
   if has_collision(p1, p2) then
-    debug.hit = "true"
+    debug.collision = "true"
   else
-    debug.hit = "false"
+    debug.collision = "false"
   end
-
-  debug.attacking = p1.is_attacking and 'true' or 'false'
 end

@@ -27,11 +27,12 @@ function define_global_variables()
     forward = 1
   }
   jump_speed = 2
-  p = {}
+  pp = {}
   pixel_shift = 2
   projectile_speed = 3
   sprite_h = 8
   sprite_w = 8
+  vs = {}
   walk_speed = 1
   y_bottom_limit = 127 - 16
   y_upper_limit = 127 - 16 - 20
@@ -88,7 +89,6 @@ end
 function define_players()
   p1 = create_player(characters.c1, false)
   p2 = create_player(characters.c1, true, true)
-  players = { p1, p2 }
 end
 
 function create_player(character, is_npc, is_challenger)

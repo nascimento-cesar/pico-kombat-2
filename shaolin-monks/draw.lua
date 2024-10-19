@@ -1,30 +1,24 @@
 function _draw()
   cls(1)
   draw_debug()
-
-  for p in all(players) do
-    draw_player(p)
-
-    if p.projectile then
-      draw_projectile(p)
-    end
-  end
+  draw_player(p1)
+  draw_player(p2)
 end
 
-function draw_player(p)
+function draw_player(player)
   local flip_x = false
   local flip_y = false
   local id
   local index
   local sprite
-  local sprites = p.current_action.sprites
+  local sprites = player.current_action.sprites
 
-  if is_action_held(p) then
+  if is_action_held(player) then
     index = #sprites
   else
-    index = flr(p.frames_counter / p.current_action.frames_per_sprite) + 1
+    index = flr(player.frames_counter / player.current_action.frames_per_sprite) + 1
 
-    if is_action_released(p) then
+    if is_action_released(player) then
       index = #sprites - index + 1
     end
   end
@@ -39,34 +33,38 @@ function draw_player(p)
     id = sprite
   end
 
-  if p.facing == directions.backward then
+  if player.facing == directions.backward then
     flip_x = not flip_x
   end
 
   pal(5, 0)
   pal(13, 5)
-  spr(id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_x, flip_y)
-  print(p.hp, p.x, p.y - 8)
+  spr(id + player.character.sprite_offset, player.x, player.y, 1, 1, flip_x, flip_y)
+  print(player.hp, player.x, player.y - 8)
   pal()
+
+  if player.projectile then
+    draw_projectile(player)
+  end
 end
 
-function draw_projectile(p)
+function draw_projectile(player)
   local flip_x = false
   local index
-  local sprites = p.character.projectile.sprites
+  local sprites = player.character.projectile.sprites
 
-  index = flr(p.projectile.frames_counter / p.character.projectile.frames_per_sprite) + 1
+  index = flr(player.projectile.frames_counter / player.character.projectile.frames_per_sprite) + 1
 
   if index > #sprites then
     index = 1
-    p.projectile.frames_counter = 0
+    player.projectile.frames_counter = 0
   end
 
-  if p.facing == directions.backward then
+  if player.facing == directions.backward then
     flip_x = not flip_x
   end
 
-  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, flip_x)
+  spr(sprites[index], player.projectile.x, player.projectile.y, 1, 1, flip_x)
 end
 
 function draw_debug()
