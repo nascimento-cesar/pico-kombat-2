@@ -104,6 +104,7 @@ function create_player(character, is_npc, is_challenger)
     hp = 100,
     is_npc = is_npc or false,
     is_pixel_shifted = false,
+    is_orientation_locked = false,
     jump_acceleration = 0,
     x = is_challenger and 127 - 36 - sprite_w or 36,
     y = y_bottom_limit

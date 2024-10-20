@@ -2,6 +2,7 @@ function _update()
   update_debug()
   update_player(p1, p2)
   update_player(p2, p1)
+  fix_orientation()
 end
 
 function update_player(p, vs)
@@ -122,20 +123,31 @@ end
 
 function perform_jumping(p)
   if is_aerial(p) or is_aerial_attacking(p) then
-    local x_speed = jump_speed * (p.current_action_params.direction or 0) / 2
+    local direction = p.current_action_params.direction
+    local x_speed = jump_speed * (direction or 0) / 2
     local y_speed = jump_speed
+    local has_changed_orientation = p.current_action_params.has_changed_orientation
 
     if p.current_action_params.is_landing then
       move_y(p, y_speed)
-      move_x(p, x_speed)
+      move_x(p, x_speed, has_changed_orientation and p.facing * -1 or p.facing)
+
+      if is_p1_ahead_p2() and not has_changed_orientation then
+        if is_aerial(p) then
+          p.current_action_params.has_changed_orientation = true
+          shift_players_orientation()
+        end
+      end
 
       if p.y >= y_bottom_limit then
+        p.is_orientation_locked = false
         p.current_action_params.has_landed = true
         p.current_action_params.is_landing = false
         setup_action(p, actions.idle)
       end
     else
       if not p.current_action_params.has_landed then
+        p.is_orientation_locked = true
         move_y(p, -y_speed)
         move_x(p, x_speed)
 
@@ -161,6 +173,19 @@ function update_projectile(p, vs)
       start_action(p, actions.idle)
     end
   end
+end
+
+function fix_orientation()
+  local is_orientation_locked = p1.is_orientation_locked or p2.is_orientation_locked
+
+  if is_p1_ahead_p2() and not is_orientation_locked then
+    shift_players_orientation()
+  end
+end
+
+function shift_players_orientation()
+  p1.facing *= -1
+  p2.facing *= -1
 end
 
 function handle_no_key_press(p)

@@ -34,6 +34,13 @@ function is_moving(p)
   return p.current_action.type == action_types.movement
 end
 
+function is_p1_ahead_p2()
+  local is_p1_ahead = p1.x > p2.x and p1.facing == directions.forward
+  local is_p1_behind = p1.x + sprite_w < p2.x + sprite_w and p1.facing == directions.backward
+
+  return is_p1_ahead or is_p1_behind
+end
+
 function is_special_attacking(p)
   return p.current_action.type == action_types.special_attack
 end
@@ -44,8 +51,10 @@ function merge(obj1, obj2)
   end
 end
 
-function move_x(p, x)
-  p.x += x * p.facing
+function move_x(p, x, direction)
+  direction = direction or p.facing
+
+  p.x += x * direction
 
   if is_limit_left(p) then
     p.x = 0
