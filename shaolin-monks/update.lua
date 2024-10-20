@@ -179,7 +179,9 @@ function fix_orientation()
   local is_orientation_locked = p1.is_orientation_locked or p2.is_orientation_locked
 
   if is_p1_ahead_p2() and not is_orientation_locked then
-    shift_players_orientation()
+    if not is_aerial_attacking(p1) and not is_aerial_attacking(p2) then
+      shift_players_orientation()
+    end
   end
 end
 
