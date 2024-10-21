@@ -145,7 +145,12 @@ function update_aerial_action(p)
         p.is_orientation_locked = false
         p.current_action_params.has_landed = true
         p.current_action_params.is_landing = false
-        setup_action(p, actions.idle)
+
+        if is_propelled(p) then
+          setup_action(p, actions.prone)
+        else
+          setup_action(p, actions.idle)
+        end
       end
     else
       if not p.current_action_params.has_landed then
@@ -236,6 +241,8 @@ function setup_action(p, next_action, params)
       start_action(p, next_action, params)
     elseif is_action_held(p) then
       if not is_aerial_attacking(p) and not is_special_attacking(p) and next_action.type == action_types.attack then
+        start_action(p, next_action, params)
+      elseif next_action == actions.prone then
         start_action(p, next_action, params)
       end
     end
