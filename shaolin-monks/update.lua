@@ -38,6 +38,8 @@ function update_previous_action(p)
       hold_action(p)
     elseif is_special_attacking(p) then
       hold_action(p)
+    elseif p.current_action == actions.prone then
+      start_action(p, actions.get_up)
     else
       finish_action(p)
     end
@@ -60,6 +62,8 @@ function process_inputs(p)
         setup_action(p, actions.block)
       elseif p🅾️ then
         setup_attack(p, actions.hook)
+      elseif p❎ then
+        setup_attack(p, actions.sweep)
       else
         setup_action(p, actions.crouch)
       end
@@ -364,7 +368,10 @@ end
 function deal_damage(action, p)
   p.hp -= 10
   react_to_damage(action, p)
-  spill_blood(p)
+
+  if action ~= actions.sweep then
+    spill_blood(p)
+  end
 end
 
 function react_to_damage(action, p)
@@ -380,6 +387,8 @@ function react_to_damage(action, p)
     propelled(p)
   elseif action == actions.special_attack then
     flinch(p)
+  elseif action == actions.sweep then
+    trip(p)
   end
 end
 
@@ -397,6 +406,12 @@ end
 function propelled(p)
   if not is_propelled(p) then
     start_action(p, actions.propelled, { direction = p.facing })
+  end
+end
+
+function trip(p)
+  if p.current_action ~= actions.prone then
+    start_action(p, actions.prone)
   end
 end
 

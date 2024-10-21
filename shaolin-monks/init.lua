@@ -60,13 +60,15 @@ function define_global_actions()
     flinch = create_action(6, flinch, false, false, { 34 }, action_types.damage_reaction),
     flying_kick = create_action(3, attack, false, true, { 14 }, action_types.aerial_attack),
     flying_punch = create_action(3, attack, false, true, { 15 }, action_types.aerial_attack),
+    get_up = create_action(2, nil, false, false, { 5, 4 }, action_types.other),
     hook = create_action(3, attack, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
     idle = create_action(1, nil, false, false, { 0 }, action_types.other),
     jump = create_action(2, nil, false, false, { 16, 17, { 16, true, true }, { 17, true, true } }, action_types.aerial),
     kick = create_action(4, attack, false, true, { 12, 13, 12 }, action_types.attack),
-    prone = create_action(2, nil, false, false, { 33, 33, 5, 4 }, action_types.damage_reaction),
+    prone = create_action(8, nil, false, false, { 33 }, action_types.other),
     propelled = create_action(3, nil, true, false, { 34, 35 }, action_types.damage_reaction),
     punch = create_action(3, attack, false, true, { 7, 9, 7 }, action_types.attack),
+    sweep = create_action(2, attack, false, true, { 4, 36, 37, 38, 39, 39, 4 }, action_types.attack),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
