@@ -41,6 +41,10 @@ function is_p1_ahead_p2()
   return is_p1_ahead or is_p1_behind
 end
 
+function is_propelled(p)
+  return p.current_action == actions.propelled
+end
+
 function is_special_attacking(p)
   return p.current_action.type == action_types.special_attack
 end

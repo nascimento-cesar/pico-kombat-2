@@ -16,7 +16,7 @@ function update_player(p, vs)
   end
 
   perform_current_action(p, vs)
-  perform_jumping(p)
+  update_aerial_action(p)
   update_projectile(p, vs)
 end
 
@@ -29,6 +29,8 @@ function update_previous_action(p)
     if is_aerial(p) and not p.current_action_params.has_landed then
       restart_action(p)
     elseif is_aerial_attacking(p) and not p.current_action_params.has_landed then
+      hold_action(p)
+    elseif is_propelled(p) and not p.current_action_params.has_landed then
       hold_action(p)
     elseif is_special_attacking(p) then
       hold_action(p)
@@ -121,8 +123,8 @@ function perform_current_action(p, vs)
   return p.current_action.handler and p.current_action.handler(p, vs)
 end
 
-function perform_jumping(p)
-  if is_aerial(p) or is_aerial_attacking(p) then
+function update_aerial_action(p)
+  if is_aerial(p) or is_aerial_attacking(p) or is_propelled(p) then
     local direction = p.current_action_params.direction
     local x_speed = jump_speed * (direction or 0) / 2
     local y_speed = jump_speed
@@ -193,7 +195,7 @@ end
 function handle_no_key_press(p)
   if p.current_action == actions.walk then
     setup_action(p, actions.idle)
-  elseif p.current_action.is_holdable and is_action_held(p) then
+  elseif p.current_action.is_holdable and is_action_held(p) and not is_propelled(p) then
     setup_action(p, p.current_action, { is_released = true })
   elseif is_action_finished(p) then
     setup_action(p, actions.idle)
@@ -347,7 +349,20 @@ end
 
 function deal_damage(p)
   p.hp -= 10
-  flinch(p)
+end
+
+function react_to_damage(action, p)
+  if action == actions.punch then
+    flinch(p)
+  elseif action == actions.kick then
+    flinch(p)
+  elseif action == actions.flying_punch then
+    flinch(p)
+  elseif action == actions.flying_kick then
+    propelled(p)
+  elseif action == actions.hook then
+    propelled(p)
+  end
 end
 
 function flinch(p)
@@ -357,11 +372,18 @@ function flinch(p)
   end
 end
 
+function propelled(p)
+  if not is_propelled(p) then
+    start_action(p, actions.propelled, { direction = p.facing })
+  end
+end
+
 function attack(p, vs)
   if p.current_action_params.is_attacking and has_collision(p, vs) then
     if vs.is_blocking then
     else
       deal_damage(vs)
+      react_to_damage(p.current_action, vs)
       p.current_action_params.is_attacking = false
     end
   end
