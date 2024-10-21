@@ -109,6 +109,7 @@ function create_player(character, is_npc, is_challenger)
     is_pixel_shifted = false,
     is_orientation_locked = false,
     jump_acceleration = 0,
+    particle_sets = {},
     x = is_challenger and 127 - 36 - sprite_w or 36,
     y = y_bottom_limit
   }

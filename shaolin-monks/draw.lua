@@ -46,6 +46,8 @@ function draw_player(p)
   if p.projectile then
     draw_projectile(p)
   end
+
+  draw_particles(p)
 end
 
 function draw_projectile(p)
@@ -67,6 +69,27 @@ function draw_projectile(p)
   spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, flip_x)
 end
 
+function draw_particles(p)
+  for particle_set in all(p.particle_sets) do
+    for particle in all(particle_set.particles) do
+      particle.x += particle.speed_x
+      particle.y += particle.speed_y
+
+      pset(particle.x, particle.y, particle_set.color)
+
+      particle.current_lifespan += 1
+
+      if particle.current_lifespan > particle.max_lifespan then
+        del(particle_set.particles, particle)
+      end
+    end
+
+    if #particle_set.particles == 0 then
+      del(p.particle_sets, particle_set)
+    end
+  end
+end
+
 function draw_debug()
   local i = 1
 
@@ -85,7 +108,7 @@ function draw_debug()
       s = v
     end
 
-    print(k .. ": " .. s, 0, (i - 1) * 10)
+    print(k .. ": " .. s, 0, (i - 1) * 10, 7)
 
     i += 1
   end

@@ -18,6 +18,10 @@ function update_player(p, vs)
   perform_current_action(p, vs)
   update_aerial_action(p)
   update_projectile(p, vs)
+
+  if not p.is_npc then
+    clear_action_stack(p)
+  end
 end
 
 function update_frames_counter(p)
@@ -173,13 +177,16 @@ function update_projectile(p, vs)
 
     if has_collision(p.projectile, vs) then
       p.projectile = nil
+      deal_damage(actions.special_attack, vs)
       start_action(p, actions.idle)
-      deal_damage(vs)
     elseif is_limit_right(p.projectile) or is_limit_left(p.projectile) then
       p.projectile = nil
       start_action(p, actions.idle)
     end
   end
+end
+
+function clear_action_stack(p)
 end
 
 function fix_orientation()
@@ -354,8 +361,10 @@ function fire_projectile(p)
   end
 end
 
-function deal_damage(p)
+function deal_damage(action, p)
   p.hp -= 10
+  react_to_damage(action, p)
+  spill_blood(p)
 end
 
 function react_to_damage(action, p)
@@ -369,7 +378,13 @@ function react_to_damage(action, p)
     propelled(p)
   elseif action == actions.hook then
     propelled(p)
+  elseif action == actions.special_attack then
+    flinch(p)
   end
+end
+
+function spill_blood(p)
+  add(p.particle_sets, build_particle_set(8, 30, p.x, p.y))
 end
 
 function flinch(p)
@@ -389,8 +404,7 @@ function attack(p, vs)
   if p.current_action_params.is_attacking and has_collision(p, vs) then
     if vs.is_blocking then
     else
-      deal_damage(vs)
-      react_to_damage(p.current_action, vs)
+      deal_damage(p.current_action, vs)
       p.current_action_params.is_attacking = false
     end
   end
@@ -398,6 +412,30 @@ end
 
 function walk(p)
   move_x(p, walk_speed * p.current_action_params.direction)
+end
+
+function build_particle_set(color, count, x, y)
+  local particle_set = {
+    color = color,
+    particles = {},
+    x = x,
+    y = y
+  }
+
+  for i = 1, count do
+    add(
+      particle_set.particles, {
+        current_lifespan = rnd(10),
+        max_lifespan = 10,
+        speed_x = rnd() * 2 - 1,
+        speed_y = rnd() * 2 - 1,
+        x = particle_set.x,
+        y = particle_set.y
+      }
+    )
+  end
+
+  return particle_set
 end
 
 function update_debug()
