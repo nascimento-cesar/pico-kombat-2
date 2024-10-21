@@ -38,6 +38,8 @@ function update_previous_action(p)
       hold_action(p)
     elseif is_special_attacking(p) then
       hold_action(p)
+    elseif p.current_action == actions.swept then
+      start_action(p, actions.prone)
     elseif p.current_action == actions.prone then
       start_action(p, actions.get_up)
     else
@@ -282,6 +284,12 @@ function start_action(p, action, params)
   p.current_action_params = params
   p.frames_counter = 0
   shift_pixel(p, not action.is_pixel_shiftable)
+
+  if action == actions.prone then
+    shift_player_y(p)
+  elseif action == actions.get_up then
+    shift_player_y(p, true)
+  end
 end
 
 function hold_action(p)
@@ -355,6 +363,14 @@ function shift_pixel(p, unshift)
   end
 end
 
+function shift_player_y(p, unshift)
+  if unshift then
+    p.y = y_bottom_limit
+  else
+    move_y(p, 2)
+  end
+end
+
 function fire_projectile(p)
   if not p.projectile then
     p.projectile = {
@@ -388,7 +404,7 @@ function react_to_damage(action, p)
   elseif action == actions.special_attack then
     flinch(p)
   elseif action == actions.sweep then
-    trip(p)
+    swept(p)
   end
 end
 
@@ -409,9 +425,9 @@ function propelled(p)
   end
 end
 
-function trip(p)
-  if p.current_action ~= actions.prone then
-    start_action(p, actions.prone)
+function swept(p)
+  if p.current_action ~= actions.swept then
+    start_action(p, actions.swept)
   end
 end
 

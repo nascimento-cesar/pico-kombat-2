@@ -69,6 +69,7 @@ function define_global_actions()
     propelled = create_action(3, nil, true, false, { 34, 35 }, action_types.damage_reaction),
     punch = create_action(3, attack, false, true, { 7, 9, 7 }, action_types.attack),
     sweep = create_action(2, attack, false, true, { 4, 36, 37, 38, 39, 39, 4 }, action_types.attack),
+    swept = create_action(4, nil, false, true, { 32 }, action_types.damage_reaction),
     walk = create_action(4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
