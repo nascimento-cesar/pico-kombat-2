@@ -1,5 +1,6 @@
 function _init()
   define_global_variables()
+  define_game()
   define_global_actions()
   define_characters()
   define_players()
@@ -31,11 +32,23 @@ function define_global_variables()
   jump_speed = 2
   pixel_shift = 2
   projectile_speed = 3
+  screens = {
+    character_selection = 1,
+    game_over = 2,
+    gameplay = 3,
+    start = 4
+  }
   sprite_h = 8
   sprite_w = 8
   walk_speed = 1
-  y_bottom_limit = 127 - 16
-  y_upper_limit = 127 - 16 - 20
+  y_bottom_limit = 127 - 32
+  y_upper_limit = 127 - 32 - 20
+end
+
+function define_game()
+  game = {
+    current_screen = screens.start
+  }
 end
 
 function define_characters()

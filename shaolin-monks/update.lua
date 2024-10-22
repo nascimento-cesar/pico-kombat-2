@@ -1,8 +1,23 @@
 function _update()
-  update_debug()
+  -- update_debug()
+
+  if game.current_screen == screens.gameplay then
+    update_gameplay()
+  elseif game.current_screen == screens.start then
+    update_start()
+  end
+end
+
+function update_gameplay()
   update_player(p1, p2)
   update_player(p2, p1)
   fix_orientation()
+end
+
+function update_start()
+  if btnp(❎) then
+    game.current_screen = screens.gameplay
+  end
 end
 
 function update_player(p, vs)

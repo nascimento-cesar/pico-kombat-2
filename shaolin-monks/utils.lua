@@ -1,3 +1,11 @@
+function get_hcenter(s)
+  return 64 - (s and #s or 0) * 2
+end
+
+function get_vcenter()
+  return 61
+end
+
 function is_action_finished(p)
   return p.current_action_state == action_states.finished
 end

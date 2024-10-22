@@ -1,8 +1,23 @@
 function _draw()
-  cls(1)
   draw_debug()
+
+  if game.current_screen == screens.gameplay then
+    draw_gameplay()
+  elseif game.current_screen == screens.start then
+    draw_start()
+  end
+end
+
+function draw_gameplay()
+  cls(1)
   draw_player(p1)
   draw_player(p2)
+end
+
+function draw_start()
+  cls(0)
+  local text = "press ❎ to start"
+  draw_blinking_text(text, get_hcenter(text), get_vcenter())
 end
 
 function draw_player(p)
@@ -40,7 +55,7 @@ function draw_player(p)
   pal(5, 0)
   pal(13, 5)
   spr(id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_x, flip_y)
-  print(p.hp, p.x, p.y - 8)
+  print(p.hp, p.x, p.y - 8, 7)
   pal()
 
   if p.projectile then
@@ -88,6 +103,11 @@ function draw_particles(p)
       del(p.particle_sets, particle_set)
     end
   end
+end
+
+function draw_blinking_text(s, x, y)
+  local color = sin(time() * 4) > 0 and 7 or 8
+  print(s, x, y, color)
 end
 
 function draw_debug()
