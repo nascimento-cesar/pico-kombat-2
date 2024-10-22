@@ -298,7 +298,7 @@ function start_action(p, action, params)
   p.current_action_state = action_states.in_progress
   p.current_action_params = params
   p.frames_counter = 0
-  shift_pixel(p, not action.is_pixel_shiftable)
+  shift_player_x(p, not action.is_x_shiftable)
 
   if action == actions.prone then
     shift_player_y(p)
@@ -320,7 +320,7 @@ end
 
 function finish_action(p)
   p.current_action_state = action_states.finished
-  shift_pixel(p, true)
+  shift_player_x(p, true)
 end
 
 function restart_action(p)
@@ -332,10 +332,11 @@ function has_collision(attacker, target, attacker_w, attacker_h)
   local attacker_w = attacker_w or sprite_w
   local attacker_h = attacker_h or sprite_h
 
-  local horizontal_collision = attacker.x + attacker_w > target.x and attacker.x < target.x
+  local right_collision = attacker.x + attacker_w > target.x and attacker.x < target.x
+  local left_collision = attacker.x < target.x + attacker_w and attacker.x > target.x
   local vertical_collision = attacker.y + attacker_h > target.y
 
-  return horizontal_collision and vertical_collision
+  return (right_collision or left_collision) and vertical_collision
 end
 
 function record_action(p, action, params)
@@ -364,16 +365,16 @@ function record_action(p, action, params)
   end
 end
 
-function shift_pixel(p, unshift)
+function shift_player_x(p, unshift)
   if unshift then
-    if p.is_pixel_shifted then
-      move_x(p, -pixel_shift)
-      p.is_pixel_shifted = false
+    if p.is_x_shifted then
+      move_x(p, -x_shift)
+      p.is_x_shifted = false
     end
   else
-    if not p.is_pixel_shifted and not is_limit_right(p) then
-      move_x(p, pixel_shift)
-      p.is_pixel_shifted = true
+    if not p.is_x_shifted and not is_limit_right(p) then
+      move_x(p, x_shift)
+      p.is_x_shifted = true
     end
   end
 end
@@ -424,7 +425,8 @@ function react_to_damage(action, p)
 end
 
 function spill_blood(p)
-  add(p.particle_sets, build_particle_set(8, 30, p.x, p.y))
+  local x = p.facing == directions.forward and p.x + sprite_w or p.x
+  add(p.particle_sets, build_particle_set(8, 30, x, p.y))
 end
 
 function flinch(p)

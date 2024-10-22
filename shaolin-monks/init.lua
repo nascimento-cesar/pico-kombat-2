@@ -30,7 +30,6 @@ function define_global_variables()
   }
   flinch_speed = 3
   jump_speed = 2
-  pixel_shift = 2
   projectile_speed = 3
   screens = {
     character_selection = 1,
@@ -41,6 +40,7 @@ function define_global_variables()
   sprite_h = 8
   sprite_w = 8
   walk_speed = 1
+  x_shift = 3
   y_bottom_limit = 127 - 32
   y_upper_limit = 127 - 32 - 20
 end
@@ -71,8 +71,8 @@ function define_global_actions()
     block = create_action(2, nil, true, false, { 10, 11 }, action_types.other),
     crouch = create_action(2, nil, true, false, { 4, 5 }, action_types.other),
     flinch = create_action(6, flinch, false, false, { 34 }, action_types.damage_reaction),
-    flying_kick = create_action(3, attack, false, true, { 14 }, action_types.aerial_attack),
-    flying_punch = create_action(3, attack, false, true, { 15 }, action_types.aerial_attack),
+    flying_kick = create_action(3, attack, false, false, { 14 }, action_types.aerial_attack),
+    flying_punch = create_action(3, attack, false, false, { 15 }, action_types.aerial_attack),
     get_up = create_action(2, nil, false, false, { 5, 4 }, action_types.other),
     hook = create_action(3, attack, false, true, { 6, 7, 8, 8, 8, 8, 8, 7 }, action_types.attack),
     idle = create_action(1, nil, false, false, { 0 }, action_types.other),
@@ -87,12 +87,12 @@ function define_global_actions()
   }
 end
 
-function create_action(frames_per_sprite, handler, is_holdable, is_pixel_shiftable, sprites, type)
+function create_action(frames_per_sprite, handler, is_holdable, is_x_shiftable, sprites, type)
   return {
     frames_per_sprite = frames_per_sprite,
     handler = handler,
-    is_pixel_shiftable = is_pixel_shiftable,
     is_holdable = is_holdable,
+    is_x_shiftable = is_x_shiftable,
     sprites = sprites,
     type = type
   }
@@ -106,8 +106,8 @@ function create_special_attack(sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(characters.c1, false)
-  p2 = create_player(characters.c1, true, true)
+  p1 = create_player(characters.c1, false, true)
+  p2 = create_player(characters.c1, true)
 end
 
 function create_player(character, is_npc, is_challenger)
@@ -122,8 +122,8 @@ function create_player(character, is_npc, is_challenger)
     frames_counter = 0,
     hp = 100,
     is_npc = is_npc or false,
-    is_pixel_shifted = false,
     is_orientation_locked = false,
+    is_x_shifted = false,
     jump_acceleration = 0,
     particle_sets = {},
     x = is_challenger and 127 - 36 - sprite_w or 36,
