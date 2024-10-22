@@ -1,6 +1,4 @@
 function _draw()
-  draw_debug()
-
   if game.current_screen == screens.gameplay then
     draw_gameplay()
   elseif game.current_screen == screens.start then
@@ -10,6 +8,7 @@ end
 
 function draw_gameplay()
   cls(1)
+  draw_debug()
   draw_player(p1)
   draw_player(p2)
 end

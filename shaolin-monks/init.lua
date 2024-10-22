@@ -41,12 +41,14 @@ function define_global_variables()
   sprite_w = 8
   walk_speed = 1
   x_shift = 3
+  y_shift = 3
   y_bottom_limit = 127 - 32
   y_upper_limit = 127 - 32 - 20
 end
 
 function define_game()
   game = {
+    current_round = 1,
     current_screen = screens.start
   }
 end

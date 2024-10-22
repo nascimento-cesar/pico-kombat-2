@@ -1,5 +1,5 @@
 function _update()
-  -- update_debug()
+  update_debug()
 
   if game.current_screen == screens.gameplay then
     update_gameplay()
@@ -383,7 +383,7 @@ function shift_player_y(p, unshift)
   if unshift then
     p.y = y_bottom_limit
   else
-    move_y(p, 2)
+    move_y(p, y_shift)
   end
 end
 
@@ -404,6 +404,8 @@ function deal_damage(action, p)
   if action ~= actions.sweep then
     spill_blood(p)
   end
+
+  check_defeat(p)
 end
 
 function react_to_damage(action, p)
@@ -429,6 +431,13 @@ function spill_blood(p)
   add(p.particle_sets, build_particle_set(8, 30, x, p.y))
 end
 
+function check_defeat(p)
+  if p.hp <= 0 then
+    game.current_screen = screens.start
+    define_players()
+  end
+end
+
 function flinch(p)
   if p.current_action ~= actions.flinch then
     start_action(p, actions.flinch)
@@ -438,7 +447,7 @@ end
 
 function propelled(p)
   if not is_propelled(p) then
-    start_action(p, actions.propelled, { direction = p.facing })
+    start_action(p, actions.propelled, { direction = directions.backward })
   end
 end
 
@@ -487,16 +496,16 @@ function build_particle_set(color, count, x, y)
 end
 
 function update_debug()
-  if debug.s == nil then
-    debug.s = 0
-  end
+  -- if debug.s == nil then
+  --   debug.s = 0
+  -- end
 
-  debug.x = p1.x
-  debug.y = p1.y
+  -- debug.x = p1.x
+  -- debug.y = p1.y
 
-  if has_collision(p1, p2) then
-    debug.collision = "true"
-  else
-    debug.collision = "false"
-  end
+  -- if has_collision(p1, p2) then
+  --   debug.collision = "true"
+  -- else
+  --   debug.collision = "false"
+  -- end
 end
