@@ -6,6 +6,10 @@ function get_vcenter()
   return 61
 end
 
+function get_vs(p)
+  return p.id == 1 and p2 or p1
+end
+
 function is_action_finished(p)
   return p.current_action_state == action_states.finished
 end
@@ -72,7 +76,14 @@ function move_x(p, x, direction)
 
   p.x += x * direction
 
-  if is_limit_left(p) then
+  local vs = get_vs(p)
+  local p_is_attacking = p.current_action_params.is_attacking or false
+
+  if has_collision(p, vs, "left") and not p_is_attacking then
+    p.x = vs.x + sprite_w
+  elseif has_collision(p, vs, "right") and not p_is_attacking then
+    p.x = vs.x - sprite_w
+  elseif is_limit_left(p) then
     p.x = 0
   elseif is_limit_right(p) then
     p.x = 127 - sprite_w

@@ -1,3 +1,6 @@
+-- !BUGS TO FIX
+-- * attacking a propelled opponent from ground breaks opponent's
+
 function _update()
   update_debug()
 
@@ -9,8 +12,8 @@ function _update()
 end
 
 function update_gameplay()
-  update_player(p1, p2)
-  update_player(p2, p1)
+  update_player(p1)
+  update_player(p2)
   fix_orientation()
 end
 
@@ -20,7 +23,7 @@ function update_start()
   end
 end
 
-function update_player(p, vs)
+function update_player(p)
   update_frames_counter(p)
   update_previous_action(p)
 
@@ -30,9 +33,9 @@ function update_player(p, vs)
     handle_no_key_press(p)
   end
 
-  perform_current_action(p, vs)
+  perform_current_action(p)
   update_aerial_action(p)
-  update_projectile(p, vs)
+  update_projectile(p)
 
   if not p.is_npc then
     clear_action_stack(p)
@@ -144,8 +147,8 @@ function process_inputs(p)
   end
 end
 
-function perform_current_action(p, vs)
-  return p.current_action.handler and p.current_action.handler(p, vs)
+function perform_current_action(p)
+  return p.current_action.handler and p.current_action.handler(p)
 end
 
 function update_aerial_action(p)
@@ -191,7 +194,9 @@ function update_aerial_action(p)
   end
 end
 
-function update_projectile(p, vs)
+function update_projectile(p)
+  local vs = get_vs(p)
+
   if p.projectile then
     p.projectile.x += projectile_speed * p.facing
     p.projectile.frames_counter += 1
@@ -216,6 +221,28 @@ function fix_orientation()
   if is_p1_ahead_p2() and not is_orientation_locked then
     if not is_aerial_attacking(p1) and not is_aerial_attacking(p2) then
       shift_players_orientation()
+    end
+  end
+
+  if p1.y == y_bottom_limit and p2.y == y_bottom_limit then
+    if p1.x == 0 and p2.x == 0 then
+      if p1.facing == directions.forward then
+        p1.x = 0
+        p2.x = sprite_w
+      else
+        p1.x = sprite_w
+        p2.x = 0
+      end
+    end
+
+    if p1.x + sprite_w == 127 and p2.x + sprite_w == 127 then
+      if p1.facing == directions.forward then
+        p1.x = 127 - sprite_w * 2
+        p2.x = 127 - sprite_w
+      else
+        p1.x = 127 - sprite_w
+        p2.x = 127 - sprite_w * 2
+      end
     end
   end
 end
@@ -282,6 +309,8 @@ function setup_attack(p, next_action)
 end
 
 function start_action(p, action, params)
+  params = params or {}
+
   record_action(p, action, params)
 
   for _, special_attack in pairs(p.character.special_attacks) do
@@ -328,7 +357,7 @@ function restart_action(p)
   p.frames_counter = 0
 end
 
-function has_collision(attacker, target, attacker_w, attacker_h)
+function has_collision(attacker, target, type, attacker_w, attacker_h)
   local attacker_w = attacker_w or sprite_w
   local attacker_h = attacker_h or sprite_h
 
@@ -336,7 +365,13 @@ function has_collision(attacker, target, attacker_w, attacker_h)
   local left_collision = attacker.x < target.x + attacker_w and attacker.x > target.x
   local vertical_collision = attacker.y + attacker_h > target.y
 
-  return (right_collision or left_collision) and vertical_collision
+  if type == "left" then
+    return left_collision and vertical_collision
+  elseif type == "right" then
+    return right_collision and vertical_collision
+  else
+    return (right_collision or left_collision) and vertical_collision
+  end
 end
 
 function record_action(p, action, params)
@@ -372,7 +407,7 @@ function shift_player_x(p, unshift)
       p.is_x_shifted = false
     end
   else
-    if not p.is_x_shifted and not is_limit_right(p) then
+    if not p.is_x_shifted and (not is_limit_right(p) or p.facing == directions.backward) then
       move_x(p, x_shift)
       p.is_x_shifted = true
     end
@@ -457,7 +492,9 @@ function swept(p)
   end
 end
 
-function attack(p, vs)
+function attack(p)
+  local vs = get_vs(p)
+
   if p.current_action_params.is_attacking and has_collision(p, vs) then
     if vs.is_blocking then
     else
@@ -499,9 +536,6 @@ function update_debug()
   -- if debug.s == nil then
   --   debug.s = 0
   -- end
-
-  -- debug.x = p1.x
-  -- debug.y = p1.y
 
   -- if has_collision(p1, p2) then
   --   debug.collision = "true"

@@ -108,11 +108,11 @@ function create_special_attack(sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(characters.c1, false, true)
-  p2 = create_player(characters.c1, true)
+  p1 = create_player(1, characters.c1, false, true)
+  p2 = create_player(2, characters.c1, true)
 end
 
-function create_player(character, is_npc, is_challenger)
+function create_player(id, character, is_npc, is_challenger)
   return {
     action_stack = "",
     character = character,
@@ -123,6 +123,7 @@ function create_player(character, is_npc, is_challenger)
     facing = is_challenger and directions.backward or directions.forward,
     frames_counter = 0,
     hp = 100,
+    id = id,
     is_npc = is_npc or false,
     is_orientation_locked = false,
     is_x_shifted = false,
