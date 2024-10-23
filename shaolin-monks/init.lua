@@ -30,7 +30,7 @@ function define_global_variables()
   }
   flinch_speed = 3
   jump_speed = 2
-  projectile_speed = 3
+  projectile_speed = 1
   screens = {
     character_selection = 1,
     game_over = 2,
@@ -38,7 +38,7 @@ function define_global_variables()
     start = 4
   }
   sprite_h = 8
-  sprite_w = 8
+  sprite_w = 7
   walk_speed = 1
   x_shift = 3
   y_shift = 3

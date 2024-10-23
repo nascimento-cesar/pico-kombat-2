@@ -201,7 +201,7 @@ function update_projectile(p)
     p.projectile.x += projectile_speed * p.facing
     p.projectile.frames_counter += 1
 
-    if has_collision(p.projectile, vs) then
+    if has_collision(p.projectile, vs, nil, 6) then
       p.projectile = nil
       deal_damage(actions.special_attack, vs)
       start_action(p, actions.idle)
@@ -357,12 +357,13 @@ function restart_action(p)
   p.frames_counter = 0
 end
 
-function has_collision(attacker, target, type, attacker_w, attacker_h)
+function has_collision(attacker, target, type, attacker_w, attacker_h, target_w)
   local attacker_w = attacker_w or sprite_w
   local attacker_h = attacker_h or sprite_h
+  local target_w = target_w or sprite_w
 
-  local right_collision = attacker.x + attacker_w > target.x and attacker.x < target.x
-  local left_collision = attacker.x < target.x + attacker_w and attacker.x > target.x
+  local right_collision = attacker.x + attacker_w > target.x + 8 - target_w and attacker.x < target.x
+  local left_collision = attacker.x + 8 - attacker_w < target.x + target_w and attacker.x > target.x
   local vertical_collision = attacker.y + attacker_h > target.y
 
   if type == "left" then
@@ -495,7 +496,7 @@ end
 function attack(p)
   local vs = get_vs(p)
 
-  if p.current_action_params.is_attacking and has_collision(p, vs) then
+  if p.current_action_params.is_attacking and has_collision(p, vs, nil, sprite_w + 1) then
     if vs.is_blocking then
     else
       deal_damage(p.current_action, vs)
@@ -536,6 +537,9 @@ function update_debug()
   -- if debug.s == nil then
   --   debug.s = 0
   -- end
+
+  debug.p1x = p1.x
+  debug.p2x = p2.x
 
   -- if has_collision(p1, p2) then
   --   debug.collision = "true"
