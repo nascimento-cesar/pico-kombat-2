@@ -242,9 +242,9 @@ function fix_players_placement()
     if p1.x < sprite_w and p2.x < sprite_w then
       if p1.facing == directions.forward then
         p1.x = 0
-        p2.x = sprite_w
+        p2.x = sprite_w - 1
       else
-        p1.x = sprite_w
+        p1.x = sprite_w - 1
         p2.x = 0
       end
     end
@@ -618,8 +618,8 @@ function update_debug()
   --   debug.s = 0
   -- end
 
-  -- debug.p1x = p1.x
-  -- debug.p2x = p2.x
+  debug.p1x = p1.x
+  debug.p2x = p2.x
 
   -- if has_collision(p1, p2) then
   --   debug.collision = "true"
