@@ -15,7 +15,7 @@ function update_gameplay()
   update_player(p1)
   update_player(p2)
   fix_players_orientation()
-  -- fix_players_placement()
+  fix_players_placement()
 end
 
 function update_start()
@@ -228,17 +228,17 @@ end
 
 function fix_players_placement()
   if p1.y >= y_bottom_limit and p2.y >= y_bottom_limit then
-    if p1.x < sprite_w - 1 and p2.x < sprite_w - 1 then
+    if p1.x < sprite_w and p2.x < sprite_w then
       if p1.facing == directions.forward then
         p1.x = 0
-        p2.x = sprite_w - 1
+        p2.x = sprite_w
       else
-        p1.x = sprite_w - 1
+        p1.x = sprite_w
         p2.x = 0
       end
     end
 
-    if p1.x + sprite_w >= 127 and p2.x + sprite_w >= 127 then
+    if p1.x + sprite_w > 127 - sprite_w and p2.x + sprite_w > 127 - sprite_w then
       if p1.facing == directions.forward then
         p1.x = 127 - sprite_w * 2 + 1
         p2.x = 127 - sprite_w
