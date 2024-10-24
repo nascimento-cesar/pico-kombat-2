@@ -123,7 +123,11 @@ function process_inputs(p)
       elseif p🅾️ then
         setup_attack(p, is_aerial(p) and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_attack(p, actions.roundhouse_kick)
+        if is_aerial(p) then
+          setup_attack(p, actions.flying_kick)
+        else
+          setup_attack(p, p.facing == directions.forward and actions.roundhouse_kick or actions.kick)
+        end
       else
         setup_action(p, actions.walk, { direction = p.facing * -1 })
       end
@@ -133,7 +137,11 @@ function process_inputs(p)
       elseif p🅾️ then
         setup_attack(p, is_aerial(p) and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_attack(p, is_aerial(p) and actions.flying_kick or actions.kick)
+        if is_aerial(p) then
+          setup_attack(p, actions.flying_kick)
+        else
+          setup_attack(p, p.facing == directions.forward and actions.kick or actions.roundhouse_kick)
+        end
       else
         setup_action(p, actions.walk, { direction = p.facing })
       end
