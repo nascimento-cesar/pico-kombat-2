@@ -120,7 +120,7 @@ function process_inputs(p)
       elseif p🅾️ then
         setup_attack(p, is_aerial(p) and actions.flying_punch or actions.punch)
       elseif p❎ then
-        setup_attack(p, is_aerial(p) and actions.flying_kick or actions.kick)
+        setup_attack(p, actions.roundhouse_kick)
       else
         setup_action(p, actions.walk, { direction = p.facing * -1 })
       end
@@ -460,6 +460,8 @@ function react_to_damage(action, p)
   elseif action == actions.flying_kick then
     propelled(p)
   elseif action == actions.hook then
+    propelled(p)
+  elseif action == actions.roundhouse_kick then
     propelled(p)
   elseif action == actions.special_attack then
     flinch(p)

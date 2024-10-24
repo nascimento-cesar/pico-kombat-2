@@ -84,7 +84,8 @@ function define_global_actions()
     prone = create_action("prone", 8, nil, false, false, { 33 }, action_types.other),
     propelled = create_action("propelled", 3, nil, true, false, { 34, 35 }, action_types.damage_reaction),
     punch = create_action("punch", 3, attack, false, true, { 7, 9, 7 }, action_types.attack),
-    sweep = create_action("sweep", 2, attack, false, true, { 4, 36, 37, 38, 39, 39, 4 }, action_types.attack),
+    roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { 7, 39, { 7, true, false }, 12, 13, 13, 13, 12 }, action_types.attack),
+    sweep = create_action("sweep", 2, attack, false, true, { 4, 36, 37, { 36, true, false }, 38, 38, 4 }, action_types.attack),
     swept = create_action("swept", 4, nil, false, false, { 32 }, action_types.damage_reaction),
     walk = create_action("walk", 4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
