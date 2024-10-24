@@ -560,7 +560,10 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
       local vs_x_increment = vs.x - new_p_x + sprite_w - 1
 
       if not is_limit_left(vs.x - vs_x_increment) then
-        move_x(vs, vs_x_increment * -1, nil, false, true)
+        if not is_aerial(vs) and not is_aerial_attacking(vs) then
+          move_x(vs, vs_x_increment * -1, nil, false, true)
+        end
+
         p.x = new_p_x
       end
     end
@@ -571,7 +574,10 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
       local vs_x_increment = new_p_x + sprite_w - vs.x - 1
 
       if not is_limit_right(vs.x + vs_x_increment) then
-        move_x(vs, vs_x_increment * -1, nil, false, true)
+        if not is_aerial(vs) and not is_aerial_attacking(vs) then
+          move_x(vs, vs_x_increment * -1, nil, false, true)
+        end
+
         p.x = new_p_x
       end
     end
@@ -585,9 +591,9 @@ function move_y(p, y)
 end
 
 function update_debug()
-  if debug.s == nil then
-    debug.s = 0
-  end
+  -- if debug.s == nil then
+  --   debug.s = 0
+  -- end
 
   -- debug.p1x = p1.x
   -- debug.p2x = p2.x
