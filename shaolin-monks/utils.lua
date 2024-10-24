@@ -7,7 +7,7 @@ function get_vcenter()
 end
 
 function get_vs(p)
-  return p.id == 1 and p2 or p1
+  return p.id == p1.id and p2 or p1
 end
 
 function is_action_finished(p)
@@ -34,12 +34,12 @@ function is_aerial(p)
   return p.current_action.type == action_types.aerial
 end
 
-function is_limit_left(obj)
-  return obj.x <= 0
+function is_limit_left(x)
+  return x < 0
 end
 
-function is_limit_right(obj)
-  return obj.x + sprite_w >= 127
+function is_limit_right(x)
+  return x + sprite_w > 127
 end
 
 function is_moving(p)
@@ -69,27 +69,4 @@ function merge(obj1, obj2)
   for k, v in pairs(obj2) do
     obj1[k] = v
   end
-end
-
-function move_x(p, x, direction)
-  direction = direction or p.facing
-
-  p.x += x * direction
-
-  local vs = get_vs(p)
-  local p_is_attacking = p.current_action_params.is_attacking or false
-
-  if has_collision(p, vs, "left") and not p_is_attacking then
-    p.x = vs.x + sprite_w
-  elseif has_collision(p, vs, "right") and not p_is_attacking then
-    p.x = vs.x - sprite_w
-  elseif is_limit_left(p) then
-    p.x = 0
-  elseif is_limit_right(p) then
-    p.x = 127 - sprite_w
-  end
-end
-
-function move_y(p, y)
-  p.y += y
 end

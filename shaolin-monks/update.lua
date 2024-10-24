@@ -14,7 +14,8 @@ end
 function update_gameplay()
   update_player(p1)
   update_player(p2)
-  fix_orientation()
+  fix_players_orientation()
+  -- fix_players_placement()
 end
 
 function update_start()
@@ -68,13 +69,13 @@ end
 
 function process_inputs(p)
   local button_pressed = btn() > 0
-  local h🅾️❎ = btn(🅾️) and btn(❎)
-  local p🅾️ = btnp(🅾️)
-  local p❎ = btnp(❎)
-  local h⬆️ = btn(⬆️)
-  local h⬇️ = btn(⬇️)
-  local h⬅️ = btn(⬅️)
-  local h➡️ = btn(➡️)
+  local h🅾️❎ = btn(🅾️, p.id) and btn(❎, p.id)
+  local p🅾️ = btnp(🅾️, p.id)
+  local p❎ = btnp(❎, p.id)
+  local h⬆️ = btn(⬆️, p.id)
+  local h⬇️ = btn(⬇️, p.id)
+  local h⬅️ = btn(⬅️, p.id)
+  local h➡️ = btn(➡️, p.id)
 
   if button_pressed then
     if h⬇️ then
@@ -201,11 +202,11 @@ function update_projectile(p)
     p.projectile.x += projectile_speed * p.facing
     p.projectile.frames_counter += 1
 
-    if has_collision(p.projectile, vs, nil, 6) then
+    if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
       p.projectile = nil
       deal_damage(actions.special_attack, vs)
       start_action(p, actions.idle)
-    elseif is_limit_right(p.projectile) or is_limit_left(p.projectile) then
+    elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) then
       p.projectile = nil
       start_action(p, actions.idle)
     end
@@ -215,7 +216,7 @@ end
 function clear_action_stack(p)
 end
 
-function fix_orientation()
+function fix_players_orientation()
   local is_orientation_locked = p1.is_orientation_locked or p2.is_orientation_locked
 
   if is_p1_ahead_p2() and not is_orientation_locked then
@@ -223,25 +224,27 @@ function fix_orientation()
       shift_players_orientation()
     end
   end
+end
 
-  if p1.y == y_bottom_limit and p2.y == y_bottom_limit then
-    if p1.x == 0 and p2.x == 0 then
+function fix_players_placement()
+  if p1.y >= y_bottom_limit and p2.y >= y_bottom_limit then
+    if p1.x < sprite_w - 1 and p2.x < sprite_w - 1 then
       if p1.facing == directions.forward then
         p1.x = 0
-        p2.x = sprite_w
+        p2.x = sprite_w - 1
       else
-        p1.x = sprite_w
+        p1.x = sprite_w - 1
         p2.x = 0
       end
     end
 
-    if p1.x + sprite_w == 127 and p2.x + sprite_w == 127 then
+    if p1.x + sprite_w >= 127 and p2.x + sprite_w >= 127 then
       if p1.facing == directions.forward then
-        p1.x = 127 - sprite_w * 2
+        p1.x = 127 - sprite_w * 2 + 1
         p2.x = 127 - sprite_w
       else
         p1.x = 127 - sprite_w
-        p2.x = 127 - sprite_w * 2
+        p2.x = 127 - sprite_w * 2 + 1
       end
     end
   end
@@ -327,7 +330,10 @@ function start_action(p, action, params)
   p.current_action_state = action_states.in_progress
   p.current_action_params = params
   p.frames_counter = 0
-  shift_player_x(p, not action.is_x_shiftable)
+
+  if action.is_x_shiftable then
+    shift_player_x(p)
+  end
 
   if action == actions.prone then
     shift_player_y(p)
@@ -357,21 +363,21 @@ function restart_action(p)
   p.frames_counter = 0
 end
 
-function has_collision(attacker, target, type, attacker_w, attacker_h, target_w)
-  local attacker_w = attacker_w or sprite_w
-  local attacker_h = attacker_h or sprite_h
-  local target_w = target_w or sprite_w
+function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w)
+  local a_w = a_w or sprite_w
+  local a_h = a_h or sprite_h
+  local t_w = t_w or sprite_w
 
-  local right_collision = attacker.x + attacker_w > target.x + 8 - target_w and attacker.x < target.x
-  local left_collision = attacker.x + 8 - attacker_w < target.x + target_w and attacker.x > target.x
-  local vertical_collision = attacker.y + attacker_h > target.y
+  local has_r_col = a_x + a_w > t_x + 8 - t_w and a_x < t_x
+  local has_l_col = a_x + 8 - a_w < t_x + t_w and a_x > t_x
+  local has_v_col = a_y + a_h > t_y
 
   if type == "left" then
-    return left_collision and vertical_collision
+    return has_l_col and has_v_col
   elseif type == "right" then
-    return right_collision and vertical_collision
+    return has_r_col and has_v_col
   else
-    return (right_collision or left_collision) and vertical_collision
+    return (has_r_col or has_l_col) and has_v_col
   end
 end
 
@@ -408,8 +414,8 @@ function shift_player_x(p, unshift)
       p.is_x_shifted = false
     end
   else
-    if not p.is_x_shifted and (not is_limit_right(p) or p.facing == directions.backward) then
-      move_x(p, x_shift)
+    if not p.is_x_shifted then
+      move_x(p, x_shift, nil, true)
       p.is_x_shifted = true
     end
   end
@@ -489,14 +495,16 @@ end
 
 function swept(p)
   if p.current_action ~= actions.swept then
+    move_x(p, -swept_speed)
     start_action(p, actions.swept)
   end
 end
 
 function attack(p)
   local vs = get_vs(p)
+  local full_sprite_w = sprite_w + 1
 
-  if p.current_action_params.is_attacking and has_collision(p, vs, nil, sprite_w + 1) then
+  if p.current_action_params.is_attacking and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
     if vs.is_blocking then
     else
       deal_damage(p.current_action, vs)
@@ -533,13 +541,56 @@ function build_particle_set(color, count, x, y)
   return particle_set
 end
 
-function update_debug()
-  -- if debug.s == nil then
-  --   debug.s = 0
-  -- end
+function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
+  direction = direction or p.facing
 
-  debug.p1x = p1.x
-  debug.p2x = p2.x
+  local vs = get_vs(p)
+  local new_p_x = p.x + x_increment * direction
+  local has_l_col = has_collision(new_p_x, p.y, vs.x, vs.y, "left")
+  local has_r_col = has_collision(new_p_x, p.y, vs.x, vs.y, "right")
+
+  if is_limit_left(new_p_x) then
+    p.x = 0
+  elseif is_limit_right(new_p_x) then
+    p.x = 127 - sprite_w
+  elseif has_l_col and not ignore_collision then
+    if allow_overlap then
+      p.x = new_p_x
+    else
+      local vs_x_increment = vs.x - new_p_x + sprite_w - 1
+
+      if not is_limit_left(vs.x - vs_x_increment) then
+        move_x(vs, vs_x_increment * -1, nil, false, true)
+        p.x = new_p_x
+      end
+    end
+  elseif has_r_col and not ignore_collision then
+    if allow_overlap then
+      p.x = new_p_x
+    else
+      local vs_x_increment = new_p_x + sprite_w - vs.x - 1
+
+      if not is_limit_right(vs.x + vs_x_increment) then
+        move_x(vs, vs_x_increment * -1, nil, false, true)
+        p.x = new_p_x
+      end
+    end
+  else
+    p.x = new_p_x
+  end
+end
+
+function move_y(p, y)
+  p.y += y
+end
+
+function update_debug()
+  if debug.s == nil then
+    debug.s = 0
+  end
+
+  -- debug.p1x = p1.x
+  -- debug.p2x = p2.x
 
   -- if has_collision(p1, p2) then
   --   debug.collision = "true"
