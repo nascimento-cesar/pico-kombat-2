@@ -16,6 +16,7 @@ function update_gameplay()
   update_player(p2)
   fix_players_orientation()
   fix_players_placement()
+  cleanup_action_stack()
 end
 
 function update_start()
@@ -78,6 +79,8 @@ function process_inputs(p)
   local h➡️ = btn(➡️, p.id)
 
   if button_pressed then
+    game.action_stack_timeout_frames = 0
+
     if h⬇️ then
       if h🅾️❎ then
         setup_action(p, actions.block)
@@ -247,6 +250,16 @@ function fix_players_placement()
         p2.x = 127 - sprite_w * 2 + 1
       end
     end
+  end
+end
+
+function cleanup_action_stack()
+  if game.action_stack_timeout_frames > 6 then
+    game.action_stack_timeout_frames = 0
+    p1.action_stack = ""
+    p2.action_stack = ""
+  else
+    game.action_stack_timeout_frames += 1
   end
 end
 

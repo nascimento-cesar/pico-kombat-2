@@ -49,6 +49,7 @@ end
 
 function define_game()
   game = {
+    action_stack_timeout_frames = 0,
     current_round = 1,
     current_screen = screens.start
   }
