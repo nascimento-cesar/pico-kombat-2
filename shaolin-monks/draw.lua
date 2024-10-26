@@ -20,9 +20,12 @@ function draw_start()
 end
 
 function draw_player(p)
-  local flip_x = false
-  local flip_y = false
-  local id
+  local flip_body_x = false
+  local flip_body_y = false
+  local flip_head_x = false
+  local flip_head_y = false
+  local body_id
+  local head_id
   local index
   local sprite
   local sprites = p.current_action.sprites
@@ -40,22 +43,39 @@ function draw_player(p)
   sprite = sprites[index]
 
   if type(sprite) == "table" then
-    id = sprite[1]
-    flip_x = sprite[2]
-    flip_y = sprite[3]
+    body_id = sprite[1]
+    head_id = sprite[2]
+    head_x_adjustment = sprite[3] or 0
+    head_y_adjustment = sprite[4] or 0
+    flip_body_x = sprite[5]
+    flip_body_y = sprite[6]
+    flip_head_x = sprite[7]
+    flip_head_y = sprite[8]
   else
-    id = sprite
+    body_id = sprite
+    head_id = 1
+    head_x_adjustment = 0
+    head_y_adjustment = 0
   end
 
   if p.facing == directions.backward then
-    flip_x = not flip_x
+    flip_body_x = not flip_body_x
+    flip_head_x = not flip_head_x
   end
 
-  pal(5, 0)
-  pal(13, 5)
-  spr(id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_x, flip_y)
-  print(p.hp, p.x, p.y - 8, 7)
+  for color in all(p.character.pallete_map) do
+    if color[2] == -1 then
+      palt(color[1], true)
+    else
+      pal(color[1], color[2])
+    end
+  end
+
+  spr(body_id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_body_x, flip_body_y)
+  spr(p.character.head_sprites[head_id], p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment, 1, 1, flip_head_x, flip_head_y)
+  -- print(p.hp, p.x, p.y - 8, 7)
   pal()
+  palt()
 
   if p.projectile then
     draw_projectile(p)
