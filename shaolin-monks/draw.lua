@@ -63,19 +63,9 @@ function draw_player(p)
     flip_head_x = not flip_head_x
   end
 
-  for color in all(p.character.pallete_map) do
-    if color[2] == -1 then
-      palt(color[1], true)
-    else
-      pal(color[1], color[2])
-    end
-  end
-
-  spr(body_id, p.x, p.y, 1, 1, flip_body_x, flip_body_y)
-  spr(p.character.head_sprites[head_id], p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment, 1, 1, flip_head_x, flip_head_y)
+  draw_head(p, head_id, flip_body_x, flip_body_y)
+  draw_body(p, body_id, flip_body_x, flip_body_y)
   -- print(p.hp, p.x, p.y - 8, 7)
-  pal()
-  palt()
 
   if p.projectile then
     draw_projectile(p)
@@ -84,12 +74,31 @@ function draw_player(p)
   draw_particles(p)
 end
 
+function draw_head(p, id, flip_x, flip_y)
+  for color in all(p.character.head_pallete_map or p.character.pallete_map) do
+    pal(color[1], color[2])
+  end
+
+  spr(p.character.head_sprites[id], p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment, 1, 1, flip_x, flip_y)
+  pal()
+end
+
+function draw_body(p, id, flip_x, flip_y)
+  for color in all(p.character.pallete_map) do
+    pal(color[1], color[2])
+  end
+
+  spr(id, p.x, p.y, 1, 1, flip_x, flip_y)
+  pal()
+end
+
 function draw_projectile(p)
   local flip_x = false
   local index
-  local sprites = p.character.projectile.sprites
+  local projectile = p.character.projectile
+  local sprites = projectile.sprites
 
-  index = flr(p.projectile.frames_counter / p.character.projectile.frames_per_sprite) + 1
+  index = flr(p.projectile.frames_counter / projectile.frames_per_sprite) + 1
 
   if index > #sprites then
     index = 1
@@ -100,7 +109,12 @@ function draw_projectile(p)
     flip_x = not flip_x
   end
 
+  for color in all(projectile.pallete_map) do
+    pal(color[1], color[2])
+  end
+
   spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, flip_x)
+  pal()
 end
 
 function draw_particles(p)

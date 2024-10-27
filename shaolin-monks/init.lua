@@ -75,8 +75,9 @@ function define_characters()
         { 14, 8 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile)
@@ -99,8 +100,9 @@ function define_characters()
         { 14, 0 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -123,15 +125,17 @@ function define_characters()
         { 14, 1 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = { { 8, 3 }, { 9, 11 }, { 10, 11 }, { 7, 11 } },
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
-        -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
+        shadow_bolt = create_special_attack("shadow_bolt", "⬇️➡️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
     rp = {
-      head_sprites = { 79, 80, 81, 82, 79, 79, 79 },
+      head_sprites = { 79, 80, 81, 82, 79, 79, 102 },
+      head_pallete_map = { { 1, 3 }, { 2, 4 }, { 5, 0 }, { 8, 3 }, { 9, 8 } },
       pallete_map = {
         { 1, 15 },
         { 2, 3 },
@@ -146,11 +150,12 @@ function define_characters()
         { 14, 3 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = { { 8, 3 }, { 9, 11 }, { 10, 11 }, { 7, 11 } },
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
-        -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
+        shadow_bolt = create_special_attack("shadow_bolt", "➡️➡️🅾️", { 29, { 30, 7 } }, fire_projectile)
       }
     },
     sz = {
@@ -170,8 +175,9 @@ function define_characters()
         { 14, 12 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -193,8 +199,9 @@ function define_characters()
         { 14, 15 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -217,8 +224,9 @@ function define_characters()
         { 14, 1 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -242,8 +250,9 @@ function define_characters()
         { 15, 4 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -266,8 +275,9 @@ function define_characters()
         { 14, 2 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -290,8 +300,9 @@ function define_characters()
         { 14, 15 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -314,8 +325,9 @@ function define_characters()
         { 14, 10 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -339,8 +351,9 @@ function define_characters()
         { 14, 12 }
       },
       projectile = {
-        sprites = { 48, 49, 50, 51, 50, 49 },
-        frames_per_sprite = 2
+        frames_per_sprite = 2,
+        pallete_map = {},
+        sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
@@ -391,8 +404,8 @@ function create_special_attack(name, sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(0, characters.rd, false, true)
-  p2 = create_player(1, characters.jc, false)
+  p1 = create_player(0, characters.rp, false, true)
+  p2 = create_player(1, characters.jx, false)
 end
 
 function create_player(id, character, is_npc, is_challenger)
