@@ -71,6 +71,7 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 0 },
+        { 13, 0 },
         { 14, 8 }
       },
       projectile = {
@@ -94,6 +95,7 @@ function define_characters()
         { 10, 8 },
         { 11, 8 },
         { 12, 1 },
+        { 13, 8 },
         { 14, 0 }
       },
       projectile = {
@@ -113,10 +115,11 @@ function define_characters()
         { 4, 1 },
         { 5, 0 },
         { 8, 4 },
-        { 9, 15 },
+        { 9, 1 },
         { 10, 0 },
         { 11, 1 },
         { 12, 0 },
+        { 13, 1 },
         { 14, 1 }
       },
       projectile = {
@@ -139,6 +142,7 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 0 },
+        { 13, 0 },
         { 14, 3 }
       },
       projectile = {
@@ -162,6 +166,7 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 0 },
+        { 13, 0 },
         { 14, 12 }
       },
       projectile = {
@@ -178,12 +183,13 @@ function define_characters()
         { 1, 15 },
         { 2, 0 },
         { 3, 15 },
-        { 4, 0 },
+        { 4, 5 },
         { 5, 0 },
         { 8, 5 },
         { 9, 15 },
-        { 11, 10 },
+        { 11, 5 },
         { 12, 0 },
+        { 13, 10 },
         { 14, 15 }
       },
       projectile = {
@@ -194,7 +200,7 @@ function define_characters()
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
       }
     },
-    kt = {
+    kn = {
       head_sprites = { 87, 88, 89, 90, 87, 87, 87 },
       pallete_map = {
         { 1, 15 },
@@ -207,6 +213,7 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 1 },
+        { 13, 0 },
         { 14, 1 }
       },
       projectile = {
@@ -230,6 +237,7 @@ function define_characters()
         { 10, 6 },
         { 11, 6 },
         { 12, 0 },
+        { 13, 6 },
         { 14, 4 },
         { 15, 4 }
       },
@@ -254,7 +262,32 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 2 },
+        { 13, 0 },
         { 14, 2 }
+      },
+      projectile = {
+        sprites = { 48, 49, 50, 51, 50, 49 },
+        frames_per_sprite = 2
+      },
+      special_attacks = {
+        -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
+      }
+    },
+    bk = {
+      head_sprites = { 95, 96, 97, 98, 95, 95, 95 },
+      pallete_map = {
+        { 1, 6 },
+        { 2, 0 },
+        { 3, 15 },
+        { 4, 8 },
+        { 5, 0 },
+        { 8, 6 },
+        { 9, 15 },
+        { 10, 7 },
+        { 11, 8 },
+        { 12, 0 },
+        { 13, 7 },
+        { 14, 15 }
       },
       projectile = {
         sprites = { 48, 49, 50, 51, 50, 49 },
@@ -277,6 +310,7 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 0 },
+        { 13, 0 },
         { 14, 10 }
       },
       projectile = {
@@ -306,7 +340,7 @@ function define_global_actions()
     propelled = create_action("propelled", 3, nil, true, false, { { 23, 6, 0, 0 }, { 24, 4, -4, 0, false, false, true, true } }, action_types.damage_reaction),
     punch = create_action("punch", 3, attack, false, true, { { 7, 2 }, { 9, 3 }, { 7, 2 } }, action_types.attack),
     roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { { 7, 2 }, { 28, 3, -1 }, { 7, 2, 0, 0, true, false, true, false }, { 12, 5 }, { 13, 6 }, { 13, 6 }, { 13, 6 }, { 12, 5 } }, action_types.attack),
-    sweep = create_action("sweep", 2, attack, false, true, { { 4, 1, 0, 1 }, { 25, 2, 0, 1 }, { 26, 3, -1, 1 }, { 25, 2, 0, 1, true, false, true, false }, { 27, 1, 0, 1 }, { 27, 1, 0, 1 }, { 4, 1, 0, 1 } }, action_types.attack),
+    sweep = create_action("sweep", 22, attack, false, true, { { 4, 1, 0, 1 }, { 25, 2, 0, 1 }, { 26, 3, -1, 1 }, { 25, 2, 0, 1, true, false, true, false }, { 27, 1, 0, 1 }, { 27, 1, 0, 1 }, { 4, 1, 0, 1 } }, action_types.attack),
     swept = create_action("swept", 4, nil, false, false, { { 21, 6, 0, 1 } }, action_types.damage_reaction),
     walk = create_action("walk", 4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
@@ -332,8 +366,8 @@ function create_special_attack(name, sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(0, characters.jx, false, true)
-  p2 = create_player(1, characters.kl, false)
+  p1 = create_player(0, characters.sc, false, true)
+  p2 = create_player(1, characters.jc, false)
 end
 
 function create_player(id, character, is_npc, is_challenger)
