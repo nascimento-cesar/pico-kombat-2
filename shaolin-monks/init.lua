@@ -60,19 +60,44 @@ end
 function define_characters()
   characters = {
     lk = {
-      head_sprites = { 64, 65, 66, 67, 68, 69 },
+      head_sprites = { 64, 65, 66, 67, 68, 69, 68 },
       pallete_map = {
-        { 14, -1 },
-        { 9, 15 },
-        { 4, 8 },
         { 1, 15 },
+        { 2, 8 },
         { 3, 8 },
+        { 4, 8 },
+        { 5, 0 },
+        { 9, 15 },
         { 10, 0 },
         { 11, 0 },
         { 12, 0 },
-        { 2, 8 },
         { 13, 0 },
-        { 5, 0 }
+        { 14, -1 }
+      },
+      projectile = {
+        sprites = { 48, 49, 50, 51, 50, 49 },
+        frames_per_sprite = 2
+      },
+      sprite_offset = 0,
+      special_attacks = {
+        fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile)
+      }
+    },
+    kl = {
+      head_sprites = { 70, 71, 72, 73, 70, 70, 74 },
+      pallete_map = {
+        { 1, 15 },
+        { 2, 0 },
+        { 3, 0 },
+        { 4, 0 },
+        { 5, 0 },
+        { 8, 5 },
+        { 9, 15 },
+        { 10, 8 },
+        { 11, 8 },
+        { 12, 1 },
+        { 13, 1 },
+        { 14, -1 }
       },
       projectile = {
         sprites = { 48, 49, 50, 51, 50, 49 },
@@ -91,19 +116,19 @@ function define_global_actions()
     block = create_action("block", 2, nil, true, false, { 10, 11 }, action_types.other),
     crouch = create_action("crouch", 2, nil, true, false, { { 4, 1, 0, 1 }, { 5, 1, 0, 2 } }, action_types.other),
     flinch = create_action("flinch", 6, flinch, false, false, { 23 }, action_types.damage_reaction),
-    flying_kick = create_action("flying_kick", 3, attack, false, false, { 14 }, action_types.aerial_attack),
-    flying_punch = create_action("flying_punch", 3, attack, false, false, { 15 }, action_types.aerial_attack),
+    flying_kick = create_action("flying_kick", 3, attack, false, false, { { 14, 6 } }, action_types.aerial_attack),
+    flying_punch = create_action("flying_punch", 3, attack, false, false, { { 15, 6 } }, action_types.aerial_attack),
     get_up = create_action("get_up", 2, nil, false, false, { { 5, 1, 0, 2 }, { 4, 1, 0, 1 } }, action_types.other),
-    hook = create_action("hook", 3, attack, false, true, { { 6, 1, 0, 2 }, { 7, 2 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 7, 2 } }, action_types.attack),
+    hook = create_action("hook", 3, attack, false, true, { { 6, 1, 0, 1 }, { 7, 2 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 7, 2 } }, action_types.attack),
     idle = create_action("idle", 1, nil, false, false, { 0 }, action_types.other),
-    jump = create_action("jump", 2, nil, false, false, { { 16, 1, 0, 2 }, { 17, 4, 2, 1 }, { 16, 1, 0, -2, true, true, true, true }, { 17, 4, -2, -1, true, true, true, true } }, action_types.aerial),
-    kick = create_action("kick", 4, attack, false, true, { 12, 13, 12 }, action_types.attack),
+    jump = create_action("jump", 2, nil, false, false, { { 16, 6, 0, 2 }, { 17, 4, 2, 1 }, { 16, 6, 0, -2, true, true, true, true }, { 17, 4, -2, -1, true, true, true, true } }, action_types.aerial),
+    kick = create_action("kick", 4, attack, false, true, { { 12, 5 }, { 13, 6 }, { 12, 5 } }, action_types.attack),
     prone = create_action("prone", 8, nil, false, false, { { 22, 4, -4, 0, false, false, true, true } }, action_types.other),
-    propelled = create_action("propelled", 3, nil, true, false, { { 23, 1, 0, 0 }, { 24, 4, -4, 0, false, false, true, true } }, action_types.damage_reaction),
+    propelled = create_action("propelled", 3, nil, true, false, { { 23, 6, 0, 0 }, { 24, 4, -4, 0, false, false, true, true } }, action_types.damage_reaction),
     punch = create_action("punch", 3, attack, false, true, { { 7, 2 }, { 9, 3 }, { 7, 2 } }, action_types.attack),
-    roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { { 7, 2 }, { 28, 3, -1 }, { 7, 2, 0, 0, true, false, true, false }, 12, 13, 13, 13, 12 }, action_types.attack),
+    roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { { 7, 2 }, { 28, 3, -1 }, { 7, 2, 0, 0, true, false, true, false }, { 12, 5 }, { 13, 6 }, { 13, 6 }, { 13, 6 }, { 12, 5 } }, action_types.attack),
     sweep = create_action("sweep", 2, attack, false, true, { { 4, 1, 0, 1 }, { 25, 2, 0, 1 }, { 26, 3, -1, 1 }, { 25, 2, 0, 1, true, false, true, false }, { 27, 1, 0, 1 }, { 27, 1, 0, 1 }, { 4, 1, 0, 1 } }, action_types.attack),
-    swept = create_action("swept", 4, nil, false, false, { { 21, 1, 0, 1 } }, action_types.damage_reaction),
+    swept = create_action("swept", 4, nil, false, false, { { 21, 6, 0, 1 } }, action_types.damage_reaction),
     walk = create_action("walk", 4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
@@ -129,7 +154,7 @@ end
 
 function define_players()
   p1 = create_player(0, characters.lk, false, true)
-  p2 = create_player(1, characters.lk, false)
+  p2 = create_player(1, characters.kl, false)
 end
 
 function create_player(id, character, is_npc, is_challenger)

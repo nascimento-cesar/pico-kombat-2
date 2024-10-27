@@ -7,7 +7,7 @@ function _draw()
 end
 
 function draw_gameplay()
-  cls(1)
+  cls(2)
   draw_debug()
   draw_player(p1)
   draw_player(p2)
