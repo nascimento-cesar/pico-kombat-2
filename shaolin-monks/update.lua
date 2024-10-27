@@ -452,10 +452,12 @@ end
 
 function fire_projectile(p)
   if not p.projectile then
+    local height = p.character.projectile.height or 4
+
     p.projectile = {
       frames_counter = 0,
       x = p.x + sprite_w * p.facing,
-      y = p.y + 3
+      y = p.y + 5 - ceil(height / 2)
     }
   end
 end

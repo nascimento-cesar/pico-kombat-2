@@ -63,7 +63,7 @@ function draw_player(p)
     flip_head_x = not flip_head_x
   end
 
-  draw_head(p, head_id, flip_body_x, flip_body_y)
+  draw_head(p, head_id, flip_head_x, flip_head_y)
   draw_body(p, body_id, flip_body_x, flip_body_y)
   -- print(p.hp, p.x, p.y - 8, 7)
 
