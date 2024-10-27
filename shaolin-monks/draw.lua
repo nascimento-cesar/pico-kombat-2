@@ -71,7 +71,7 @@ function draw_player(p)
     end
   end
 
-  spr(body_id + p.character.sprite_offset, p.x, p.y, 1, 1, flip_body_x, flip_body_y)
+  spr(body_id, p.x, p.y, 1, 1, flip_body_x, flip_body_y)
   spr(p.character.head_sprites[head_id], p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment, 1, 1, flip_head_x, flip_head_y)
   -- print(p.hp, p.x, p.y - 8, 7)
   pal()
