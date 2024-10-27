@@ -207,8 +207,31 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 1 },
-        { 13, 0 },
         { 14, 1 }
+      },
+      projectile = {
+        sprites = { 48, 49, 50, 51, 50, 49 },
+        frames_per_sprite = 2
+      },
+      special_attacks = {
+        -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
+      }
+    },
+    jx = {
+      head_sprites = { 91, 92, 93, 94, 91, 91, 91 },
+      pallete_map = {
+        { 1, 4 },
+        { 2, 8 },
+        { 3, 4 },
+        { 4, 8 },
+        { 5, 0 },
+        { 8, 5 },
+        { 9, 5 },
+        { 10, 6 },
+        { 11, 6 },
+        { 12, 0 },
+        { 14, 4 },
+        { 15, 4 }
       },
       projectile = {
         sprites = { 48, 49, 50, 51, 50, 49 },
@@ -231,7 +254,6 @@ function define_characters()
         { 10, 0 },
         { 11, 0 },
         { 12, 2 },
-        { 13, 0 },
         { 14, 2 }
       },
       projectile = {
@@ -310,7 +332,7 @@ function create_special_attack(name, sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(0, characters.kt, false, true)
+  p1 = create_player(0, characters.jx, false, true)
   p2 = create_player(1, characters.kl, false)
 end
 
