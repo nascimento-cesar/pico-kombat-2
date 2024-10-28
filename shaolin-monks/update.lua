@@ -4,10 +4,52 @@
 function _update()
   update_debug()
 
-  if game.current_screen == screens.gameplay then
+  if game.current_screen == screens.character_selection then
+    update_character_selection()
+  elseif game.current_screen == screens.gameplay then
     update_gameplay()
   elseif game.current_screen == screens.start then
     update_start()
+  end
+end
+
+function update_character_selection()
+  for p in all({ p1, p2 }) do
+    local new_char = p.highlighted_char
+
+    if btnp(⬆️, p.id) then
+      if new_char < 5 then
+        new_char += 8
+      else
+        new_char -= 4
+      end
+    elseif btnp(⬇️, p.id) then
+      if new_char > 8 then
+        new_char -= 8
+      else
+        new_char += 4
+      end
+    elseif btnp(⬅️, p.id) then
+      if new_char == 1 or new_char == 5 or new_char == 9 then
+        new_char += 3
+      else
+        new_char -= 1
+      end
+    elseif btnp(➡️, p.id) then
+      if new_char % 4 == 0 then
+        new_char -= 3
+      else
+        new_char += 1
+      end
+    elseif btnp(🅾️, p.id) or btnp(❎, p.id) then
+      p.character = characters[characters.order[tostr(new_char)]]
+
+      if p1.character and p2.character then
+        game.current_screen = screens.gameplay
+      end
+    end
+
+    p.highlighted_char = new_char
   end
 end
 
@@ -21,7 +63,7 @@ end
 
 function update_start()
   if btnp(❎) then
-    game.current_screen = screens.gameplay
+    game.current_screen = screens.character_selection
   end
 end
 
@@ -618,14 +660,5 @@ end
 function update_debug()
   -- if debug.s == nil then
   --   debug.s = 0
-  -- end
-
-  debug.p1x = p1.x
-  debug.p2x = p2.x
-
-  -- if has_collision(p1, p2) then
-  --   debug.collision = "true"
-  -- else
-  --   debug.collision = "false"
   -- end
 end

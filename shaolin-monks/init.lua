@@ -60,6 +60,7 @@ end
 function define_characters()
   characters = {
     lk = {
+      background_color = 2,
       head_sprites = { 64, 65, 66, 67, 68, 69, 68 },
       pallete_map = {
         { 1, 15 },
@@ -83,6 +84,7 @@ function define_characters()
       }
     },
     kl = {
+      background_color = 3,
       head_sprites = { 70, 71, 72, 73, 70, 70, 74 },
       pallete_map = {
         { 1, 15 },
@@ -107,6 +109,7 @@ function define_characters()
       }
     },
     jc = {
+      background_color = 13,
       head_sprites = { 75, 76, 77, 78, 75, 75, 75 },
       pallete_map = {
         { 1, 15 },
@@ -132,6 +135,7 @@ function define_characters()
       }
     },
     rp = {
+      background_color = 4,
       head_sprites = { 79, 80, 81, 82, 79, 79, 102 },
       head_pallete_map = { { 1, 3 }, { 2, 4 }, { 5, 0 }, { 8, 3 }, { 9, 8 } },
       pallete_map = {
@@ -157,6 +161,7 @@ function define_characters()
       }
     },
     sz = {
+      background_color = 1,
       head_sprites = { 79, 80, 81, 82, 79, 79, 79 },
       pallete_map = {
         { 1, 15 },
@@ -182,6 +187,7 @@ function define_characters()
       }
     },
     st = {
+      background_color = 8,
       head_sprites = { 83, 84, 85, 86, 83, 83, 83 },
       pallete_map = {
         { 1, 15 },
@@ -205,6 +211,7 @@ function define_characters()
       }
     },
     kn = {
+      background_color = 12,
       head_sprites = { 87, 88, 89, 90, 87, 87, 87 },
       pallete_map = {
         { 1, 15 },
@@ -230,6 +237,7 @@ function define_characters()
       }
     },
     jx = {
+      background_color = 14,
       head_sprites = { 91, 92, 93, 94, 91, 91, 91 },
       pallete_map = {
         { 1, 4 },
@@ -256,6 +264,7 @@ function define_characters()
       }
     },
     ml = {
+      background_color = 13,
       head_sprites = { 87, 88, 89, 90, 87, 87, 87 },
       pallete_map = {
         { 1, 15 },
@@ -281,6 +290,7 @@ function define_characters()
       }
     },
     bk = {
+      background_color = 14,
       head_sprites = { 95, 96, 97, 98, 95, 95, 95 },
       pallete_map = {
         { 1, 6 },
@@ -306,6 +316,7 @@ function define_characters()
       }
     },
     sc = {
+      background_color = 2,
       head_sprites = { 79, 80, 81, 82, 79, 79, 79 },
       pallete_map = {
         { 1, 15 },
@@ -330,6 +341,7 @@ function define_characters()
       }
     },
     rd = {
+      background_color = 1,
       head_sprites = { 99, 100, 100, 101, 99, 99, 99 },
       pallete_map = {
         { 1, 15 },
@@ -356,6 +368,23 @@ function define_characters()
       }
     }
   }
+
+  local o = {}
+
+  o["1"] = "lk"
+  o["2"] = "kl"
+  o["3"] = "jc"
+  o["4"] = "rp"
+  o["5"] = "sz"
+  o["6"] = "st"
+  o["7"] = "kn"
+  o["8"] = "jx"
+  o["9"] = "ml"
+  o["10"] = "bk"
+  o["11"] = "sc"
+  o["12"] = "rd"
+
+  characters.order = o
 end
 
 function define_global_actions()
@@ -400,20 +429,20 @@ function create_special_attack(name, sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(0, characters.sc, false, true)
-  p2 = create_player(1, characters.jx, false)
+  p1 = create_player(0, false)
+  p2 = create_player(1, false, true)
 end
 
-function create_player(id, character, is_npc, is_challenger)
+function create_player(id, is_npc, is_challenger)
   return {
     action_stack = "",
-    character = character,
     current_action = actions.idle,
     current_action_params = {},
     current_action_state = action_states.in_progress,
     current_projectile = nil,
     facing = is_challenger and directions.backward or directions.forward,
     frames_counter = 0,
+    highlighted_char = id == 0 and 1 or 4,
     hp = 100,
     id = id,
     is_npc = is_npc or false,

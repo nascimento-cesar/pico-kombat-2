@@ -1,8 +1,46 @@
 function _draw()
-  if game.current_screen == screens.gameplay then
+  if game.current_screen == screens.character_selection then
+    draw_character_selection()
+  elseif game.current_screen == screens.gameplay then
     draw_gameplay()
   elseif game.current_screen == screens.start then
     draw_start()
+  end
+end
+
+function draw_character_selection()
+  cls(0)
+
+  local col = 1
+  local row = 1
+  local h = 20
+  local w = 20
+  local offset = (w - 8) / 2
+
+  for i = 1, 12 do
+    local c = characters[characters.order[tostr(i)]]
+    local x = (128 - 4 * w) / 2 + w * (col - 1)
+    local y = (128 - 3 * h) / 2 + h * (row - 1)
+
+    rectfill(x, y, x + w, y + h, c.background_color or 1)
+    change_pallete(c.pallete_map)
+    spr(0, x + offset, y + offset)
+    pal()
+    change_pallete(c.head_pallete_map or c.pallete_map)
+    spr(c.head_sprites[1], x + offset, y + offset)
+    pal()
+    spr(128, 0, 0)
+
+    if i == p1.highlighted_char or i == p2.highlighted_char then
+      rect(x, y, x + w - 1, y + h - 1, get_blinking_color(6, 7))
+    end
+
+    if col % 4 == 0 then
+      col = 1
+      row += 1
+    else
+      col += 1
+    end
   end
 end
 
@@ -24,6 +62,8 @@ function draw_player(p)
   local flip_body_y = false
   local flip_head_x = false
   local flip_head_y = false
+  local head_x_adjustment = 0
+  local head_y_adjustment = 0
   local body_id
   local head_id
   local index
@@ -54,8 +94,6 @@ function draw_player(p)
   else
     body_id = sprite
     head_id = 1
-    head_x_adjustment = 0
-    head_y_adjustment = 0
   end
 
   if p.facing == directions.backward then
@@ -63,9 +101,8 @@ function draw_player(p)
     flip_head_x = not flip_head_x
   end
 
-  draw_head(p, head_id, flip_head_x, flip_head_y)
+  draw_head(p, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
   draw_body(p, body_id, flip_body_x, flip_body_y)
-  -- print(p.hp, p.x, p.y - 8, 7)
 
   if p.projectile then
     draw_projectile(p)
@@ -74,22 +111,22 @@ function draw_player(p)
   draw_particles(p)
 end
 
-function draw_head(p, id, flip_x, flip_y)
-  for color in all(p.character.head_pallete_map or p.character.pallete_map) do
-    pal(color[1], color[2])
-  end
-
-  spr(p.character.head_sprites[id], p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment, 1, 1, flip_x, flip_y)
+function draw_head(p, id, x_adjustment, y_adjustment, flip_x, flip_y)
+  change_pallete(p.character.head_pallete_map or p.character.pallete_map)
+  spr(p.character.head_sprites[id], p.x + x_adjustment * p.facing, p.y + y_adjustment, 1, 1, flip_x, flip_y)
   pal()
 end
 
 function draw_body(p, id, flip_x, flip_y)
-  for color in all(p.character.pallete_map) do
-    pal(color[1], color[2])
-  end
-
+  change_pallete(p.character.pallete_map)
   spr(id, p.x, p.y, 1, 1, flip_x, flip_y)
   pal()
+end
+
+function change_pallete(pallete)
+  for color in all(pallete) do
+    pal(color[1], color[2])
+  end
 end
 
 function draw_projectile(p)
@@ -139,8 +176,7 @@ function draw_particles(p)
 end
 
 function draw_blinking_text(s, x, y)
-  local color = sin(time() * 4) > 0 and 7 or 8
-  print(s, x, y, color)
+  print(s, x, y, get_blinking_color())
 end
 
 function draw_debug()
