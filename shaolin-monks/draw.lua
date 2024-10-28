@@ -29,7 +29,6 @@ function draw_character_selection()
     change_pallete(c.head_pallete_map or c.pallete_map)
     spr(c.head_sprites[1], x + offset, y + offset)
     pal()
-    spr(128, 0, 0)
 
     if i == p1.highlighted_char or i == p2.highlighted_char then
       rect(x, y, x + w - 1, y + h - 1, get_blinking_color(6, 7))
@@ -198,6 +197,12 @@ function draw_hp()
     rectfill(x, y, x + w - 1, y + h - 1, 8)
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
     rect(x, y, x + w - 1, y + h - 1, 6)
+
+    for i = 1, game.current_combat.wins[p.id] do
+      change_pallete({ { 5, 0 } })
+      spr(128, x + (i - 1) * 8, y + h + 2)
+      pal()
+    end
   end
 end
 
