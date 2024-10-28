@@ -45,7 +45,14 @@ function define_global_variables()
   flinch_speed = 3
   jump_speed = 2
   projectile_speed = 3
+  round_duration = 90
   round_start_countdown = 3
+  round_states = {
+    countdown = 1,
+    finished = 2,
+    in_progress = 3,
+    finishing_move = 4
+  }
   screens = {
     character_selection = 1,
     game_over = 2,
@@ -66,7 +73,7 @@ end
 function define_game()
   game = {
     action_stack_timeout_frames = 0,
-    current_round = 1,
+    current_combat = nil,
     current_screen = screens.start,
     round_start_countdown = 3
   }

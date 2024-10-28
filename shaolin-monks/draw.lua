@@ -47,6 +47,7 @@ end
 function draw_gameplay()
   cls(2)
   draw_debug()
+  draw_round_time()
   draw_hp()
   draw_player(p1)
   draw_player(p2)
@@ -176,24 +177,52 @@ function draw_particles(p)
   end
 end
 
+function draw_round_time()
+  local elapsed = time() - game.current_combat.round_start_time
+  local remaining = ceil(round_duration - elapsed)
+  local x = get_hcenter(remaining)
+
+  print(remaining, x, 8, 7)
+end
+
 function draw_hp()
   local offset = 8
   local h = 8
   local w = (128 - offset * 3) / 2
-  local y = h + offset
+  local y = offset * 2
 
   for p in all({ p1, p2 }) do
     local x = offset + p.id * w + p.id * offset
     local hp_w = w * p.hp / 100
 
-    rectfill(x, y, x + w, y + h, 8)
-    rectfill(x, y, x + hp_w, y + h, 11)
-    rect(x, y, x + w, y + h, 6)
+    rectfill(x, y, x + w - 1, y + h - 1, 8)
+    rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
+    rect(x, y, x + w - 1, y + h - 1, 6)
   end
 end
 
 function draw_blinking_text(s, x, y)
   print(s, x, y, get_blinking_color())
+end
+
+function draw_axis_debugger()
+  if not ad then
+    ad = { x = 0, y = 0 }
+  else
+    if btn(⬇️) then
+      ad.y += 1
+    elseif btn(⬅️) then
+      ad.x -= 1
+    elseif btn(⬆️) then
+      ad.y -= 1
+    elseif btn(➡️) then
+      ad.x += 1
+    end
+  end
+
+  pset(ad.x, ad.y, 7)
+  print(ad.x, 0, 0)
+  print(ad.y, 20, 0)
 end
 
 function draw_debug()

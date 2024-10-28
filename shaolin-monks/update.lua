@@ -87,6 +87,17 @@ function set_next_combat()
     end
   end
 
+  if not game.current_combat then
+    game.current_combat = {
+      p1_v = 0,
+      p2_v = 0,
+      round = 1,
+      round_start_time = time(),
+      round_time = round_duration,
+      state = round_states.countdown
+    }
+  end
+
   game.current_screen = screens.gameplay
 end
 

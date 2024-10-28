@@ -7,7 +7,7 @@ function get_blinking_color(c1, c2, s)
 end
 
 function get_hcenter(s)
-  return 64 - (s and #s or 0) * 2
+  return 64 - (s and #tostr(s) or 0) * 2
 end
 
 function get_vcenter()
