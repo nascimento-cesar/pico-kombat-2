@@ -18,11 +18,11 @@ function draw_character_selection()
   local offset = (w - 8) / 2
 
   for i = 1, 12 do
-    local c = characters[characters.order[tostr(i)]]
+    local c = characters[i]
     local x = (128 - 4 * w) / 2 + w * (col - 1)
     local y = (128 - 3 * h) / 2 + h * (row - 1)
 
-    rectfill(x, y, x + w, y + h, c.background_color or 1)
+    rectfill(x, y, x + w - 1, y + h - 1, c.background_color or 1)
     change_pallete(c.pallete_map)
     spr(0, x + offset, y + offset)
     pal()

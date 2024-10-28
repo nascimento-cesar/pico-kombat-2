@@ -23,6 +23,20 @@ function define_global_variables()
     other = 6,
     special_attack = 7
   }
+  cs = {
+    lk = 1,
+    kl = 2,
+    jc = 3,
+    rp = 4,
+    sz = 5,
+    st = 6,
+    kn = 7,
+    jx = 8,
+    ml = 9,
+    bk = 10,
+    sc = 11,
+    rd = 12
+  }
   debug = {}
   directions = {
     backward = -1,
@@ -36,7 +50,8 @@ function define_global_variables()
     character_selection = 1,
     game_over = 2,
     gameplay = 3,
-    start = 4
+    next_combat = 4,
+    start = 5
   }
   sprite_h = 8
   sprite_w = 7
@@ -59,7 +74,7 @@ end
 
 function define_characters()
   characters = {
-    lk = {
+    [cs.lk] = {
       background_color = 2,
       head_sprites = { 64, 65, 66, 67, 68, 69, 68 },
       pallete_map = {
@@ -83,7 +98,7 @@ function define_characters()
         fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile)
       }
     },
-    kl = {
+    [cs.kl] = {
       background_color = 3,
       head_sprites = { 70, 71, 72, 73, 70, 70, 74 },
       pallete_map = {
@@ -108,7 +123,7 @@ function define_characters()
         -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
       }
     },
-    jc = {
+    [cs.jc] = {
       background_color = 13,
       head_sprites = { 75, 76, 77, 78, 75, 75, 75 },
       pallete_map = {
@@ -134,7 +149,7 @@ function define_characters()
         shadow_bolt = create_special_attack("shadow_bolt", "⬇️➡️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    rp = {
+    [cs.rp] = {
       background_color = 4,
       head_sprites = { 79, 80, 81, 82, 79, 79, 102 },
       head_pallete_map = { { 1, 3 }, { 2, 4 }, { 5, 0 }, { 8, 3 }, { 9, 8 } },
@@ -160,7 +175,7 @@ function define_characters()
         acid_spit = create_special_attack("acid_spit", "➡️➡️🅾️", { 29, { 30, 7 } }, fire_projectile)
       }
     },
-    sz = {
+    [cs.sz] = {
       background_color = 1,
       head_sprites = { 79, 80, 81, 82, 79, 79, 79 },
       pallete_map = {
@@ -186,7 +201,7 @@ function define_characters()
         freeze = create_special_attack("freeze", "⬇️➡️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    st = {
+    [cs.st] = {
       background_color = 8,
       head_sprites = { 83, 84, 85, 86, 83, 83, 83 },
       pallete_map = {
@@ -210,7 +225,7 @@ function define_characters()
         fire_skull = create_special_attack("fire_skull", "⬅️⬅️🅾️", { 18, { 19, 7 } }, fire_projectile)
       }
     },
-    kn = {
+    [cs.kn] = {
       background_color = 12,
       head_sprites = { 87, 88, 89, 90, 87, 87, 87 },
       pallete_map = {
@@ -236,7 +251,7 @@ function define_characters()
         fan_throw = create_special_attack("fan_throw", "➡️➡️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    jx = {
+    [cs.jx] = {
       background_color = 14,
       head_sprites = { 91, 92, 93, 94, 91, 91, 91 },
       pallete_map = {
@@ -263,7 +278,7 @@ function define_characters()
         energy_wave = create_special_attack("energy_wave", "➡️⬇️⬅️❎", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    ml = {
+    [cs.ml] = {
       background_color = 13,
       head_sprites = { 87, 88, 89, 90, 87, 87, 87 },
       pallete_map = {
@@ -289,7 +304,7 @@ function define_characters()
         sai_throw = create_special_attack("sai_throw", "⬇️⬅️🅾️", { 18, { 19, 7 } }, fire_projectile)
       }
     },
-    bk = {
+    [cs.bk] = {
       background_color = 14,
       head_sprites = { 95, 96, 97, 98, 95, 95, 95 },
       pallete_map = {
@@ -315,7 +330,7 @@ function define_characters()
         blade_spark = create_special_attack("blade_spark", "⬇️⬅️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    sc = {
+    [cs.sc] = {
       background_color = 2,
       head_sprites = { 79, 80, 81, 82, 79, 79, 79 },
       pallete_map = {
@@ -340,7 +355,7 @@ function define_characters()
         spear = create_special_attack("spear", "⬅️⬅️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    rd = {
+    [cs.rd] = {
       background_color = 1,
       head_sprites = { 99, 100, 100, 101, 99, 99, 99 },
       pallete_map = {
@@ -368,23 +383,6 @@ function define_characters()
       }
     }
   }
-
-  local o = {}
-
-  o["1"] = "lk"
-  o["2"] = "kl"
-  o["3"] = "jc"
-  o["4"] = "rp"
-  o["5"] = "sz"
-  o["6"] = "st"
-  o["7"] = "kn"
-  o["8"] = "jx"
-  o["9"] = "ml"
-  o["10"] = "bk"
-  o["11"] = "sc"
-  o["12"] = "rd"
-
-  characters.order = o
 end
 
 function define_global_actions()
@@ -429,11 +427,11 @@ function create_special_attack(name, sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(0, false)
-  p2 = create_player(1, false, true)
+  p1 = create_player(0)
+  p2 = create_player(1, true)
 end
 
-function create_player(id, is_npc, is_challenger)
+function create_player(id, is_challenger)
   return {
     action_stack = "",
     current_action = actions.idle,
@@ -442,13 +440,14 @@ function create_player(id, is_npc, is_challenger)
     current_projectile = nil,
     facing = is_challenger and directions.backward or directions.forward,
     frames_counter = 0,
-    highlighted_char = id == 0 and 1 or 4,
+    highlighted_char = nil,
     hp = 100,
     id = id,
-    is_npc = is_npc or false,
+    is_npc = true,
     is_orientation_locked = false,
     is_x_shifted = false,
     jump_acceleration = 0,
+    next_combats = {},
     particle_sets = {},
     x = is_challenger and 127 - 36 - sprite_w or 36,
     y = y_bottom_limit

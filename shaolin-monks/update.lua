@@ -6,6 +6,8 @@ function _update()
 
   if game.current_screen == screens.character_selection then
     update_character_selection()
+  elseif game.current_screen == screens.next_combat then
+    set_next_combat()
   elseif game.current_screen == screens.gameplay then
     update_gameplay()
   elseif game.current_screen == screens.start then
@@ -17,39 +19,47 @@ function update_character_selection()
   for p in all({ p1, p2 }) do
     local new_char = p.highlighted_char
 
-    if btnp(⬆️, p.id) then
-      if new_char < 5 then
-        new_char += 8
-      else
-        new_char -= 4
-      end
-    elseif btnp(⬇️, p.id) then
-      if new_char > 8 then
-        new_char -= 8
-      else
-        new_char += 4
-      end
-    elseif btnp(⬅️, p.id) then
-      if new_char == 1 or new_char == 5 or new_char == 9 then
-        new_char += 3
-      else
-        new_char -= 1
-      end
-    elseif btnp(➡️, p.id) then
-      if new_char % 4 == 0 then
-        new_char -= 3
-      else
-        new_char += 1
-      end
-    elseif btnp(🅾️, p.id) or btnp(❎, p.id) then
-      p.character = characters[characters.order[tostr(new_char)]]
+    if new_char then
+      if btnp(⬆️, p.id) then
+        if new_char < 5 then
+          new_char += 8
+        else
+          new_char -= 4
+        end
+      elseif btnp(⬇️, p.id) then
+        if new_char > 8 then
+          new_char -= 8
+        else
+          new_char += 4
+        end
+      elseif btnp(⬅️, p.id) then
+        if new_char == 1 or new_char == 5 or new_char == 9 then
+          new_char += 3
+        else
+          new_char -= 1
+        end
+      elseif btnp(➡️, p.id) then
+        if new_char % 4 == 0 then
+          new_char -= 3
+        else
+          new_char += 1
+        end
+      elseif btnp(🅾️, p.id) or btnp(❎, p.id) then
+        p.character = characters[new_char]
 
-      if p1.character and p2.character then
-        game.current_screen = screens.gameplay
+        local vs = get_vs(p)
+
+        if vs.is_npc or vs.character then
+          game.current_screen = screens.next_combat
+        end
+      end
+
+      p.highlighted_char = new_char
+    else
+      if btnp(🅾️, p.id) or btnp(❎, p.id) then
+        init_player(p)
       end
     end
-
-    p.highlighted_char = new_char
   end
 end
 
@@ -62,9 +72,28 @@ function update_gameplay()
 end
 
 function update_start()
-  if btnp(❎) then
-    game.current_screen = screens.character_selection
+  for p in all({ p1, p2 }) do
+    if btnp(❎, p.id) then
+      init_player(p)
+      game.current_screen = screens.character_selection
+    end
   end
+end
+
+function set_next_combat()
+  for p in all({ p1, p2 }) do
+    if not p.character then
+      p.character = get_next_challenger(get_vs(p))
+    end
+  end
+
+  game.current_screen = screens.gameplay
+end
+
+function get_next_challenger(p)
+  local challenger = characters[p.next_combats[1]]
+  deli(p.next_combats, 1)
+  return challenger
 end
 
 function update_player(p)

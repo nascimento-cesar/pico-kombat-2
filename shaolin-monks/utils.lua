@@ -18,6 +18,15 @@ function get_vs(p)
   return p.id == p1.id and p2 or p1
 end
 
+function init_player(p)
+  p.highlighted_char = p.id == p1.id and 1 or 4
+  p.is_npc = false
+
+  for _, v in pairs(cs) do
+    add(p.next_combats, v)
+  end
+end
+
 function is_action_finished(p)
   return p.current_action_state == action_states.finished
 end
