@@ -59,8 +59,8 @@ function define_global_variables()
   walk_speed = 1
   x_shift = 3
   y_shift = 3
-  y_bottom_limit = 127 - 32
-  y_upper_limit = 127 - 32 - 20
+  y_bottom_limit = 127 - 36
+  y_upper_limit = 127 - 36 - 20
 end
 
 function define_game()

@@ -93,6 +93,11 @@ end
 function get_next_challenger(p)
   local challenger = characters[p.next_combats[1]]
   deli(p.next_combats, 1)
+
+  if p.character == challenger then
+    return get_next_challenger(p)
+  end
+
   return challenger
 end
 

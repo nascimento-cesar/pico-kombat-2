@@ -47,6 +47,7 @@ end
 function draw_gameplay()
   cls(2)
   draw_debug()
+  draw_hp()
   draw_player(p1)
   draw_player(p2)
 end
@@ -172,6 +173,22 @@ function draw_particles(p)
     if #particle_set.particles == 0 then
       del(p.particle_sets, particle_set)
     end
+  end
+end
+
+function draw_hp()
+  local offset = 8
+  local h = 8
+  local w = (128 - offset * 3) / 2
+  local y = h + offset
+
+  for p in all({ p1, p2 }) do
+    local x = offset + p.id * w + p.id * offset
+    local hp_w = w * p.hp / 100
+
+    rectfill(x, y, x + w, y + h, 8)
+    rectfill(x, y, x + hp_w, y + h, 11)
+    rect(x, y, x + w, y + h, 6)
   end
 end
 
