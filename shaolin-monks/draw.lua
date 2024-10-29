@@ -44,8 +44,9 @@ function draw_character_selection()
 end
 
 function draw_gameplay()
-  cls(2)
+  cls(1)
   draw_debug()
+  draw_finish_him_her()
   draw_round_time()
   draw_hp()
   draw_player(p1)
@@ -184,6 +185,14 @@ function draw_round_time()
   print(remaining, x, 8, 7)
 end
 
+function draw_finish_him_her()
+  if game.current_combat.round_state == round_states.finishing_move then
+    local pronoun = game.current_combat.loser.character.g == gender.her and "her" or "him"
+    local text = "finish " .. pronoun
+    draw_blinking_text(text, get_hcenter(text), get_vcenter(), true)
+  end
+end
+
 function draw_hp()
   local offset = 8
   local h = 8
@@ -193,6 +202,7 @@ function draw_hp()
   for p in all({ p1, p2 }) do
     local x = offset + p.id * w + p.id * offset
     local hp_w = w * p.hp / 100
+    hp_w = hp_w < 1 and 1 or hp_w
 
     rectfill(x, y, x + w - 1, y + h - 1, 8)
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
@@ -206,8 +216,14 @@ function draw_hp()
   end
 end
 
-function draw_blinking_text(s, x, y)
-  print(s, x, y, get_blinking_color())
+function draw_blinking_text(s, x, y, temp)
+  if not temp then
+    game.blinking_text_timer = 0
+    print(s, x, y, get_blinking_color())
+  elseif temp and game.blinking_text_timer < 60 then
+    print(s, x, y, get_blinking_color())
+    game.blinking_text_timer += 1
+  end
 end
 
 function draw_axis_debugger()

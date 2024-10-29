@@ -42,7 +42,12 @@ function define_global_variables()
     backward = -1,
     forward = 1
   }
+  finishing_move_timer = 5
   flinch_speed = 3
+  gender = {
+    him = 1,
+    her = 2
+  }
   jump_speed = 2
   projectile_speed = 3
   round_duration = 90
@@ -65,7 +70,7 @@ function define_global_variables()
   swept_speed = 3
   walk_speed = 1
   x_shift = 3
-  y_shift = 3
+  y_shift = 2
   y_bottom_limit = 127 - 36
   y_upper_limit = 127 - 36 - 20
 end
@@ -73,6 +78,7 @@ end
 function define_game()
   game = {
     action_stack_timeout_frames = 0,
+    blinking_text_timer = 0,
     current_combat = nil,
     current_screen = screens.start,
     round_start_countdown = 3
@@ -234,6 +240,7 @@ function define_characters()
     },
     [cs.kn] = {
       background_color = 12,
+      g = gender.her,
       head_sprites = { 87, 88, 89, 90, 87, 87, 87 },
       pallete_map = {
         { 1, 15 },
@@ -287,6 +294,7 @@ function define_characters()
     },
     [cs.ml] = {
       background_color = 13,
+      g = gender.her,
       head_sprites = { 87, 88, 89, 90, 87, 87, 87 },
       pallete_map = {
         { 1, 15 },

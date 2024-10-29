@@ -1,5 +1,6 @@
 -- !BUGS TO FIX
 -- * attacking a propelled opponent from ground breaks opponent's
+-- * block not implemented
 
 function _update()
   update_debug()
@@ -89,14 +90,17 @@ function set_next_combat()
 
   if not game.current_combat then
     game.current_combat = {
-      wins = {
-        [p1.id] = 0,
-        [p2.id] = 0
-      },
+      finishing_move_timer = finishing_move_timer,
+      loser = nil,
       round = 1,
       round_start_time = time(),
       round_time = round_duration,
-      state = round_states.countdown
+      state = round_states.countdown,
+      winner = nil,
+      wins = {
+        [p1.id] = 0,
+        [p2.id] = 0
+      }
     }
   end
 
@@ -118,10 +122,12 @@ function update_player(p)
   update_frames_counter(p)
   update_previous_action(p)
 
-  if not p.is_npc then
-    process_inputs(p)
-  else
-    handle_no_key_press(p)
+  if not is_round_finished() then
+    if not p.is_npc then
+      process_inputs(p)
+    else
+      handle_no_key_press(p)
+    end
   end
 
   perform_current_action(p)
@@ -149,8 +155,14 @@ function update_previous_action(p)
       hold_action(p)
     elseif p.current_action == actions.swept then
       start_action(p, actions.prone)
+    elseif p.current_action == actions.flinch and is_round_finished() then
+      start_action(p, actions.swept)
     elseif p.current_action == actions.prone then
-      start_action(p, actions.get_up)
+      if is_round_finished() then
+        hold_action(p)
+      else
+        start_action(p, actions.get_up)
+      end
     else
       finish_action(p)
     end
@@ -552,7 +564,7 @@ function fire_projectile(p)
 end
 
 function deal_damage(action, p)
-  p.hp -= 10
+  p.hp -= 50
   react_to_damage(action, p)
 
   if action ~= actions.sweep then
@@ -588,9 +600,13 @@ function spill_blood(p)
 end
 
 function check_defeat(p)
-  if p.hp <= 0 then
-    game.current_screen = screens.start
-    define_players()
+  if is_finishing_move() then
+    game.current_combat.round_state = round_states.finished
+    game.current_combat.wins[get_vs(p).id] += 1
+  elseif p.hp <= 0 then
+    game.current_combat.loser = p
+    game.current_combat.winner = get_vs(p)
+    game.current_combat.round_state = round_states.finishing_move
   end
 end
 

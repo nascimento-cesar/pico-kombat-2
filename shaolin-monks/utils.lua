@@ -18,6 +18,10 @@ function get_vs(p)
   return p.id == p1.id and p2 or p1
 end
 
+function has_lost(p)
+  return game.current_combat.loser == p.id
+end
+
 function init_player(p)
   p.highlighted_char = p.id == p1.id and 1 or 4
   p.is_npc = false
@@ -51,6 +55,10 @@ function is_aerial(p)
   return p.current_action.type == action_types.aerial
 end
 
+function is_finishing_move()
+  return game.current_combat.round_state == round_states.finishing_move
+end
+
 function is_limit_left(x)
   return x < 0
 end
@@ -76,6 +84,10 @@ end
 
 function is_propelled(p)
   return p.current_action == actions.propelled
+end
+
+function is_round_finished()
+  return game.current_combat.round_state == round_states.finished
 end
 
 function is_special_attacking(p)
