@@ -19,7 +19,7 @@ function _update()
 end
 
 function update_character_selection()
-  for p in all({ p1, p2 }) do
+  for p in all(players) do
     local new_char = p.highlighted_char
 
     if is_playing(p) then
@@ -78,10 +78,18 @@ function update_gameplay()
   update_player(p2)
   fix_players_orientation()
   fix_players_placement()
+
+  if is_arcade_mode() then
+    detect_new_player()
+  end
+
+  if player_has_joined() then
+    process_new_player()
+  end
 end
 
 function update_start()
-  for p in all({ p1, p2 }) do
+  for p in all(players) do
     if btnp(❎, p.id) then
       init_player(p)
       game.current_screen = screens.character_selection
@@ -89,13 +97,19 @@ function update_start()
   end
 end
 
-function check_for_new_challenger(p)
-  if btnp(❎, p.id) then
+function detect_new_player()
+  for p in all(players) do
+    if not is_playing(p) and not player_has_joined() then
+      if btnp(🅾️, p.id) or btnp(❎, p.id) then
+        init_player(p)
+        game.current_combat.round_state = round_states.new_player
+      end
+    end
   end
 end
 
 function set_next_combat()
-  for p in all({ p1, p2 }) do
+  for p in all(players) do
     if not p.character then
       p.character = get_next_challenger(get_vs(p))
     end
@@ -121,6 +135,16 @@ end
 function reset_timers()
   for k, v in pairs(timers) do
     game.current_combat.timers[k] = v
+  end
+end
+
+function process_new_player()
+  if game.current_combat.timers.new_player > 0 then
+    game.current_combat.timers.new_player -= 1
+  else
+    game.current_screen = screens.character_selection
+    p1.character = nil
+    p2.character = nil
   end
 end
 
@@ -190,7 +214,7 @@ function update_player(p)
     if is_playing(p) then
       process_inputs(p)
     else
-      handle_no_key_press(p)
+      next_cpu_action(p)
     end
   end
 
@@ -201,6 +225,10 @@ function update_player(p)
   if is_playing(p) then
     cleanup_action_stack(p)
   end
+end
+
+function next_cpu_action(p)
+  handle_no_key_press(p)
 end
 
 function update_frames_counter(p)

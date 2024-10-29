@@ -59,7 +59,8 @@ function define_global_variables()
     countdown = 1,
     finished = 2,
     in_progress = 3,
-    finishing_move = 4
+    finishing_move = 4,
+    new_player = 5
   }
   screens = {
     character_selection = 1,
@@ -73,7 +74,7 @@ function define_global_variables()
   swept_speed = 3
   timers = {
     finishing_move = 90,
-    new_challenger = 90,
+    new_player = 60,
     round_end = 60,
     round_start = 60
   }
@@ -88,11 +89,11 @@ function define_game()
   game = {
     current_combat = nil,
     current_screen = screens.start,
-    next_combats = {},
     joined_status = {
       [p_id.p1] = false,
       [p_id.p2] = false
-    }
+    },
+    next_combats = {}
   }
 end
 
@@ -455,6 +456,7 @@ end
 function define_players()
   p1 = create_player(p_id.p1)
   p2 = create_player(p_id.p2)
+  players = { p1, p2 }
 end
 
 function create_player(id, character)

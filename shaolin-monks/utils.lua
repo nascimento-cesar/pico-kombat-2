@@ -129,3 +129,7 @@ function merge(obj1, obj2)
     obj1[k] = v
   end
 end
+
+function player_has_joined()
+  return game.current_combat.round_state == round_states.new_player
+end

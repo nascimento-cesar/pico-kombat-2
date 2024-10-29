@@ -30,7 +30,7 @@ function draw_character_selection()
     spr(c.head_sprites[1], x + offset, y + offset)
     pal()
 
-    for p in all({ p1, p2 }) do
+    for p in all(players) do
       if i == p.highlighted_char and is_playing(p) then
         rect(x, y, x + w - 1, y + h - 1, get_blinking_color(6, 7))
       end
@@ -55,6 +55,8 @@ function draw_gameplay()
     draw_round_result()
   elseif is_round_beginning() then
     draw_round_start()
+  elseif player_has_joined() then
+    draw_new_player()
   end
 
   draw_round_timer()
@@ -215,7 +217,11 @@ end
 function draw_round_result()
   local winner = game.current_combat.round_winner
   local text = (winner == p1 and "p1" or "p2") .. " wins"
+  draw_blinking_text(text, get_hcenter(text), get_vcenter())
+end
 
+function draw_new_player()
+  local text = "a new challenger has emerged"
   draw_blinking_text(text, get_hcenter(text), get_vcenter())
 end
 
@@ -225,7 +231,7 @@ function draw_hp()
   local w = (128 - offset * 3) / 2
   local y = offset * 2
 
-  for p in all({ p1, p2 }) do
+  for p in all(players) do
     local x = offset + p.id * w + p.id * offset
     local hp_w = w * p.hp / 100
     hp_w = hp_w < 1 and 1 or hp_w
