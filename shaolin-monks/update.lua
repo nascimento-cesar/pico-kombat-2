@@ -78,7 +78,13 @@ function update_character_selection()
 end
 
 function update_gameplay()
-  if is_round_beginning() then
+  if is_arcade_mode() then
+    detect_new_player()
+  end
+
+  if player_has_joined() then
+    return process_new_player()
+  elseif is_round_beginning() then
     process_round_start()
   elseif is_round_finished() then
     process_round_end()
@@ -90,14 +96,6 @@ function update_gameplay()
   update_player(p2)
   fix_players_orientation()
   fix_players_placement()
-
-  if is_arcade_mode() then
-    detect_new_player()
-  end
-
-  if player_has_joined() then
-    process_new_player()
-  end
 end
 
 function update_start()
@@ -154,6 +152,7 @@ function process_new_player()
   if game.current_combat.timers.new_player > 0 then
     game.current_combat.timers.new_player -= 1
   else
+    reset_players()
     game.current_screen = screens.character_selection
     p1.character = nil
     p2.character = nil
