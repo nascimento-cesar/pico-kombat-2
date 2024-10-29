@@ -30,8 +30,10 @@ function draw_character_selection()
     spr(c.head_sprites[1], x + offset, y + offset)
     pal()
 
-    if i == p1.highlighted_char or i == p2.highlighted_char then
-      rect(x, y, x + w - 1, y + h - 1, get_blinking_color(6, 7))
+    for p in all({ p1, p2 }) do
+      if i == p.highlighted_char and is_playing(p) then
+        rect(x, y, x + w - 1, y + h - 1, get_blinking_color(6, 7))
+      end
     end
 
     if col % 4 == 0 then
@@ -232,7 +234,7 @@ function draw_hp()
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
     rect(x, y, x + w - 1, y + h - 1, 6)
 
-    for i = 1, game.current_combat.victories[p.id] do
+    for i = 1, game.current_combat.rounds_won[p.id] do
       change_pallete({ { 5, 0 } })
       spr(128, x + (i - 1) * 8, y + h + 2)
       pal()

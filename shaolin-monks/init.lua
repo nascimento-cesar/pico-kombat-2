@@ -49,6 +49,10 @@ function define_global_variables()
     her = 2
   }
   jump_speed = 2
+  p_id = {
+    p1 = 0,
+    p2 = 1
+  }
   projectile_speed = 3
   round_duration = 90
   round_states = {
@@ -69,6 +73,7 @@ function define_global_variables()
   swept_speed = 3
   timers = {
     finishing_move = 90,
+    new_challenger = 90,
     round_end = 60,
     round_start = 60
   }
@@ -83,7 +88,11 @@ function define_game()
   game = {
     current_combat = nil,
     current_screen = screens.start,
-    next_combats = {}
+    next_combats = {},
+    joined_status = {
+      [p_id.p1] = false,
+      [p_id.p2] = false
+    }
   }
 end
 
@@ -444,12 +453,12 @@ function create_special_attack(name, sequence, sprites, handler)
 end
 
 function define_players()
-  p1 = create_player(0)
-  p2 = create_player(1)
+  p1 = create_player(p_id.p1)
+  p2 = create_player(p_id.p2)
 end
 
-function create_player(id, character, is_npc)
-  local is_p2 = id == 1
+function create_player(id, character)
+  local is_p1 = id == p_id.p1
 
   return {
     action_stack = "",
@@ -459,17 +468,16 @@ function create_player(id, character, is_npc)
     current_action_params = {},
     current_action_state = action_states.in_progress,
     current_projectile = nil,
-    facing = is_p2 and directions.backward or directions.forward,
+    facing = is_p1 and directions.forward or directions.backward,
     frames_counter = 0,
-    highlighted_char = nil,
+    highlighted_char = is_p1 and 1 or 4,
     hp = 100,
     id = id,
-    is_npc = is_npc == nil and true or is_npc,
     is_orientation_locked = false,
     is_x_shifted = false,
     jump_acceleration = 0,
     particle_sets = {},
-    x = is_p2 and 127 - 36 - sprite_w or 36,
+    x = is_p1 and 36 or 127 - 36 - sprite_w,
     y = y_bottom_limit
   }
 end

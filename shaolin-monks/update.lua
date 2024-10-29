@@ -22,7 +22,7 @@ function update_character_selection()
   for p in all({ p1, p2 }) do
     local new_char = p.highlighted_char
 
-    if new_char then
+    if is_playing(p) then
       if btnp(⬆️, p.id) then
         if new_char < 5 then
           new_char += 8
@@ -49,10 +49,9 @@ function update_character_selection()
         end
       elseif btnp(🅾️, p.id) or btnp(❎, p.id) then
         p.character = characters[new_char]
-
         local vs = get_vs(p)
 
-        if vs.is_npc or vs.character then
+        if not is_playing(vs) or is_playing(vs) and vs.character then
           game.current_screen = screens.next_combat
         end
       end
@@ -95,31 +94,27 @@ function check_for_new_challenger(p)
   end
 end
 
-function set_next_combat(override)
+function set_next_combat()
   for p in all({ p1, p2 }) do
     if not p.character then
       p.character = get_next_challenger(get_vs(p))
     end
   end
 
-  -- !REMOVE
-  if not game.current_combat or override then
-    game.current_combat = {
-      timers = {},
-      round = 1,
-      round_loser = nil,
-      round_start_time = time(),
-      round_state = round_states.countdown,
-      round_winner = nil,
-      victories = {
-        [p1.id] = 0,
-        [p2.id] = 0
-      }
+  game.current_combat = {
+    timers = {},
+    round = 1,
+    round_loser = nil,
+    round_start_time = time(),
+    round_state = round_states.countdown,
+    round_winner = nil,
+    rounds_won = {
+      [p_id.p1] = 0,
+      [p_id.p2] = 0
     }
+  }
 
-    reset_timers()
-  end
-
+  reset_timers()
   game.current_screen = screens.gameplay
 end
 
@@ -142,15 +137,18 @@ function process_round_end()
     game.current_combat.timers.round_end -= 1
   else
     reset_players()
-    local combat_winner = get_combat_winner()
 
-    if combat_winner then
+    if has_combat_ended() then
+      local winner = get_combat_winner()
+      local loser = get_vs(winner)
+
       if is_arcade_mode() then
-        local vs = get_vs(combat_winner)
-        vs.character = nil
-        set_next_combat(true)
+        loser.character = nil
+        set_next_combat()
       else
         game.current_screen = screens.character_selection
+        loser.character = nil
+        winner.character = nil
       end
     else
       game.current_combat.round_state = round_states.countdown
@@ -180,8 +178,8 @@ function get_next_challenger(p)
 end
 
 function reset_players()
-  p1 = create_player(p1.id, p1.character, p1.is_npc)
-  p2 = create_player(p2.id, p2.character, p2.is_npc)
+  p1 = create_player(p_id.p1, p1.character)
+  p2 = create_player(p_id.p2, p2.character)
 end
 
 function update_player(p)
@@ -189,7 +187,7 @@ function update_player(p)
   update_previous_action(p)
 
   if (is_round_in_progress() or is_round_finishing_move()) and not has_lost(p) then
-    if not p.is_npc then
+    if is_playing(p) then
       process_inputs(p)
     else
       handle_no_key_press(p)
@@ -200,7 +198,7 @@ function update_player(p)
   update_aerial_action(p)
   update_projectile(p)
 
-  if not p.is_npc then
+  if is_playing(p) then
     cleanup_action_stack(p)
   end
 end
@@ -668,9 +666,9 @@ function check_defeat(p)
     local vs = get_vs(p)
     game.current_combat.round_loser = p
     game.current_combat.round_winner = vs
-    game.current_combat.victories[vs.id] += 1
+    game.current_combat.rounds_won[vs.id] += 1
 
-    if get_combat_winner() then
+    if has_combat_ended() then
       game.current_combat.round_state = round_states.finishing_move
     else
       game.current_combat.round_state = round_states.finished

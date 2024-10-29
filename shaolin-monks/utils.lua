@@ -7,11 +7,11 @@ function get_blinking_color(c1, c2, s)
 end
 
 function get_combat_winner()
-  local victories = game.current_combat.victories
+  local rounds_won = game.current_combat.rounds_won
 
-  if victories[p1.id] == 2 then
+  if rounds_won[p_id.p1] == 2 then
     return p1
-  elseif victories[p2.id] == 2 then
+  elseif rounds_won[p_id.p2] == 2 then
     return p2
   end
 end
@@ -25,7 +25,11 @@ function get_vcenter()
 end
 
 function get_vs(p)
-  return p.id == p1.id and p2 or p1
+  return p.id == p_id.p1 and p2 or p1
+end
+
+function has_combat_ended()
+  return get_combat_winner() and true or false
 end
 
 function has_lost(p)
@@ -33,9 +37,9 @@ function has_lost(p)
 end
 
 function init_player(p)
-  p.highlighted_char = p.id == p1.id and 1 or 4
-  p.is_npc = false
+  game.joined_status[p.id] = true
 
+  --! Player specific
   for _, v in pairs(cs) do
     add(game.next_combats, v)
   end
@@ -66,7 +70,7 @@ function is_aerial(p)
 end
 
 function is_arcade_mode()
-  return p1.is_npc or p2.is_npc
+  return not is_playing(p1) or not is_playing(p2)
 end
 
 function is_limit_left(x)
@@ -86,6 +90,10 @@ function is_p1_ahead_p2()
   local is_p1_behind = p1.x + sprite_w < p2.x + sprite_w and p1.facing == directions.backward
 
   return is_p1_ahead or is_p1_behind
+end
+
+function is_playing(p)
+  return game.joined_status[p.id]
 end
 
 function is_prone(p)
