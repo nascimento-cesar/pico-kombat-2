@@ -1,6 +1,7 @@
--- !BUGS TO FIX
+-- TODO LIST
 -- * attacking a propelled opponent from ground breaks opponent's
 -- * block not implemented
+-- * time's up not implemented
 
 function _update()
   update_debug()
@@ -65,6 +66,14 @@ function update_character_selection()
 end
 
 function update_gameplay()
+  if is_round_beginning() then
+    process_round_start()
+  elseif is_round_finished() then
+    process_round_end()
+  elseif is_round_finishing_move() then
+    process_finishing_move()
+  end
+
   update_player(p1)
   update_player(p2)
   fix_players_orientation()
@@ -81,22 +90,23 @@ function update_start()
   end
 end
 
-function set_next_combat()
+function set_next_combat(override)
   for p in all({ p1, p2 }) do
     if not p.character then
       p.character = get_next_challenger(get_vs(p))
     end
   end
 
-  if not game.current_combat then
+  if not game.current_combat or override then
     game.current_combat = {
-      finishing_move_timer = finishing_move_timer,
-      loser = nil,
+      finishing_move_countdown = finishing_move_countdown,
       round = 1,
+      round_end_countdown = round_end_countdown,
+      round_loser = nil,
+      round_start_countdown = round_start_countdown,
       round_start_time = time(),
-      round_time = round_duration,
-      state = round_states.countdown,
-      winner = nil,
+      round_state = round_states.countdown,
+      round_winner = nil,
       wins = {
         [p1.id] = 0,
         [p2.id] = 0
@@ -107,9 +117,49 @@ function set_next_combat()
   game.current_screen = screens.gameplay
 end
 
+function process_finishing_move()
+  if game.current_combat.finishing_move_countdown > 0 then
+    game.current_combat.finishing_move_countdown -= 1
+  else
+    game.current_combat.round_state = round_states.finished
+  end
+end
+
+function process_round_end()
+  if game.current_combat.round_end_countdown > 0 then
+    game.current_combat.round_end_countdown -= 1
+  else
+    reset_players()
+    local winner = get_combat_winner()
+
+    if winner then
+      if is_arcade_mode() then
+        local vs = get_vs(winner)
+        vs.character = nil
+        set_next_combat(true)
+      else
+        game.current_screen = screens.character_selection
+      end
+    else
+      game.current_combat.round_state = round_states.countdown
+      game.current_combat.round_end_countdown = round_end_countdown
+    end
+  end
+end
+
+function process_round_start()
+  if game.current_combat.round_start_countdown > 0 then
+    game.current_combat.round_start_countdown -= 1
+  else
+    game.current_combat.round_start_time = time()
+    game.current_combat.round_state = round_states.in_progress
+    game.current_combat.round_start_countdown = round_start_countdown
+  end
+end
+
 function get_next_challenger(p)
-  local challenger = characters[p.next_combats[1]]
-  deli(p.next_combats, 1)
+  local challenger = characters[game.next_combats[1]]
+  deli(game.next_combats, 1)
 
   if p.character == challenger then
     return get_next_challenger(p)
@@ -118,11 +168,16 @@ function get_next_challenger(p)
   return challenger
 end
 
+function reset_players()
+  p1 = create_player(p1.id, p1.character, p1.is_npc)
+  p2 = create_player(p2.id, p2.character, p2.is_npc)
+end
+
 function update_player(p)
   update_frames_counter(p)
   update_previous_action(p)
 
-  if not is_round_finished() then
+  if (is_round_in_progress() or is_round_finishing_move()) and not has_lost(p) then
     if not p.is_npc then
       process_inputs(p)
     else
@@ -600,13 +655,20 @@ function spill_blood(p)
 end
 
 function check_defeat(p)
-  if is_finishing_move() then
+  if is_round_finishing_move() then
     game.current_combat.round_state = round_states.finished
-    game.current_combat.wins[get_vs(p).id] += 1
   elseif p.hp <= 0 then
-    game.current_combat.loser = p
-    game.current_combat.winner = get_vs(p)
-    game.current_combat.round_state = round_states.finishing_move
+    local vs = get_vs(p)
+    game.current_combat.round_loser = p
+    game.current_combat.round_winner = vs
+    game.current_combat.wins[vs.id] += 1
+
+    if get_combat_winner() then
+      game.current_combat.round_state = round_states.finishing_move
+    else
+      game.current_combat.round_state = round_states.finished
+      game.current_combat.round += 1
+    end
   end
 end
 

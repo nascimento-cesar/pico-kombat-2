@@ -42,7 +42,7 @@ function define_global_variables()
     backward = -1,
     forward = 1
   }
-  finishing_move_timer = 5
+  finishing_move_countdown = 90
   flinch_speed = 3
   gender = {
     him = 1,
@@ -51,7 +51,8 @@ function define_global_variables()
   jump_speed = 2
   projectile_speed = 3
   round_duration = 90
-  round_start_countdown = 3
+  round_end_countdown = 60
+  round_start_countdown = 60
   round_states = {
     countdown = 1,
     finished = 2,
@@ -78,10 +79,9 @@ end
 function define_game()
   game = {
     action_stack_timeout_frames = 0,
-    blinking_text_timer = 0,
     current_combat = nil,
     current_screen = screens.start,
-    round_start_countdown = 3
+    next_combats = {}
   }
 end
 
@@ -443,28 +443,30 @@ end
 
 function define_players()
   p1 = create_player(0)
-  p2 = create_player(1, true)
+  p2 = create_player(1)
 end
 
-function create_player(id, is_challenger)
+function create_player(id, character, is_npc)
+  local is_p2 = id == 1
+
   return {
     action_stack = "",
+    character = character,
     current_action = actions.idle,
     current_action_params = {},
     current_action_state = action_states.in_progress,
     current_projectile = nil,
-    facing = is_challenger and directions.backward or directions.forward,
+    facing = is_p2 and directions.backward or directions.forward,
     frames_counter = 0,
     highlighted_char = nil,
     hp = 100,
     id = id,
-    is_npc = true,
+    is_npc = is_npc == nil and true or is_npc,
     is_orientation_locked = false,
     is_x_shifted = false,
     jump_acceleration = 0,
-    next_combats = {},
     particle_sets = {},
-    x = is_challenger and 127 - 36 - sprite_w or 36,
+    x = is_p2 and 127 - 36 - sprite_w or 36,
     y = y_bottom_limit
   }
 end

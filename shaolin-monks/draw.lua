@@ -46,8 +46,16 @@ end
 function draw_gameplay()
   cls(1)
   draw_debug()
-  draw_finish_him_her()
-  draw_round_time()
+
+  if is_round_finishing_move() then
+    draw_finish_him_her()
+  elseif is_round_finished() then
+    draw_round_result()
+  elseif is_round_beginning() then
+    draw_round_start()
+  end
+
+  draw_round_timer()
   draw_hp()
   draw_player(p1)
   draw_player(p2)
@@ -177,20 +185,36 @@ function draw_particles(p)
   end
 end
 
-function draw_round_time()
-  local elapsed = time() - game.current_combat.round_start_time
+function draw_round_timer()
+  local elapsed = is_round_beginning() and 0 or time() - game.current_combat.round_start_time
   local remaining = ceil(round_duration - elapsed)
   local x = get_hcenter(remaining)
-
   print(remaining, x, 8, 7)
 end
 
 function draw_finish_him_her()
-  if game.current_combat.round_state == round_states.finishing_move then
-    local pronoun = game.current_combat.loser.character.g == gender.her and "her" or "him"
-    local text = "finish " .. pronoun
-    draw_blinking_text(text, get_hcenter(text), get_vcenter(), true)
+  local pronoun = game.current_combat.round_loser.character.g == gender.her and "her" or "him"
+  local text = "finish " .. pronoun
+  draw_blinking_text(text, get_hcenter(text), get_vcenter())
+end
+
+function draw_round_start()
+  local text = ""
+
+  if game.current_combat.round_start_countdown > round_start_countdown / 2 then
+    text = "round " .. game.current_combat.round
+  else
+    text = "fight"
   end
+
+  draw_blinking_text(text, get_hcenter(text), get_vcenter())
+end
+
+function draw_round_result()
+  local winner = game.current_combat.round_winner
+  local text = (winner == p1 and "p1" or "p2") .. " wins"
+
+  draw_blinking_text(text, get_hcenter(text), get_vcenter())
 end
 
 function draw_hp()
@@ -216,14 +240,8 @@ function draw_hp()
   end
 end
 
-function draw_blinking_text(s, x, y, temp)
-  if not temp then
-    game.blinking_text_timer = 0
-    print(s, x, y, get_blinking_color())
-  elseif temp and game.blinking_text_timer < 60 then
-    print(s, x, y, get_blinking_color())
-    game.blinking_text_timer += 1
-  end
+function draw_blinking_text(s, x, y)
+  print(s, x, y, get_blinking_color())
 end
 
 function draw_axis_debugger()

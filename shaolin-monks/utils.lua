@@ -6,6 +6,16 @@ function get_blinking_color(c1, c2, s)
   return sin(time() * s) > 0 and c1 or c2
 end
 
+function get_combat_winner()
+  local wins = game.current_combat.wins
+
+  if wins[p1.id] == 2 then
+    return p1
+  elseif wins[p2.id] == 2 then
+    return p2
+  end
+end
+
 function get_hcenter(s)
   return 64 - (s and #tostr(s) or 0) * 2
 end
@@ -19,7 +29,7 @@ function get_vs(p)
 end
 
 function has_lost(p)
-  return game.current_combat.loser == p.id
+  return game.current_combat.round_loser == p
 end
 
 function init_player(p)
@@ -27,7 +37,7 @@ function init_player(p)
   p.is_npc = false
 
   for _, v in pairs(cs) do
-    add(p.next_combats, v)
+    add(game.next_combats, v)
   end
 end
 
@@ -55,8 +65,8 @@ function is_aerial(p)
   return p.current_action.type == action_types.aerial
 end
 
-function is_finishing_move()
-  return game.current_combat.round_state == round_states.finishing_move
+function is_arcade_mode()
+  return p1.is_npc or p2.is_npc
 end
 
 function is_limit_left(x)
@@ -86,8 +96,20 @@ function is_propelled(p)
   return p.current_action == actions.propelled
 end
 
+function is_round_beginning()
+  return game.current_combat.round_state == round_states.countdown
+end
+
 function is_round_finished()
   return game.current_combat.round_state == round_states.finished
+end
+
+function is_round_finishing_move()
+  return game.current_combat.round_state == round_states.finishing_move
+end
+
+function is_round_in_progress()
+  return game.current_combat.round_state == round_states.in_progress
 end
 
 function is_special_attacking(p)
