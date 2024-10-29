@@ -93,7 +93,10 @@ function define_game()
       [p_id.p1] = false,
       [p_id.p2] = false
     },
-    next_combats = {}
+    next_combats = {
+      [p_id.p1] = {},
+      [p_id.p2] = {}
+    }
   }
 end
 
@@ -456,7 +459,6 @@ end
 function define_players()
   p1 = create_player(p_id.p1)
   p2 = create_player(p_id.p2)
-  players = { p1, p2 }
 end
 
 function create_player(id, character)

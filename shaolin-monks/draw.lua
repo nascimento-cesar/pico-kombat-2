@@ -10,6 +10,7 @@ end
 
 function draw_character_selection()
   cls(0)
+  draw_debug()
 
   local col = 1
   local row = 1
@@ -30,7 +31,7 @@ function draw_character_selection()
     spr(c.head_sprites[1], x + offset, y + offset)
     pal()
 
-    for p in all(players) do
+    for p in all({ p1, p2 }) do
       if i == p.highlighted_char and is_playing(p) then
         rect(x, y, x + w - 1, y + h - 1, get_blinking_color(6, 7))
       end
@@ -231,7 +232,7 @@ function draw_hp()
   local w = (128 - offset * 3) / 2
   local y = offset * 2
 
-  for p in all(players) do
+  for p in all({ p1, p2 }) do
     local x = offset + p.id * w + p.id * offset
     local hp_w = w * p.hp / 100
     hp_w = hp_w < 1 and 1 or hp_w

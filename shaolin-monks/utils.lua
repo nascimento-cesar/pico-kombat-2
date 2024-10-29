@@ -39,9 +39,8 @@ end
 function init_player(p)
   game.joined_status[p.id] = true
 
-  --! Player specific
   for _, v in pairs(cs) do
-    add(game.next_combats, v)
+    add(game.next_combats[p.id], v)
   end
 end
 

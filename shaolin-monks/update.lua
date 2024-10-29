@@ -3,6 +3,18 @@
 -- * block not implemented
 -- * time's up not implemented
 -- * return to char selection screen after defeat in vs mode
+-- * particles on projectiles
+-- * kl projectile sprites
+-- * hold button support
+-- * kr and sk characters
+-- * stages
+-- * game over screen
+-- * next combat screen
+-- * finishing moves
+-- * special moves
+-- * game end screen
+-- * sfx
+-- * music
 
 function _update()
   update_debug()
@@ -19,7 +31,7 @@ function _update()
 end
 
 function update_character_selection()
-  for p in all(players) do
+  for p in all({ p1, p2 }) do
     local new_char = p.highlighted_char
 
     if is_playing(p) then
@@ -89,7 +101,7 @@ function update_gameplay()
 end
 
 function update_start()
-  for p in all(players) do
+  for p in all({ p1, p2 }) do
     if btnp(❎, p.id) then
       init_player(p)
       game.current_screen = screens.character_selection
@@ -98,7 +110,7 @@ function update_start()
 end
 
 function detect_new_player()
-  for p in all(players) do
+  for p in all({ p1, p2 }) do
     if not is_playing(p) and not player_has_joined() then
       if btnp(🅾️, p.id) or btnp(❎, p.id) then
         init_player(p)
@@ -109,7 +121,7 @@ function detect_new_player()
 end
 
 function set_next_combat()
-  for p in all(players) do
+  for p in all({ p1, p2 }) do
     if not p.character then
       p.character = get_next_challenger(get_vs(p))
     end
@@ -160,6 +172,7 @@ function process_round_end()
   if game.current_combat.timers.round_end > 0 then
     game.current_combat.timers.round_end -= 1
   else
+    game.current_combat.round += 1
     reset_players()
 
     if has_combat_ended() then
@@ -167,8 +180,8 @@ function process_round_end()
       local loser = get_vs(winner)
 
       if is_arcade_mode() then
+        game.current_screen = screens.next_combat
         loser.character = nil
-        set_next_combat()
       else
         game.current_screen = screens.character_selection
         loser.character = nil
@@ -191,8 +204,8 @@ function process_round_start()
 end
 
 function get_next_challenger(p)
-  local challenger = characters[game.next_combats[1]]
-  deli(game.next_combats, 1)
+  local challenger = characters[game.next_combats[p.id][1]]
+  deli(game.next_combats[p.id], 1)
 
   if p.character == challenger then
     return get_next_challenger(p)
@@ -652,7 +665,7 @@ function fire_projectile(p)
 end
 
 function deal_damage(action, p)
-  p.hp -= 50
+  p.hp -= 100
   react_to_damage(action, p)
 
   if action ~= actions.sweep then
@@ -700,7 +713,6 @@ function check_defeat(p)
       game.current_combat.round_state = round_states.finishing_move
     else
       game.current_combat.round_state = round_states.finished
-      game.current_combat.round += 1
     end
   end
 end
