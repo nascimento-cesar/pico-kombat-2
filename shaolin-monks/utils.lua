@@ -7,11 +7,11 @@ function get_blinking_color(c1, c2, s)
 end
 
 function get_combat_winner()
-  local wins = game.current_combat.wins
+  local victories = game.current_combat.victories
 
-  if wins[p1.id] == 2 then
+  if victories[p1.id] == 2 then
     return p1
-  elseif wins[p2.id] == 2 then
+  elseif victories[p2.id] == 2 then
     return p2
   end
 end

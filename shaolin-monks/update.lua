@@ -2,6 +2,7 @@
 -- * attacking a propelled opponent from ground breaks opponent's
 -- * block not implemented
 -- * time's up not implemented
+-- * return to char selection screen after defeat in vs mode
 
 function _update()
   update_debug()
@@ -78,7 +79,6 @@ function update_gameplay()
   update_player(p2)
   fix_players_orientation()
   fix_players_placement()
-  cleanup_action_stack()
 end
 
 function update_start()
@@ -90,6 +90,11 @@ function update_start()
   end
 end
 
+function check_for_new_challenger(p)
+  if btnp(❎, p.id) then
+  end
+end
+
 function set_next_combat(override)
   for p in all({ p1, p2 }) do
     if not p.character then
@@ -97,44 +102,51 @@ function set_next_combat(override)
     end
   end
 
+  -- !REMOVE
   if not game.current_combat or override then
     game.current_combat = {
-      finishing_move_countdown = finishing_move_countdown,
+      timers = {},
       round = 1,
-      round_end_countdown = round_end_countdown,
       round_loser = nil,
-      round_start_countdown = round_start_countdown,
       round_start_time = time(),
       round_state = round_states.countdown,
       round_winner = nil,
-      wins = {
+      victories = {
         [p1.id] = 0,
         [p2.id] = 0
       }
     }
+
+    reset_timers()
   end
 
   game.current_screen = screens.gameplay
 end
 
+function reset_timers()
+  for k, v in pairs(timers) do
+    game.current_combat.timers[k] = v
+  end
+end
+
 function process_finishing_move()
-  if game.current_combat.finishing_move_countdown > 0 then
-    game.current_combat.finishing_move_countdown -= 1
+  if game.current_combat.timers.finishing_move > 0 then
+    game.current_combat.timers.finishing_move -= 1
   else
     game.current_combat.round_state = round_states.finished
   end
 end
 
 function process_round_end()
-  if game.current_combat.round_end_countdown > 0 then
-    game.current_combat.round_end_countdown -= 1
+  if game.current_combat.timers.round_end > 0 then
+    game.current_combat.timers.round_end -= 1
   else
     reset_players()
-    local winner = get_combat_winner()
+    local combat_winner = get_combat_winner()
 
-    if winner then
+    if combat_winner then
       if is_arcade_mode() then
-        local vs = get_vs(winner)
+        local vs = get_vs(combat_winner)
         vs.character = nil
         set_next_combat(true)
       else
@@ -142,18 +154,17 @@ function process_round_end()
       end
     else
       game.current_combat.round_state = round_states.countdown
-      game.current_combat.round_end_countdown = round_end_countdown
+      reset_timers()
     end
   end
 end
 
 function process_round_start()
-  if game.current_combat.round_start_countdown > 0 then
-    game.current_combat.round_start_countdown -= 1
+  if game.current_combat.timers.round_start > 0 then
+    game.current_combat.timers.round_start -= 1
   else
     game.current_combat.round_start_time = time()
     game.current_combat.round_state = round_states.in_progress
-    game.current_combat.round_start_countdown = round_start_countdown
   end
 end
 
@@ -190,7 +201,7 @@ function update_player(p)
   update_projectile(p)
 
   if not p.is_npc then
-    clear_action_stack(p)
+    cleanup_action_stack(p)
   end
 end
 
@@ -235,7 +246,7 @@ function process_inputs(p)
   local h➡️ = btn(➡️, p.id)
 
   if button_pressed then
-    game.action_stack_timeout_frames = 0
+    p.action_stack_timeout = action_stack_timeout
 
     if h⬇️ then
       if h🅾️❎ then
@@ -380,9 +391,6 @@ function update_projectile(p)
   end
 end
 
-function clear_action_stack(p)
-end
-
 function fix_players_orientation()
   local is_orientation_locked = p1.is_orientation_locked or p2.is_orientation_locked
 
@@ -417,13 +425,12 @@ function fix_players_placement()
   end
 end
 
-function cleanup_action_stack()
-  if game.action_stack_timeout_frames > 6 then
-    game.action_stack_timeout_frames = 0
-    p1.action_stack = ""
-    p2.action_stack = ""
+function cleanup_action_stack(p)
+  if p.action_stack_timeout > 0 then
+    p.action_stack_timeout -= 1
   else
-    game.action_stack_timeout_frames += 1
+    p.action_stack_timeout = action_stack_timeout
+    p.action_stack = ""
   end
 end
 
@@ -661,7 +668,7 @@ function check_defeat(p)
     local vs = get_vs(p)
     game.current_combat.round_loser = p
     game.current_combat.round_winner = vs
-    game.current_combat.wins[vs.id] += 1
+    game.current_combat.victories[vs.id] += 1
 
     if get_combat_winner() then
       game.current_combat.round_state = round_states.finishing_move

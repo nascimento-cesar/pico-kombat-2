@@ -201,7 +201,7 @@ end
 function draw_round_start()
   local text = ""
 
-  if game.current_combat.round_start_countdown > round_start_countdown / 2 then
+  if game.current_combat.timers.round_start > timers.round_start / 2 then
     text = "round " .. game.current_combat.round
   else
     text = "fight"
@@ -232,7 +232,7 @@ function draw_hp()
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
     rect(x, y, x + w - 1, y + h - 1, 6)
 
-    for i = 1, game.current_combat.wins[p.id] do
+    for i = 1, game.current_combat.victories[p.id] do
       change_pallete({ { 5, 0 } })
       spr(128, x + (i - 1) * 8, y + h + 2)
       pal()

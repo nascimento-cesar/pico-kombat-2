@@ -8,6 +8,7 @@ function _init()
 end
 
 function define_global_variables()
+  action_stack_timeout = 6
   action_states = {
     finished = 1,
     held = 2,
@@ -42,7 +43,6 @@ function define_global_variables()
     backward = -1,
     forward = 1
   }
-  finishing_move_countdown = 90
   flinch_speed = 3
   gender = {
     him = 1,
@@ -51,8 +51,6 @@ function define_global_variables()
   jump_speed = 2
   projectile_speed = 3
   round_duration = 90
-  round_end_countdown = 60
-  round_start_countdown = 60
   round_states = {
     countdown = 1,
     finished = 2,
@@ -69,6 +67,11 @@ function define_global_variables()
   sprite_h = 8
   sprite_w = 7
   swept_speed = 3
+  timers = {
+    finishing_move = 90,
+    round_end = 60,
+    round_start = 60
+  }
   walk_speed = 1
   x_shift = 3
   y_shift = 2
@@ -78,7 +81,6 @@ end
 
 function define_game()
   game = {
-    action_stack_timeout_frames = 0,
     current_combat = nil,
     current_screen = screens.start,
     next_combats = {}
@@ -451,6 +453,7 @@ function create_player(id, character, is_npc)
 
   return {
     action_stack = "",
+    action_stack_timeout = action_stack_timeout,
     character = character,
     current_action = actions.idle,
     current_action_params = {},
