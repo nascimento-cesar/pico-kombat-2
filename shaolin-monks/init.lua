@@ -123,7 +123,7 @@ function define_characters()
         sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
-        fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile)
+        fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile, flinch, 20)
       }
     },
     [cs.kl] = {
@@ -420,38 +420,50 @@ function define_global_actions()
     block = create_action("block", 2, nil, true, false, { 10, 11 }, action_types.other),
     crouch = create_action("crouch", 2, nil, true, false, { { 4, 1, 0, 1 }, { 5, 1, 0, 2 } }, action_types.other),
     flinch = create_action("flinch", 6, flinch, false, false, { 23 }, action_types.damage_reaction),
-    flying_kick = create_action("flying_kick", 3, attack, false, false, { { 14, 6 } }, action_types.aerial_attack),
-    flying_punch = create_action("flying_punch", 3, attack, false, false, { { 15, 6 } }, action_types.aerial_attack),
+    flying_kick = create_action("flying_kick", 3, attack, false, false, { { 14, 6 } }, action_types.aerial_attack, propelled, 10),
+    flying_punch = create_action("flying_punch", 3, attack, false, false, { { 15, 6 } }, action_types.aerial_attack, flinch, 10),
     get_up = create_action("get_up", 2, nil, false, false, { { 5, 1, 0, 2 }, { 4, 1, 0, 1 } }, action_types.other),
-    hook = create_action("hook", 3, attack, false, true, { { 6, 1, 0, 1 }, { 7, 2 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 7, 2 } }, action_types.attack),
+    hook = create_action("hook", 3, attack, false, true, { { 6, 1, 0, 1 }, { 7, 2 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 7, 2 } }, action_types.attack, propelled, 100),
     idle = create_action("idle", 1, nil, false, false, { 0 }, action_types.other),
     jump = create_action("jump", 2, nil, false, false, { { 16, 6, 0, 2 }, { 17, 4, 2, 1 }, { 16, 6, 0, -2, true, true, true, true }, { 17, 4, -2, -1, true, true, true, true } }, action_types.aerial),
-    kick = create_action("kick", 4, attack, false, true, { { 12, 5 }, { 13, 6 }, { 12, 5 } }, action_types.attack),
+    kick = create_action("kick", 4, attack, false, true, { { 12, 5 }, { 13, 6 }, { 12, 5 } }, action_types.attack, flinch, 10),
     prone = create_action("prone", 8, nil, false, false, { { 22, 4, -4, 0, false, false, true, true } }, action_types.other),
     propelled = create_action("propelled", 3, nil, true, false, { { 23, 6, 0, 0 }, { 24, 4, -4, 0, false, false, true, true } }, action_types.damage_reaction),
-    punch = create_action("punch", 3, attack, false, true, { { 7, 2 }, { 9, 3 }, { 7, 2 } }, action_types.attack),
-    roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { { 7, 2 }, { 28, 3, -1 }, { 7, 2, 0, 0, true, false, true, false }, { 12, 5 }, { 13, 6 }, { 13, 6 }, { 13, 6 }, { 12, 5 } }, action_types.attack),
-    sweep = create_action("sweep", 2, attack, false, true, { { 4, 1, 0, 1 }, { 25, 2, 0, 1 }, { 26, 3, -1, 1 }, { 25, 2, 0, 1, true, false, true, false }, { 27, 1, 0, 1 }, { 27, 1, 0, 1 }, { 4, 1, 0, 1 } }, action_types.attack),
+    punch = create_action("punch", 3, attack, false, true, { { 7, 2 }, { 9, 3 }, { 7, 2 } }, action_types.attack, flinch, 10),
+    roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { { 7, 2 }, { 28, 3, -1 }, { 7, 2, 0, 0, true, false, true, false }, { 12, 5 }, { 13, 6 }, { 13, 6 }, { 13, 6 }, { 12, 5 } }, action_types.attack, propelled, 20),
+    sweep = create_action("sweep", 2, attack, false, true, { { 4, 1, 0, 1 }, { 25, 2, 0, 1 }, { 26, 3, -1, 1 }, { 25, 2, 0, 1, true, false, true, false }, { 27, 1, 0, 1 }, { 27, 1, 0, 1 }, { 4, 1, 0, 1 } }, action_types.attack, swept, 10),
     swept = create_action("swept", 4, nil, false, false, { { 21, 6, 0, 1 } }, action_types.damage_reaction),
     walk = create_action("walk", 4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
   }
 end
 
-function create_action(name, frames_per_sprite, handler, is_holdable, is_x_shiftable, sprites, type)
+function create_action(name, frames_per_sprite, handler, is_holdable, is_x_shiftable, sprites, type, reaction_handler, damage)
   return {
+    damage = damage,
     frames_per_sprite = frames_per_sprite,
     handler = handler,
     is_holdable = is_holdable,
     is_x_shiftable = is_x_shiftable,
     name = name,
+    reaction_handler = reaction_handler,
     sprites = sprites,
     type = type
   }
 end
 
-function create_special_attack(name, sequence, sprites, handler)
+function create_special_attack(name, sequence, sprites, handler, reaction_handler, damage)
   return {
-    action = create_action(name, 4, handler, false, false, sprites, action_types.special_attack),
+    action = create_action(
+      name,
+      4,
+      handler,
+      false,
+      false,
+      sprites,
+      action_types.special_attack,
+      reaction_handler,
+      damage
+    ),
     sequence = sequence
   }
 end
@@ -479,6 +491,7 @@ function create_player(id, character)
     id = id,
     is_orientation_locked = false,
     is_x_shifted = false,
+    is_y_shifted = false,
     jump_acceleration = 0,
     particle_sets = {},
     x = is_p1 and 36 or 127 - 36 - sprite_w,

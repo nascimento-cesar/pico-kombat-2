@@ -260,7 +260,7 @@ function update_previous_action(p)
     elseif p.current_action == actions.swept then
       start_action(p, actions.prone)
     elseif p.current_action == actions.flinch and is_round_finished() then
-      start_action(p, actions.swept)
+      swept(p)
     elseif p.current_action == actions.prone then
       if is_round_finished() then
         hold_action(p)
@@ -420,7 +420,7 @@ function update_projectile(p)
 
     if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
       p.projectile = nil
-      deal_damage(actions.special_attack, vs)
+      deal_damage(p.current_action, vs)
       start_action(p, actions.idle)
     elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) then
       p.projectile = nil
@@ -544,7 +544,7 @@ function start_action(p, action, params)
     if current_sequence == special_attack.sequence then
       p.action_stack = ""
 
-      return start_action(p, special_attack.action)
+      return setup_attack(p, special_attack.action)
     end
   end
 
@@ -643,11 +643,17 @@ function shift_player_x(p, unshift)
   end
 end
 
-function shift_player_y(p, unshift)
+function shift_player_y(p, unshift, shift_up)
   if unshift then
-    p.y = y_bottom_limit
+    if p.is_y_shifted then
+      move_y(p, y_bottom_limit - p.y)
+      p.is_y_shifted = false
+    end
   else
-    move_y(p, y_shift)
+    if not p.is_y_shifted then
+      move_y(p, y_shift * (shift_up and -1 or 1), nil, true)
+      p.is_y_shifted = true
+    end
   end
 end
 
@@ -664,34 +670,14 @@ function fire_projectile(p)
 end
 
 function deal_damage(action, p)
-  p.hp -= 100
-  react_to_damage(action, p)
+  p.hp -= action.damage
+  action.reaction_handler(p)
 
   if action ~= actions.sweep then
     spill_blood(p)
   end
 
   check_defeat(p)
-end
-
-function react_to_damage(action, p)
-  if action == actions.punch then
-    flinch(p)
-  elseif action == actions.kick then
-    flinch(p)
-  elseif action == actions.flying_punch then
-    flinch(p)
-  elseif action == actions.flying_kick then
-    propelled(p)
-  elseif action == actions.hook then
-    propelled(p)
-  elseif action == actions.roundhouse_kick then
-    propelled(p)
-  elseif action == actions.special_attack then
-    flinch(p)
-  elseif action == actions.sweep then
-    swept(p)
-  end
 end
 
 function spill_blood(p)
@@ -740,7 +726,7 @@ function attack(p)
   local vs = get_vs(p)
   local full_sprite_w = sprite_w + 1
 
-  if p.current_action_params.is_attacking and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
+  if is_attacking(p) and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
     if vs.is_blocking then
     else
       deal_damage(p.current_action, vs)
@@ -827,7 +813,7 @@ function move_y(p, y)
 end
 
 function update_debug()
-  -- if debug.s == nil then
-  --   debug.s = 0
-  -- end
+  if debug.s == nil then
+    debug.s = 0
+  end
 end

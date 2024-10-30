@@ -72,6 +72,10 @@ function is_arcade_mode()
   return not is_playing(p1) or not is_playing(p2)
 end
 
+function is_attacking(p)
+  return p.current_action_params.is_attacking
+end
+
 function is_limit_left(x)
   return x < 0
 end
