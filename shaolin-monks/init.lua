@@ -125,7 +125,7 @@ function define_characters()
         sprites = { 48, 49, 50, 51, 50, 49 }
       },
       special_attacks = {
-        fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile, flinch, 20)
+        fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile)
       }
     },
     [cs.kl] = {
@@ -147,10 +147,11 @@ function define_characters()
       },
       projectile = {
         frames_per_sprite = 2,
-        sprites = { 48, 49, 50, 51, 50, 49 }
+        pallete_map = { { 5, 0 }, { 13, 5 } },
+        sprites = { 58, 59, 60, 61, 60, 59 }
       },
       special_attacks = {
-        -- fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, 19 }, fire_projectile)
+        hat_toss = create_special_attack("hat_toss", "⬅️➡️🅾️", { 18, 20 }, fire_projectile)
       }
     },
     [cs.jc] = {
@@ -381,6 +382,7 @@ function define_characters()
       },
       projectile = {
         frames_per_sprite = 2,
+        pallete_map = { { 5, 0 } },
         sprites = { 57 }
       },
       special_attacks = {
@@ -463,8 +465,8 @@ function create_special_attack(name, sequence, sprites, handler, reaction_handle
       false,
       sprites,
       action_types.special_attack,
-      reaction_handler,
-      damage
+      reaction_handler or flinch,
+      damage or 20
     ),
     sequence = sequence
   }
