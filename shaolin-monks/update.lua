@@ -126,7 +126,7 @@ function set_next_combat()
   end
 
   game.current_combat = {
-    timers = {},
+    current_stage = game.current_combat and game.current_combat.current_stage + 1 or 1,
     round = 1,
     round_loser = nil,
     round_start_time = time(),
@@ -135,7 +135,8 @@ function set_next_combat()
     rounds_won = {
       [p_id.p1] = 0,
       [p_id.p2] = 0
-    }
+    },
+    timers = {}
   }
 
   reset_timers()

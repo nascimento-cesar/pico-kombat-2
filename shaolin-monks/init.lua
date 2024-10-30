@@ -71,6 +71,8 @@ function define_global_variables()
   }
   sprite_h = 8
   sprite_w = 7
+  stage_offset = 16
+  stages_number = 9
   swept_speed = 3
   timers = {
     finishing_move = 90,

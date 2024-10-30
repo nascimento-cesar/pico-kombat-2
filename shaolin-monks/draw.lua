@@ -49,6 +49,7 @@ end
 function draw_gameplay()
   cls(1)
   draw_debug()
+  draw_stage()
 
   if is_round_finishing_move() then
     draw_finish_him_her()
@@ -70,6 +71,13 @@ function draw_start()
   cls(0)
   local text = "press ❎ to start"
   draw_blinking_text(text, get_hcenter(text), get_vcenter())
+end
+
+function draw_stage()
+  local x = (game.current_combat.current_stage - 1) % 8 * stage_offset
+  local y = flr(game.current_combat.current_stage / 9) * 16
+
+  map(x, y, 0, 0, 16, 16)
 end
 
 function draw_player(p)
