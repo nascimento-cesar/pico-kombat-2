@@ -253,7 +253,7 @@ function draw_hp()
 
     for i = 1, game.current_combat.rounds_won[p.id] do
       change_pallete({ { 5, 0 } })
-      spr(128, x + (i - 1) * 8, y + h + 2)
+      spr(192, x + (i - 1) * 8, y + h + 2)
       pal()
     end
   end
