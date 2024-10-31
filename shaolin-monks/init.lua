@@ -2,6 +2,7 @@ function _init()
   define_global_variables()
   define_game()
   define_global_actions()
+  define_bosses()
   define_characters()
   define_players()
   disable_hold_function()
@@ -23,6 +24,10 @@ function define_global_variables()
     movement = 5,
     other = 6,
     special_attack = 7
+  }
+  bs = {
+    kr = 1,
+    sk = 2
   }
   cs = {
     lk = 1,
@@ -98,6 +103,30 @@ function define_game()
     next_combats = {
       [p_id.p1] = {},
       [p_id.p2] = {}
+    }
+  }
+end
+
+function define_bosses()
+  bosses = {
+    [bs.sk] = {
+      head_sprites = { 103, 104, 105, 106, 103, 103, 103 },
+      pallete_map = {
+        { 1, 15 },
+        { 3, 15 },
+        { 4, 6 },
+        { 5, 2 },
+        { 9, 6 },
+        { 10, 13 },
+        { 11, 5 },
+        { 12, 15 },
+        { 14, 15 }
+      },
+      projectile = {
+        frames_per_sprite = 2,
+        sprites = { 48, 49, 50, 51, 50, 49 }
+      },
+      special_attacks = {}
     }
   }
 end
