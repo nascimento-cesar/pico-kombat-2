@@ -15,6 +15,7 @@
 -- * game end screen
 -- * sfx
 -- * music
+-- * victory stance
 
 function _update()
   update_debug()
