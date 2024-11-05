@@ -114,3 +114,9 @@ end
 function player_has_joined()
   return game.current_combat.round_state == round_states.new_player
 end
+
+function update_debug()
+  if debug.s == nil then
+    debug.s = 0
+  end
+end
