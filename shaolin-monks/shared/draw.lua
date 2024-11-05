@@ -1,3 +1,29 @@
+function draw_debug()
+  cls()
+
+  local i = 1
+
+  for k, v in pairs(debug) do
+    local s = ""
+
+    if type(v) == "table" then
+      for v2 in all(v) do
+        if s ~= "" then
+          s = s and s .. ", " .. v2 or v2
+        else
+          s = v2
+        end
+      end
+    else
+      s = v
+    end
+
+    print(k .. ": " .. s, 0, (i - 1) * 10, 7)
+
+    i += 1
+  end
+end
+
 function get_blinking_color(c1, c2, s)
   c1 = c1 or 7
   c2 = c2 or 8

@@ -6,6 +6,7 @@ end
 
 function foreach_player(callback)
   for p in all { p1, p2 } do
-    callback(p)
+    local vs = get_vs(p)
+    callback(p, p.id, vs, vs.id)
   end
 end
