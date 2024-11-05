@@ -1,11 +1,5 @@
-function string_to_hash(keys, values, obj)
-  local obj, values = obj or {}, split(values) or values
-
-  for i, k in ipairs(split(keys) or keys) do
-    obj[k] = eval_str(values[i])
-  end
-
-  return obj
+function disable_hold_function()
+  poke(0x5f5c, 255)
 end
 
 function eval_str(v)
@@ -46,6 +40,16 @@ function split_sprites(s, separator)
   end
 
   return s
+end
+
+function string_to_hash(keys, values, obj)
+  local obj, values = obj or {}, split(values) or values
+
+  for i, k in ipairs(split(keys) or keys) do
+    obj[k] = eval_str(values[i])
+  end
+
+  return obj
 end
 
 function unpack_split(s, separator, convert)

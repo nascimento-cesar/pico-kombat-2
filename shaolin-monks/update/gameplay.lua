@@ -1,4 +1,6 @@
 function update_gameplay()
+  disable_hold_function()
+
   if is_arcade_mode() then
     detect_new_player()
   end
@@ -432,7 +434,7 @@ function start_action(p, action, params)
     if current_sequence == special_attack.sequence then
       p.action_stack = ""
 
-      return setup_attack(p, special_attack.action)
+      return setup_attack(p, special_attack)
     end
   end
 

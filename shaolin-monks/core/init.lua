@@ -4,7 +4,6 @@ function _init()
   actions = define_actions()
   characters = define_characters()
   define_players()
-  disable_hold_function()
 end
 
 function define_global_variables()
@@ -92,12 +91,12 @@ function define_characters()
   local characters, special_attacks, c_attr_list, sa_attr_list, c_attr_keys = {}, {}, split(
     [[lk,2,1f2838485f9fa0b0c0d0e8,1,50,#64|65|66|67|68|69|68,2,4,nil,#48|49|50|51|50|49;kl,3,1f2030405f9fa8b8c1d8e0,1,5085,#70|71|72|73|70|70|74,2,2,50d5,#58|59|60|61|60|59;jc,13,1f203f415f91a0b1c0d1e1,1,5084,#75|76|77|78|75|75|75,2,4,839bab7b,#48|49|50|51|50|49;rp,4,1f23435f839fa0b0c0d0e3,1,1324508398,#79|80|81|82|79|79|102,2,4,839bab7b,#48|49|50|51|50|49;sz,1,1f2c3c4c5f8c9fa0b0c0d0ec,1,508c,#79|80|81|82|79|79|79,2,4,879cac,#48|49|50|51|50|49;st,8,1f203f455f9fb5c0daef,1,5085,#83|84|85|86|83|83|83,2,4,nil,#48|49|50|51|50|49;kn,12,21314151819fa0b0cfd0e1,2,5081,#87|88|89|90|87|87|87,2,5,nil,#52|53|54|55|54|53;jx,14,142834485495a6b6c0d6e4f4,1,5085f4,#91|92|93|94|91|91|91,2,4,829ea7,#48|49|50|51|50|49;ml,13,12324252829fa0b0cfd0e2,2,5082,#87|88|89|90|87|87|87,2,5,nil,#56;bk,14,16203f485f869fa7b8c0d7ef,1,nil,#95|96|97|98|95|95|95,2,4,8d96a6,#48|49|50|51|50|49;sc,2,1f2a3a4a5f8a9fa0b0c0d0ea,1,508a,#79|80|81|82|79|79|79,2,3,50,#57;rd,1,1f2c3c4c5f8d97a0b0c7d0ec,1,8d,#99|100|100|101|99|99|99,2,4,8c97a7,#48|49|50|51|50|49]], ";"
   ), split(
-    [[fireball,20,*a2,false,false,*r1,4,➡️➡️🅾️,#18|$19/7,20,special_attack;@hat_toss,20,4,*a2,false,false,*r1,⬅️➡️🅾️,#18|20,20,special_attack;@shadow_bolt,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$20/7,20,special_attack;@acid_spit,20,4,*a2,false,false,*r1,➡️➡️🅾️,29|$30/7,20,special_attack;@freeze,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$20/7,20,special_attack;@fire_skull,20,4,*a2,false,false,*r1,⬅️⬅️🅾️,#18|$19/7,20,special_attack;@fan_throw,20,4,*a2,false,false,*r1,➡️➡️🅾️,#18|$20/7,20,special_attack;@energy_wave,20,4,*a2,false,false,*r1,➡️⬇️⬅️❎,#18|$20/7,20,special_attack;@sai_throw,20,4,*a2,false,false,*r1,⬇️⬅️🅾️,#18|$19/7,20,special_attack;@blade_spark,20,4,*a2,false,false,*r1,⬇️⬅️🅾️,#18|$20/7,20,special_attack;@spear,20,4,*a2,false,false,*r1,⬅️⬅️🅾️,#18|$20/7,20,special_attack;@lightning,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$19/7,20,special_attack]], "@"
+    [[fireball,20,4,*a2,false,false,*r1,➡️➡️🅾️,#18|$19/7,special_attack@hat_toss,20,4,*a2,false,false,*r1,⬅️➡️🅾️,#18|20,special_attack@shadow_bolt,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$20/7,special_attack@acid_spit,20,4,*a2,false,false,*r1,➡️➡️🅾️,29|$30/7,special_attack@freeze,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$20/7,special_attack@fire_skull,20,4,*a2,false,false,*r1,⬅️⬅️🅾️,#18|$19/7,special_attack@fan_throw,20,4,*a2,false,false,*r1,➡️➡️🅾️,#18|$20/7,special_attack@energy_wave,20,4,*a2,false,false,*r1,➡️⬇️⬅️❎,#18|$20/7,special_attack@sai_throw,20,4,*a2,false,false,*r1,⬇️⬅️🅾️,#18|$19/7,special_attack@blade_spark,20,4,*a2,false,false,*r1,⬇️⬅️🅾️,#18|$20/7,special_attack@spear,20,4,*a2,false,false,*r1,⬅️⬅️🅾️,#18|$20/7,special_attack@lightning,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$19/7,special_attack]], "@"
   ), split "name,bg_color,body_pal_map,gender,head_pal_map,head_sprites,projectile_fps,projectile_h,projectile_pal_map,projectile_sprites"
 
   for i, c_attrs in ipairs(c_attr_list) do
     characters[i] = string_to_hash(c_attr_keys, split(c_attrs, ",", false))
-    -- characters[i].special_attacks = define_actions(sa_attr_list[i])
+    characters[i].special_attacks = define_actions(sa_attr_list[i])
   end
 
   return characters
@@ -145,8 +144,4 @@ function create_player(id, character)
     x = is_p1 and 36 or 127 - 36 - sprite_w,
     y = y_bottom_limit
   }
-end
-
-function disable_hold_function()
-  poke(0x5f5c, 255)
 end
