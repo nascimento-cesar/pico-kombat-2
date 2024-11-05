@@ -165,7 +165,7 @@ function draw_finish_him_her()
   if game.current_combat.timers.finishing_move > timers.finishing_move / 2 then
     local pronoun = game.current_combat.round_loser.character.g == gender.her and "her" or "him"
     local text = "finish " .. pronoun
-    draw_blinking_text(text, get_hcenter(text), get_vcenter())
+    draw_blinking_text(text)
   end
 end
 
@@ -178,18 +178,18 @@ function draw_round_start()
     text = "fight"
   end
 
-  draw_blinking_text(text, get_hcenter(text), get_vcenter())
+  draw_blinking_text(text)
 end
 
 function draw_round_result()
   local winner = game.current_combat.round_winner
   local text = (winner == p1 and "p1" or "p2") .. " wins"
-  draw_blinking_text(text, get_hcenter(text), get_vcenter())
+  draw_blinking_text(text)
 end
 
 function draw_new_player()
   local text = "a new challenger has emerged"
-  draw_blinking_text(text, get_hcenter(text), get_vcenter())
+  draw_blinking_text(text)
 end
 
 function draw_hp()
@@ -215,8 +215,8 @@ function draw_hp()
   end
 end
 
-function draw_blinking_text(s, x, y)
-  print(s, x, y, get_blinking_color())
+function draw_blinking_text(s)
+  print(s, get_hcenter(s), get_vcenter(), get_blinking_color())
 end
 
 function draw_axis_debugger()
