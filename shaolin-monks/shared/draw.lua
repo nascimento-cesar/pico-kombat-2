@@ -1,3 +1,14 @@
+function shift_pal(pallete)
+  pallete = pallete or ""
+
+  for i = 1, #pallete, 2 do
+    pal(
+      tonum("0x0" .. sub(pallete, i, i)),
+      tonum("0x0" .. sub(pallete, i + 1, i + 1))
+    )
+  end
+end
+
 function draw_debug()
   cls()
 

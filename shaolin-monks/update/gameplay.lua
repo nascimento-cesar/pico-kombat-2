@@ -547,7 +547,7 @@ end
 
 function fire_projectile(p)
   if not p.projectile then
-    local height = p.character.projectile.height or 4
+    local height = p.character.projectile_height or 4
 
     p.projectile = {
       frames_counter = 0,

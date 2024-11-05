@@ -5,11 +5,11 @@ function draw_character_selection()
   for i = 1, 12 do
     local c, x, y = characters[i], (128 - 4 * w) / 2 + w * (col - 1), (128 - 3 * h) / 2 + h * (row - 1)
 
-    rectfill(x, y, x + w - 1, y + h - 1, c.background_color or 1)
-    change_pallete(c.pallete_map)
+    rectfill(x, y, x + w - 1, y + h - 1, c.bg_color or 1)
+    shift_pal(c.body_pal_map)
     spr(0, x + offset, y + offset)
     pal()
-    change_pallete(c.head_pallete_map or c.pallete_map)
+    shift_pal(c.head_pal_map)
     spr(c.head_sprites[1], x + offset, y + offset)
     pal()
 

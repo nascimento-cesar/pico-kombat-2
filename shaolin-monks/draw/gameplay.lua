@@ -81,30 +81,23 @@ function draw_player(p)
 end
 
 function draw_head(p, id, x_adjustment, y_adjustment, flip_x, flip_y)
-  change_pallete(p.character.head_pallete_map or p.character.pallete_map)
+  shift_pal(p.character.head_pal_map)
   spr(p.character.head_sprites[id], p.x + x_adjustment * p.facing, p.y + y_adjustment, 1, 1, flip_x, flip_y)
   pal()
 end
 
 function draw_body(p, id, flip_x, flip_y)
-  change_pallete(p.character.pallete_map)
+  shift_pal(p.character.body_pal_map)
   spr(id, p.x, p.y, 1, 1, flip_x, flip_y)
   pal()
-end
-
-function change_pallete(pallete)
-  for color in all(pallete) do
-    pal(color[1], color[2])
-  end
 end
 
 function draw_projectile(p)
   local flip_x = false
   local index
-  local projectile = p.character.projectile
-  local sprites = projectile.sprites
+  local sprites = p.character.projectile_sprites
 
-  index = flr(p.projectile.frames_counter / projectile.frames_per_sprite) + 1
+  index = flr(p.projectile.frames_counter / p.character.projectile_fps) + 1
 
   if index > #sprites then
     index = 1
@@ -115,7 +108,7 @@ function draw_projectile(p)
     flip_x = not flip_x
   end
 
-  for color in all(projectile.pallete_map) do
+  for color in all(p.character.projectile_pal_map) do
     pal(color[1], color[2])
   end
 
@@ -198,7 +191,7 @@ function draw_hp()
     rect(x, y, x + w - 1, y + h - 1, 6)
 
     for i = 1, game.current_combat.rounds_won[p.id] do
-      change_pallete({ { 5, 0 } })
+      shift_pal("50")
       spr(192, x + (i - 1) * 8, y + h + 2)
       pal()
     end
