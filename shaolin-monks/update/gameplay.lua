@@ -558,7 +558,7 @@ function fire_projectile(p)
 end
 
 function deal_damage(action, p)
-  p.hp -= action.damage
+  p.hp -= action.dmg
   action.reaction_handler(p)
 
   if action ~= actions.sweep then

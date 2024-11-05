@@ -10,8 +10,6 @@ function shift_pal(pallete)
 end
 
 function draw_debug()
-  cls()
-
   local i = 1
 
   for k, v in pairs(debug) do

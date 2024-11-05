@@ -41,7 +41,7 @@ function is_action_released(p)
 end
 
 function is_action_animation_finished(p)
-  return p.frames_counter > p.current_action.frames_per_sprite * #p.current_action.sprites - 1
+  return p.frames_counter > p.current_action.fps * #p.current_action.sprites - 1
 end
 
 function is_aerial_attacking(p)

@@ -1,4 +1,5 @@
 function draw_character_selection()
+  cls()
   local w = 20
   local col, row, h, offset = 1, 1, 20, (w - 8) / 2
 

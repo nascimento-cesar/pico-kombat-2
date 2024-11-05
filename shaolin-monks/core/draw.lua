@@ -8,4 +8,6 @@ function _draw()
   elseif game.current_screen == "gameplay" then
     draw_gameplay()
   end
+
+  draw_debug()
 end

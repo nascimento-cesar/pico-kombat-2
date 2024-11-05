@@ -1,6 +1,5 @@
 function draw_gameplay()
   cls(1)
-  draw_debug()
   draw_stage()
 
   if is_round_finishing_move() then
@@ -42,7 +41,7 @@ function draw_player(p)
   if is_action_held(p) then
     index = #sprites
   else
-    index = flr(p.frames_counter / p.current_action.frames_per_sprite) + 1
+    index = flr(p.frames_counter / p.current_action.fps) + 1
 
     if is_action_released(p) then
       index = #sprites - index + 1
