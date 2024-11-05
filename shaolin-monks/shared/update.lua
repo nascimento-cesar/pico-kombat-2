@@ -23,21 +23,21 @@ end
 function init_player(p)
   game.joined_status[p.id] = true
 
-  for _, v in pairs(cs) do
-    add(game.next_combats[p.id], v)
+  for i = 1, 12 do
+    add(game.next_combats[p.id], i)
   end
 end
 
 function is_action_finished(p)
-  return p.current_action_state == action_states.finished
+  return p.current_action_state == "finished"
 end
 
 function is_action_held(p)
-  return p.current_action_state == action_states.held
+  return p.current_action_state == "held"
 end
 
 function is_action_released(p)
-  return p.current_action_state == action_states.released
+  return p.current_action_state == "released"
 end
 
 function is_action_animation_finished(p)
@@ -45,11 +45,11 @@ function is_action_animation_finished(p)
 end
 
 function is_aerial_attacking(p)
-  return p.current_action.type == action_types.aerial_attack
+  return p.current_action.type == "aerial_attack"
 end
 
 function is_aerial(p)
-  return p.current_action.type == action_types.aerial
+  return p.current_action.type == "aerial"
 end
 
 function is_arcade_mode()
@@ -69,7 +69,7 @@ function is_limit_right(x)
 end
 
 function is_moving(p)
-  return p.current_action.type == action_types.movement
+  return p.current_action.type == "movement"
 end
 
 function is_p1_ahead_p2()
@@ -92,27 +92,27 @@ function is_propelled(p)
 end
 
 function is_round_beginning()
-  return game.current_combat.round_state == round_states.countdown
+  return game.current_combat.round_state == "countdown"
 end
 
 function is_round_finished()
-  return game.current_combat.round_state == round_states.finished
+  return game.current_combat.round_state == "finished"
 end
 
 function is_round_finishing_move()
-  return game.current_combat.round_state == round_states.finishing_move
+  return game.current_combat.round_state == "finishing_move"
 end
 
 function is_round_in_progress()
-  return game.current_combat.round_state == round_states.in_progress
+  return game.current_combat.round_state == "in_progress"
 end
 
 function is_special_attacking(p)
-  return p.current_action.type == action_types.special_attack
+  return p.current_action.type == "special_attack"
 end
 
 function player_has_joined()
-  return game.current_combat.round_state == round_states.new_player
+  return game.current_combat.round_state == "new_player"
 end
 
 function update_debug()

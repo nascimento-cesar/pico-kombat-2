@@ -24,7 +24,7 @@ function detect_new_player()
     if not is_playing(p) and not player_has_joined() then
       if btnp(🅾️, p.id) or btnp(❎, p.id) then
         init_player(p)
-        game.current_combat.round_state = round_states.new_player
+        game.current_combat.round_state = "new_player"
       end
     end
   end
@@ -41,7 +41,7 @@ function process_new_player()
     game.current_combat.timers.new_player -= 1
   else
     reset_players()
-    game.current_screen = screens.character_selection
+    game.current_screen = "character_selection"
     p1.character = nil
     p2.character = nil
   end
@@ -51,7 +51,7 @@ function process_finishing_move()
   if game.current_combat.timers.finishing_move > 0 then
     game.current_combat.timers.finishing_move -= 1
   else
-    game.current_combat.round_state = round_states.finished
+    game.current_combat.round_state = "finished"
   end
 end
 
@@ -67,15 +67,15 @@ function process_round_end()
       local loser = get_vs(winner)
 
       if is_arcade_mode() then
-        game.current_screen = screens.next_combat
+        game.current_screen = "next_combat"
         loser.character = nil
       else
-        game.current_screen = screens.character_selection
+        game.current_screen = "character_selection"
         loser.character = nil
         winner.character = nil
       end
     else
-      game.current_combat.round_state = round_states.countdown
+      game.current_combat.round_state = "countdown"
       reset_timers()
     end
   end
@@ -86,7 +86,7 @@ function process_round_start()
     game.current_combat.timers.round_start -= 1
   else
     game.current_combat.round_start_time = time()
-    game.current_combat.round_state = round_states.in_progress
+    game.current_combat.round_state = "in_progress"
   end
 end
 
@@ -378,7 +378,7 @@ end
 function setup_action(p, next_action, params)
   params = params or {}
 
-  if is_aerial(p) and next_action.type == action_types.aerial_attack then
+  if is_aerial(p) and next_action.type == "aerial_attack" then
     merge(params, p.current_action_params)
   end
 
@@ -402,13 +402,13 @@ function setup_action(p, next_action, params)
     end
   elseif p.current_action ~= next_action then
     if is_aerial(p) then
-      if next_action.type == action_types.aerial_attack or next_action == actions.idle then
+      if next_action.type == "aerial_attack" or next_action == actions.idle then
         start_action(p, next_action, params)
       end
     elseif is_moving(p) then
       start_action(p, next_action, params)
     elseif is_action_held(p) then
-      if not is_aerial_attacking(p) and not is_special_attacking(p) and next_action.type == action_types.attack then
+      if not is_aerial_attacking(p) and not is_special_attacking(p) and next_action.type == "attack" then
         start_action(p, next_action, params)
       elseif next_action == actions.prone then
         start_action(p, next_action, params)
@@ -437,7 +437,7 @@ function start_action(p, action, params)
   end
 
   p.current_action = action
-  p.current_action_state = action_states.in_progress
+  p.current_action_state = "in_progress"
   p.current_action_params = params
   p.frames_counter = 0
 
@@ -453,23 +453,23 @@ function start_action(p, action, params)
 end
 
 function hold_action(p)
-  p.current_action_state = action_states.held
+  p.current_action_state = "held"
   p.frames_counter = 0
 end
 
 function release_action(p)
-  p.current_action_state = action_states.released
+  p.current_action_state = "released"
   p.current_action_params = { is_released = true }
   p.frames_counter = 0
 end
 
 function finish_action(p)
-  p.current_action_state = action_states.finished
+  p.current_action_state = "finished"
   shift_player_x(p, true)
 end
 
 function restart_action(p)
-  p.current_action_state = action_states.in_progress
+  p.current_action_state = "in_progress"
   p.frames_counter = 0
 end
 
@@ -575,7 +575,7 @@ end
 
 function check_defeat(p)
   if is_round_finishing_move() then
-    game.current_combat.round_state = round_states.finished
+    game.current_combat.round_state = "finished"
   elseif p.hp <= 0 then
     local vs = get_vs(p)
     game.current_combat.round_loser = p
@@ -583,9 +583,9 @@ function check_defeat(p)
     game.current_combat.rounds_won[vs.id] += 1
 
     if has_combat_ended() then
-      game.current_combat.round_state = round_states.finishing_move
+      game.current_combat.round_state = "finishing_move"
     else
-      game.current_combat.round_state = round_states.finished
+      game.current_combat.round_state = "finished"
     end
   end
 end

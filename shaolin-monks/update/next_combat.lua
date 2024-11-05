@@ -10,7 +10,7 @@ function update_next_combat()
     round = 1,
     round_loser = nil,
     round_start_time = time(),
-    round_state = round_states.countdown,
+    round_state = "countdown",
     round_winner = nil,
     rounds_won = {
       [p_id.p1] = 0,
@@ -20,5 +20,5 @@ function update_next_combat()
   }
 
   reset_timers()
-  game.current_screen = screens.gameplay
+  game.current_screen = "gameplay"
 end

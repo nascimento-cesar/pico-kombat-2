@@ -18,7 +18,7 @@ function handle_cursor_movement(p, p_id, vs)
       p.character = characters[new_char]
 
       if not is_playing(vs) or is_playing(vs) and vs.character then
-        game.current_screen = screens.next_combat
+        game.current_screen = "next_combat"
       end
     end
 

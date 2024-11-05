@@ -10,38 +10,10 @@ end
 
 function define_global_variables()
   action_stack_timeout = 6
-  action_states = {
-    finished = 1,
-    held = 2,
-    in_progress = 3,
-    released = 4
-  }
-  action_types = {
-    aerial = 1,
-    aerial_attack = 2,
-    attack = 3,
-    damage_reaction = 4,
-    movement = 5,
-    other = 6,
-    special_attack = 7
-  }
+
   bs = {
     kr = 1,
     sk = 2
-  }
-  cs = {
-    lk = 1,
-    kl = 2,
-    jc = 3,
-    rp = 4,
-    sz = 5,
-    st = 6,
-    kn = 7,
-    jx = 8,
-    ml = 9,
-    bk = 10,
-    sc = 11,
-    rd = 12
   }
   debug = {}
   directions = {
@@ -60,20 +32,6 @@ function define_global_variables()
   }
   projectile_speed = 3
   round_duration = 90
-  round_states = {
-    countdown = 1,
-    finished = 2,
-    in_progress = 3,
-    finishing_move = 4,
-    new_player = 5
-  }
-  screens = {
-    character_selection = 1,
-    game_over = 2,
-    gameplay = 3,
-    next_combat = 4,
-    start = 5
-  }
   sprite_h = 8
   sprite_w = 7
   stage_offset = 16
@@ -95,7 +53,7 @@ end
 function define_game()
   game = {
     current_combat = nil,
-    current_screen = screens.start,
+    current_screen = "start",
     joined_status = {
       [p_id.p1] = false,
       [p_id.p2] = false
@@ -133,7 +91,7 @@ end
 
 function define_characters()
   characters = {
-    [cs.lk] = {
+    [1] = {
       background_color = 2,
       head_pallete_map = { { 5, 0 } },
       head_sprites = { 64, 65, 66, 67, 68, 69, 68 },
@@ -158,7 +116,7 @@ function define_characters()
         fireball = create_special_attack("fireball", "➡️➡️🅾️", { 18, { 19, 7 } }, fire_projectile)
       }
     },
-    [cs.kl] = {
+    [2] = {
       background_color = 3,
       head_pallete_map = { { 5, 0 }, { 8, 5 } },
       head_sprites = { 70, 71, 72, 73, 70, 70, 74 },
@@ -184,7 +142,7 @@ function define_characters()
         hat_toss = create_special_attack("hat_toss", "⬅️➡️🅾️", { 18, 20 }, fire_projectile)
       }
     },
-    [cs.jc] = {
+    [3] = {
       background_color = 13,
       head_pallete_map = { { 5, 0 }, { 8, 4 } },
       head_sprites = { 75, 76, 77, 78, 75, 75, 75 },
@@ -210,7 +168,7 @@ function define_characters()
         shadow_bolt = create_special_attack("shadow_bolt", "⬇️➡️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    [cs.rp] = {
+    [4] = {
       background_color = 4,
       head_pallete_map = { { 1, 3 }, { 2, 4 }, { 5, 0 }, { 8, 3 }, { 9, 8 } },
       head_sprites = { 79, 80, 81, 82, 79, 79, 102 },
@@ -236,7 +194,7 @@ function define_characters()
         acid_spit = create_special_attack("acid_spit", "➡️➡️🅾️", { 29, { 30, 7 } }, fire_projectile)
       }
     },
-    [cs.sz] = {
+    [5] = {
       background_color = 1,
       head_pallete_map = { { 5, 0 }, { 8, 12 } },
       head_sprites = { 79, 80, 81, 82, 79, 79, 79 },
@@ -263,7 +221,7 @@ function define_characters()
         freeze = create_special_attack("freeze", "⬇️➡️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    [cs.st] = {
+    [6] = {
       background_color = 8,
       head_pallete_map = { { 5, 0 }, { 8, 5 } },
       head_sprites = { 83, 84, 85, 86, 83, 83, 83 },
@@ -287,7 +245,7 @@ function define_characters()
         fire_skull = create_special_attack("fire_skull", "⬅️⬅️🅾️", { 18, { 19, 7 } }, fire_projectile)
       }
     },
-    [cs.kn] = {
+    [7] = {
       background_color = 12,
       g = gender.her,
       head_pallete_map = { { 5, 0 }, { 8, 1 } },
@@ -314,7 +272,7 @@ function define_characters()
         fan_throw = create_special_attack("fan_throw", "➡️➡️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    [cs.jx] = {
+    [8] = {
       background_color = 14,
       head_pallete_map = { { 5, 0 }, { 8, 5 }, { 15, 4 } },
       head_sprites = { 91, 92, 93, 94, 91, 91, 91 },
@@ -341,7 +299,7 @@ function define_characters()
         energy_wave = create_special_attack("energy_wave", "➡️⬇️⬅️❎", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    [cs.ml] = {
+    [9] = {
       background_color = 13,
       g = gender.her,
       head_pallete_map = { { 5, 0 }, { 8, 2 } },
@@ -368,7 +326,7 @@ function define_characters()
         sai_throw = create_special_attack("sai_throw", "⬇️⬅️🅾️", { 18, { 19, 7 } }, fire_projectile)
       }
     },
-    [cs.bk] = {
+    [10] = {
       background_color = 14,
       head_sprites = { 95, 96, 97, 98, 95, 95, 95 },
       pallete_map = {
@@ -394,7 +352,7 @@ function define_characters()
         blade_spark = create_special_attack("blade_spark", "⬇️⬅️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    [cs.sc] = {
+    [11] = {
       background_color = 2,
       head_pallete_map = { { 5, 0 }, { 8, 10 } },
       head_sprites = { 79, 80, 81, 82, 79, 79, 79 },
@@ -421,7 +379,7 @@ function define_characters()
         spear = create_special_attack("spear", "⬅️⬅️🅾️", { 18, { 20, 7 } }, fire_projectile)
       }
     },
-    [cs.rd] = {
+    [12] = {
       background_color = 1,
       head_pallete_map = { { 8, 13 } },
       head_sprites = { 99, 100, 100, 101, 99, 99, 99 },
@@ -453,23 +411,23 @@ end
 
 function define_global_actions()
   actions = {
-    block = create_action("block", 2, nil, true, false, { 10, 11 }, action_types.other),
-    crouch = create_action("crouch", 2, nil, true, false, { { 4, 1, 0, 1 }, { 5, 1, 0, 2 } }, action_types.other),
-    flinch = create_action("flinch", 6, flinch, false, false, { 23 }, action_types.damage_reaction),
-    flying_kick = create_action("flying_kick", 3, attack, false, false, { { 14, 6 } }, action_types.aerial_attack, propelled, 10),
-    flying_punch = create_action("flying_punch", 3, attack, false, false, { { 15, 6 } }, action_types.aerial_attack, flinch, 10),
-    get_up = create_action("get_up", 2, nil, false, false, { { 5, 1, 0, 2 }, { 4, 1, 0, 1 } }, action_types.other),
-    hook = create_action("hook", 3, attack, false, true, { { 6, 1, 0, 1 }, { 7, 2 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 7, 2 } }, action_types.attack, propelled, 100),
-    idle = create_action("idle", 1, nil, false, false, { 0 }, action_types.other),
-    jump = create_action("jump", 2, nil, false, false, { { 16, 6, 0, 2 }, { 17, 4, 2, 1 }, { 16, 6, 0, -2, true, true, true, true }, { 17, 4, -2, -1, true, true, true, true } }, action_types.aerial),
-    kick = create_action("kick", 4, attack, false, true, { { 12, 5 }, { 13, 6 }, { 12, 5 } }, action_types.attack, flinch, 10),
-    prone = create_action("prone", 8, nil, false, false, { { 22, 4, -4, 0, false, false, true, true } }, action_types.other),
-    propelled = create_action("propelled", 3, nil, true, false, { { 23, 6, 0, 0 }, { 24, 4, -4, 0, false, false, true, true } }, action_types.damage_reaction),
-    punch = create_action("punch", 3, attack, false, true, { { 7, 2 }, { 9, 3 }, { 7, 2 } }, action_types.attack, flinch, 10),
-    roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { { 7, 2 }, { 28, 3, -1 }, { 7, 2, 0, 0, true, false, true, false }, { 12, 5 }, { 13, 6 }, { 13, 6 }, { 13, 6 }, { 12, 5 } }, action_types.attack, propelled, 20),
-    sweep = create_action("sweep", 2, attack, false, true, { { 4, 1, 0, 1 }, { 25, 2, 0, 1 }, { 26, 3, -1, 1 }, { 25, 2, 0, 1, true, false, true, false }, { 27, 1, 0, 1 }, { 27, 1, 0, 1 }, { 4, 1, 0, 1 } }, action_types.attack, swept, 10),
-    swept = create_action("swept", 4, nil, false, false, { { 21, 6, 0, 1 } }, action_types.damage_reaction),
-    walk = create_action("walk", 4, walk, false, false, { 1, 2, 3, 2 }, action_types.movement)
+    block = create_action("block", 2, nil, true, false, { 10, 11 }, "other"),
+    crouch = create_action("crouch", 2, nil, true, false, { { 4, 1, 0, 1 }, { 5, 1, 0, 2 } }, "other"),
+    flinch = create_action("flinch", 6, flinch, false, false, { 23 }, "damage_reaction"),
+    flying_kick = create_action("flying_kick", 3, attack, false, false, { { 14, 6 } }, "aerial_attack", propelled, 10),
+    flying_punch = create_action("flying_punch", 3, attack, false, false, { { 15, 6 } }, "aerial_attack", flinch, 10),
+    get_up = create_action("get_up", 2, nil, false, false, { { 5, 1, 0, 2 }, { 4, 1, 0, 1 } }, "other"),
+    hook = create_action("hook", 3, attack, false, true, { { 6, 1, 0, 1 }, { 7, 2 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 8, 3 }, { 7, 2 } }, "attack", propelled, 100),
+    idle = create_action("idle", 1, nil, false, false, { 0 }, "other"),
+    jump = create_action("jump", 2, nil, false, false, { { 16, 6, 0, 2 }, { 17, 4, 2, 1 }, { 16, 6, 0, -2, true, true, true, true }, { 17, 4, -2, -1, true, true, true, true } }, "aerial"),
+    kick = create_action("kick", 4, attack, false, true, { { 12, 5 }, { 13, 6 }, { 12, 5 } }, "attack", flinch, 10),
+    prone = create_action("prone", 8, nil, false, false, { { 22, 4, -4, 0, false, false, true, true } }, "other"),
+    propelled = create_action("propelled", 3, nil, true, false, { { 23, 6, 0, 0 }, { 24, 4, -4, 0, false, false, true, true } }, "damage_reaction"),
+    punch = create_action("punch", 3, attack, false, true, { { 7, 2 }, { 9, 3 }, { 7, 2 } }, "attack", flinch, 10),
+    roundhouse_kick = create_action("roundhouse_kick", 2, attack, false, true, { { 7, 2 }, { 28, 3, -1 }, { 7, 2, 0, 0, true, false, true, false }, { 12, 5 }, { 13, 6 }, { 13, 6 }, { 13, 6 }, { 12, 5 } }, "attack", propelled, 20),
+    sweep = create_action("sweep", 2, attack, false, true, { { 4, 1, 0, 1 }, { 25, 2, 0, 1 }, { 26, 3, -1, 1 }, { 25, 2, 0, 1, true, false, true, false }, { 27, 1, 0, 1 }, { 27, 1, 0, 1 }, { 4, 1, 0, 1 } }, "attack", swept, 10),
+    swept = create_action("swept", 4, nil, false, false, { { 21, 6, 0, 1 } }, "damage_reaction"),
+    walk = create_action("walk", 4, walk, false, false, { 1, 2, 3, 2 }, "movement")
   }
 end
 
@@ -496,7 +454,7 @@ function create_special_attack(name, sequence, sprites, handler, reaction_handle
       false,
       false,
       sprites,
-      action_types.special_attack,
+      "special_attack",
       reaction_handler or flinch,
       damage or 20
     ),
@@ -518,7 +476,7 @@ function create_player(id, character)
     character = character,
     current_action = actions.idle,
     current_action_params = {},
-    current_action_state = action_states.in_progress,
+    current_action_state = "in_progress",
     current_projectile = nil,
     facing = is_p1 and directions.forward or directions.backward,
     frames_counter = 0,
