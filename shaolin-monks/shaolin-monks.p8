@@ -1,10 +1,19 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-#include utils.lua
-#include init.lua
-#include draw.lua
-#include update.lua
+#include shared/draw.lua
+#include shared/update.lua
+#include shared/utils.lua
+#include core/draw.lua
+#include core/init.lua
+#include core/update.lua
+#include draw/character_selection.lua
+#include draw/next_combat.lua
+#include draw/start.lua
+#include update/character_selection.lua
+#include update/next_combat.lua
+#include update/start.lua
+
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

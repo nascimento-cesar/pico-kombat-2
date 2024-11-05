@@ -23,58 +23,11 @@ function _update()
   if game.current_screen == screens.character_selection then
     update_character_selection()
   elseif game.current_screen == screens.next_combat then
-    set_next_combat()
+    update_next_combat()
   elseif game.current_screen == screens.gameplay then
     update_gameplay()
   elseif game.current_screen == screens.start then
     update_start()
-  end
-end
-
-function update_character_selection()
-  for p in all({ p1, p2 }) do
-    local new_char = p.highlighted_char
-
-    if is_playing(p) then
-      if btnp(⬆️, p.id) then
-        if new_char < 5 then
-          new_char += 8
-        else
-          new_char -= 4
-        end
-      elseif btnp(⬇️, p.id) then
-        if new_char > 8 then
-          new_char -= 8
-        else
-          new_char += 4
-        end
-      elseif btnp(⬅️, p.id) then
-        if new_char == 1 or new_char == 5 or new_char == 9 then
-          new_char += 3
-        else
-          new_char -= 1
-        end
-      elseif btnp(➡️, p.id) then
-        if new_char % 4 == 0 then
-          new_char -= 3
-        else
-          new_char += 1
-        end
-      elseif btnp(🅾️, p.id) or btnp(❎, p.id) then
-        p.character = characters[new_char]
-        local vs = get_vs(p)
-
-        if not is_playing(vs) or is_playing(vs) and vs.character then
-          game.current_screen = screens.next_combat
-        end
-      end
-
-      p.highlighted_char = new_char
-    else
-      if btnp(🅾️, p.id) or btnp(❎, p.id) then
-        init_player(p)
-      end
-    end
   end
 end
 
@@ -99,15 +52,6 @@ function update_gameplay()
   fix_players_placement()
 end
 
-function update_start()
-  for p in all({ p1, p2 }) do
-    if btnp(❎, p.id) then
-      init_player(p)
-      game.current_screen = screens.character_selection
-    end
-  end
-end
-
 function detect_new_player()
   for p in all({ p1, p2 }) do
     if not is_playing(p) and not player_has_joined() then
@@ -117,31 +61,6 @@ function detect_new_player()
       end
     end
   end
-end
-
-function set_next_combat()
-  for p in all({ p1, p2 }) do
-    if not p.character then
-      p.character = get_next_challenger(get_vs(p))
-    end
-  end
-
-  game.current_combat = {
-    current_stage = game.current_combat and game.current_combat.current_stage + 1 or 1,
-    round = 1,
-    round_loser = nil,
-    round_start_time = time(),
-    round_state = round_states.countdown,
-    round_winner = nil,
-    rounds_won = {
-      [p_id.p1] = 0,
-      [p_id.p2] = 0
-    },
-    timers = {}
-  }
-
-  reset_timers()
-  game.current_screen = screens.gameplay
 end
 
 function reset_timers()
