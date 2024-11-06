@@ -104,8 +104,8 @@ function get_next_challenger(p)
 end
 
 function reset_players()
-  p1 = create_player(p_id.p1, p1.character)
-  p2 = create_player(p_id.p2, p2.character)
+  p1 = create_player(p1_id, p1.character)
+  p2 = create_player(p2_id, p2.character)
 end
 
 function update_player(p)
@@ -221,7 +221,7 @@ function process_inputs(p)
         if is_aerial(p) then
           setup_attack(p, actions.flying_kick)
         else
-          setup_attack(p, p.facing == directions.forward and actions.roundhouse_kick or actions.kick)
+          setup_attack(p, p.facing == forward and actions.roundhouse_kick or actions.kick)
         end
       else
         setup_action(p, actions.walk, { direction = p.facing * -1 })
@@ -235,7 +235,7 @@ function process_inputs(p)
         if is_aerial(p) then
           setup_attack(p, actions.flying_kick)
         else
-          setup_attack(p, p.facing == directions.forward and actions.kick or actions.roundhouse_kick)
+          setup_attack(p, p.facing == forward and actions.kick or actions.roundhouse_kick)
         end
       else
         setup_action(p, actions.walk, { direction = p.facing })
@@ -332,7 +332,7 @@ end
 function fix_players_placement()
   if p1.y >= y_bottom_limit and p2.y >= y_bottom_limit then
     if p1.x < sprite_w and p2.x < sprite_w then
-      if p1.facing == directions.forward then
+      if p1.facing == forward then
         p1.x = 0
         p2.x = sprite_w - 1
       else
@@ -342,7 +342,7 @@ function fix_players_placement()
     end
 
     if p1.x + sprite_w > 127 - sprite_w and p2.x + sprite_w > 127 - sprite_w then
-      if p1.facing == directions.forward then
+      if p1.facing == forward then
         p1.x = 127 - sprite_w * 2 + 1
         p2.x = 127 - sprite_w
       else
@@ -507,7 +507,7 @@ function record_action(p, action, params)
   elseif action == actions.punch then
     key = "🅾️"
   elseif action == actions.walk then
-    key = params.direction == directions.forward and "➡️" or "⬅️"
+    key = params.direction == forward and "➡️" or "⬅️"
   end
 
   if key then
@@ -571,7 +571,7 @@ function deal_damage(action, p)
 end
 
 function spill_blood(p)
-  local x = p.facing == directions.forward and p.x + sprite_w or p.x
+  local x = p.facing == forward and p.x + sprite_w or p.x
   add(p.particle_sets, build_particle_set(8, 30, x, p.y))
 end
 
@@ -601,7 +601,7 @@ end
 
 function propelled(p)
   if not is_propelled(p) then
-    start_action(p, actions.propelled, { direction = directions.backward })
+    start_action(p, actions.propelled, { direction = backward })
   end
 end
 

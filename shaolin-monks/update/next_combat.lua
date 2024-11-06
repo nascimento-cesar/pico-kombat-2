@@ -13,8 +13,8 @@ function update_next_combat()
     round_state = "countdown",
     round_winner = nil,
     rounds_won = {
-      [p_id.p1] = 0,
-      [p_id.p2] = 0
+      [p1_id] = 0,
+      [p2_id] = 0
     },
     timers = {}
   }

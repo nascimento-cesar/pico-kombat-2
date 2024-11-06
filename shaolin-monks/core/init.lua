@@ -1,39 +1,26 @@
 function _init()
   define_global_variables()
-  define_game()
+  game = define_game()
   actions = define_actions()
   characters = define_characters()
-  define_players()
+  p1 = create_player(p1_id)
+  p2 = create_player(p2_id)
 end
 
 function define_global_variables()
   action_stack_timeout = 6
-
-  bs = {
-    kr = 1,
-    sk = 2
-  }
+  backward = -1
   debug = {}
-  directions = {
-    backward = -1,
-    forward = 1
-  }
   flinch_speed = 4
-  gender = {
-    him = 1,
-    her = 2
-  }
+  forward = 1
   jump_speed = 2
-  p_id = {
-    p1 = 0,
-    p2 = 1
-  }
+  p1_id = 0
+  p2_id = 1
   projectile_speed = 3
   round_duration = 90
   sprite_h = 8
   sprite_w = 7
   stage_offset = 16
-  stages_number = 9
   swept_speed = 3
   timers = {
     finishing_move = 90,
@@ -43,49 +30,25 @@ function define_global_variables()
   }
   walk_speed = 1
   x_shift = 3
-  y_shift = 2
   y_bottom_limit = 127 - 36
+  y_shift = 2
   y_upper_limit = 127 - 36 - 20
 end
 
 function define_game()
-  game = {
+  return {
     current_combat = nil,
     current_screen = "start",
     joined_status = {
-      [p_id.p1] = false,
-      [p_id.p2] = false
+      [p1_id] = false,
+      [p2_id] = false
     },
     next_combats = {
-      [p_id.p1] = {},
-      [p_id.p2] = {}
+      [p1_id] = {},
+      [p2_id] = {}
     }
   }
 end
-
--- function define_bosses()
---   bosses = {
---     [bs.sk] = {
---       head_sprites = { 103, 104, 105, 106, 103, 103, 103 },
---       pallete_map = {
---         { 1, 15 },
---         { 3, 15 },
---         { 4, 6 },
---         { 5, 2 },
---         { 9, 6 },
---         { 10, 13 },
---         { 11, 5 },
---         { 12, 15 },
---         { 14, 15 }
---       },
---       projectile = {
---         fps = 2,
---         sprites = { 48, 49, 50, 51, 50, 49 }
---       },
---       special_attacks = {}
---     }
---   }
--- end
 
 function define_characters()
   local characters, special_attacks, c_attr_list, sa_attr_list, c_attr_keys = {}, {}, split(
@@ -115,33 +78,10 @@ function define_actions(attr_list)
   return actions
 end
 
-function define_players()
-  p1 = create_player(p_id.p1)
-  p2 = create_player(p_id.p2)
-end
-
 function create_player(id, character)
-  local is_p1 = id == p_id.p1
+  local is_p1 = id == p1_id
 
-  return {
-    action_stack = "",
-    action_stack_timeout = action_stack_timeout,
-    character = character,
-    current_action = actions.idle,
-    current_action_params = {},
-    current_action_state = "in_progress",
-    current_projectile = nil,
-    facing = is_p1 and directions.forward or directions.backward,
-    frames_counter = 0,
-    highlighted_char = is_p1 and 1 or 4,
-    hp = 100,
-    id = id,
-    is_orientation_locked = false,
-    is_x_shifted = false,
-    is_y_shifted = false,
-    jump_acceleration = 0,
-    particle_sets = {},
-    x = is_p1 and 36 or 127 - 36 - sprite_w,
-    y = y_bottom_limit
-  }
+  return string_to_hash(
+    "action_stack,action_stack_timeout,character,current_action,current_action_params,current_action_state,facing,frames_counter,highlighted_char,hp,id,is_orientation_locked,is_x_shifted,is_y_shifted,jump_acceleration,particle_sets,projectile,x,y", { "", action_stack_timeout, character, actions.idle, {}, "in_progress", is_p1 and forward or backward, 0, is_p1 and 1 or 4, 100, id, false, false, false, 0, {}, nil, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit }
+  )
 end

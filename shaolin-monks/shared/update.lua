@@ -1,15 +1,15 @@
 function get_combat_winner()
   local rounds_won = game.current_combat.rounds_won
 
-  if rounds_won[p_id.p1] == 2 then
+  if rounds_won[p1_id] == 2 then
     return p1
-  elseif rounds_won[p_id.p2] == 2 then
+  elseif rounds_won[p2_id] == 2 then
     return p2
   end
 end
 
 function get_vs(p)
-  return p.id == p_id.p1 and p2 or p1
+  return p.id == p1_id and p2 or p1
 end
 
 function has_combat_ended()
@@ -73,8 +73,8 @@ function is_moving(p)
 end
 
 function is_p1_ahead_p2()
-  local is_p1_ahead = p1.x > p2.x and p1.facing == directions.forward
-  local is_p1_behind = p1.x + sprite_w < p2.x + sprite_w and p1.facing == directions.backward
+  local is_p1_ahead = p1.x > p2.x and p1.facing == forward
+  local is_p1_behind = p1.x + sprite_w < p2.x + sprite_w and p1.facing == backward
 
   return is_p1_ahead or is_p1_behind
 end
