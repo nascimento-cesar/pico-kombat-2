@@ -23,7 +23,7 @@ end
 
 function detect_new_player()
   for p in all({ p1, p2 }) do
-    if not has_player_joined(p) and not is_round_state_eq "new_player" then
+    if not p.has_joined and not is_round_state_eq "new_player" then
       if btnp(🅾️, p.id) or btnp(❎, p.id) then
         init_player(p)
         current_combat.round_state = "new_player"
@@ -104,8 +104,8 @@ function get_next_challenger(p)
 end
 
 function reset_players()
-  p1 = create_player(p1_id, p1.character)
-  p2 = create_player(p2_id, p2.character)
+  p1 = create_player(p1_id, p1.character, p1.has_joined)
+  p2 = create_player(p2_id, p2.character, p2.has_joined)
 end
 
 function update_player(p)
@@ -113,7 +113,7 @@ function update_player(p)
   update_previous_action(p)
 
   if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and not is_round_loser(p) then
-    if has_player_joined(p) then
+    if p.has_joined then
       process_inputs(p)
     else
       next_cpu_action(p)
@@ -124,7 +124,7 @@ function update_player(p)
   update_aerial_action(p)
   update_projectile(p)
 
-  if has_player_joined(p) then
+  if p.has_joined then
     cleanup_action_stack(p)
   end
 end

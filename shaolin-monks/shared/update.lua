@@ -16,12 +16,8 @@ function has_combat_ended()
   return get_combat_winner() and true or false
 end
 
-function has_player_joined(p)
-  return joined_status[p.id]
-end
-
 function init_player(p)
-  joined_status[p.id] = true
+  p.has_joined = true
 
   for i = 1, 12 do
     add(next_combats[p.id], i)
@@ -45,7 +41,7 @@ function is_action_type_eq(p, s)
 end
 
 function is_arcade_mode()
-  return not has_player_joined(p1) or not has_player_joined(p2)
+  return not p1.has_joined or not p2.has_joined
 end
 
 function is_player_attacking(p)

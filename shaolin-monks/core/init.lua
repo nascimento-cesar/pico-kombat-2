@@ -38,10 +38,6 @@ end
 function define_global_variables()
   current_combat = nil
   current_screen = "start"
-  joined_status = {
-    [p1_id] = false,
-    [p2_id] = false
-  }
   next_combats = {
     [p1_id] = {},
     [p2_id] = {}
@@ -76,10 +72,10 @@ function define_actions(attr_list)
   return actions
 end
 
-function create_player(id, character)
+function create_player(id, character, has_joined)
   local is_p1 = id == p1_id
 
   return string_to_hash(
-    "action_stack,action_stack_timeout,character,current_action,current_action_params,current_action_state,facing,frames_counter,highlighted_char,hp,id,is_orientation_locked,is_x_shifted,is_y_shifted,jump_acceleration,particle_sets,projectile,x,y", { "", action_stack_timeout, character, actions.idle, {}, "in_progress", is_p1 and forward or backward, 0, is_p1 and 1 or 4, 100, id, false, false, false, 0, {}, nil, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit }
+    "action_stack,action_stack_timeout,character,current_action,current_action_params,current_action_state,facing,frames_counter,has_joined,highlighted_char,hp,id,is_orientation_locked,is_x_shifted,is_y_shifted,jump_acceleration,particle_sets,projectile,x,y", { "", action_stack_timeout, character, actions.idle, {}, "in_progress", is_p1 and forward or backward, 0, has_joined, is_p1 and 1 or 4, 100, id, false, false, false, 0, {}, nil, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit }
   )
 end
