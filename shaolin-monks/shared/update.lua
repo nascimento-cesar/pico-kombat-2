@@ -18,10 +18,7 @@ end
 
 function init_player(p)
   p.has_joined = true
-
-  for i = 1, 12 do
-    add(next_combats[p.id], i)
-  end
+  define_player(p.id, p)
 end
 
 function is_action_eq(p, s)
@@ -73,6 +70,12 @@ end
 
 function is_round_state_eq(s)
   return current_combat.round_state == s
+end
+
+function reset_players()
+  foreach_player(function(p, p_id)
+    define_player(p_id, p)
+  end)
 end
 
 function update_debug()

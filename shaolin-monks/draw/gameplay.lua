@@ -177,21 +177,19 @@ function draw_hp()
   local w = (128 - offset * 3) / 2
   local y = offset * 2
 
-  for p in all({ p1, p2 }) do
-    local x = offset + p.id * w + p.id * offset
+  foreach_player(function(p, p_id)
+    local x = offset + p_id * w + p_id * offset
     local hp_w = w * p.hp / 100
     hp_w = hp_w < 1 and 1 or hp_w
-
     rectfill(x, y, x + w - 1, y + h - 1, 8)
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
     rect(x, y, x + w - 1, y + h - 1, 6)
-
-    for i = 1, current_combat.rounds_won[p.id] do
+    for i = 1, current_combat.rounds_won[p_id] do
       shift_pal("p50")
       spr(192, x + (i - 1) * 8, y + h + 2)
       pal()
     end
-  end
+  end)
 end
 
 function draw_blinking_text(s)

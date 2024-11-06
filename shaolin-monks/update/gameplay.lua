@@ -1,13 +1,11 @@
 function update_gameplay()
   disable_hold_function()
 
-  if is_arcade_mode() then
-    detect_new_player()
+  if detect_new_player() then
+    return process_new_player()
   end
 
-  if is_round_state_eq "new_player" then
-    return process_new_player()
-  elseif is_round_state_eq "countdown" then
+  if is_round_state_eq "countdown" then
     process_round_start()
   elseif is_round_state_eq "finished" then
     process_round_end()
@@ -22,14 +20,16 @@ function update_gameplay()
 end
 
 function detect_new_player()
-  for p in all({ p1, p2 }) do
+  foreach_player(function(p, p_id)
     if not p.has_joined and not is_round_state_eq "new_player" then
-      if btnp(🅾️, p.id) or btnp(❎, p.id) then
+      if btnp(🅾️, p_id) or btnp(❎, p_id) then
         init_player(p)
         current_combat.round_state = "new_player"
       end
     end
-  end
+  end)
+
+  return is_round_state_eq "new_player"
 end
 
 function reset_timers()
@@ -93,19 +93,14 @@ function process_round_start()
 end
 
 function get_next_challenger(p)
-  local challenger = characters[next_combats[p.id][1]]
-  deli(next_combats[p.id], 1)
+  local challenger = characters[p.next_combats[1]]
+  deli(p.next_combats, 1)
 
   if p.character == challenger then
     return get_next_challenger(p)
   end
 
   return challenger
-end
-
-function reset_players()
-  p1 = create_player(p1_id, p1.character, p1.has_joined)
-  p2 = create_player(p2_id, p2.character, p2.has_joined)
 end
 
 function update_player(p)
@@ -164,14 +159,15 @@ function update_previous_action(p)
 end
 
 function process_inputs(p)
+  local p_id = p.id
   local button_pressed = btn() > 0
-  local h🅾️❎ = btn(🅾️, p.id) and btn(❎, p.id)
-  local p🅾️ = btnp(🅾️, p.id)
-  local p❎ = btnp(❎, p.id)
-  local h⬆️ = btn(⬆️, p.id)
-  local h⬇️ = btn(⬇️, p.id)
-  local h⬅️ = btn(⬅️, p.id)
-  local h➡️ = btn(➡️, p.id)
+  local h🅾️❎ = btn(🅾️, p_id) and btn(❎, p_id)
+  local p🅾️ = btnp(🅾️, p_id)
+  local p❎ = btnp(❎, p_id)
+  local h⬆️ = btn(⬆️, p_id)
+  local h⬇️ = btn(⬇️, p_id)
+  local h⬅️ = btn(⬅️, p_id)
+  local h➡️ = btn(➡️, p_id)
 
   if button_pressed then
     p.action_stack_timeout = action_stack_timeout

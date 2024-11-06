@@ -3,8 +3,8 @@ function _init()
   define_global_variables()
   actions = define_actions()
   characters = define_characters()
-  p1 = create_player(p1_id)
-  p2 = create_player(p2_id)
+  define_player(p1_id)
+  define_player(p2_id)
 end
 
 function define_global_constants()
@@ -36,12 +36,7 @@ function define_global_constants()
 end
 
 function define_global_variables()
-  current_combat = nil
-  current_screen = "start"
-  next_combats = {
-    [p1_id] = {},
-    [p2_id] = {}
-  }
+  current_combat, current_screen, p1, p2 = nil, "start", {}, {}
 end
 
 function define_characters()
@@ -72,10 +67,23 @@ function define_actions(attr_list)
   return actions
 end
 
-function create_player(id, character, has_joined)
-  local is_p1 = id == p1_id
+function define_player(id, p)
+  local p = p or {}
+  local next_combats = p.next_combats or split "1,2,3,4,5,6,7,8,9,10,11,12"
 
-  return string_to_hash(
-    "action_stack,action_stack_timeout,character,current_action,current_action_params,current_action_state,facing,frames_counter,has_joined,highlighted_char,hp,id,is_orientation_locked,is_x_shifted,is_y_shifted,jump_acceleration,particle_sets,projectile,x,y", { "", action_stack_timeout, character, actions.idle, {}, "in_progress", is_p1 and forward or backward, 0, has_joined, is_p1 and 1 or 4, 100, id, false, false, false, 0, {}, nil, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit }
+  for i = #next_combats, 2, -1 do
+    local j = flr(rnd(i)) + 1
+    next_combats[i], next_combats[j] = next_combats[j], next_combats[i]
+  end
+
+  local is_p1 = id == p1_id
+  local p = string_to_hash(
+    "action_stack,action_stack_timeout,character,current_action,current_action_params,current_action_state,facing,frames_counter,has_joined,highlighted_char,hp,id,is_orientation_locked,is_x_shifted,is_y_shifted,jump_acceleration,next_combats,particle_sets,projectile,x,y", { "", action_stack_timeout, p.character, actions.idle, {}, "in_progress", is_p1 and forward or backward, 0, p.has_joined, is_p1 and 1 or 4, 100, id, false, false, false, 0, next_combats, {}, nil, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit }
   )
+
+  if is_p1 then
+    p1 = p
+  else
+    p2 = p
+  end
 end

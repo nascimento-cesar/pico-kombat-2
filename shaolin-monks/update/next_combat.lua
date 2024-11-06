@@ -1,9 +1,9 @@
 function update_next_combat()
-  for p in all({ p1, p2 }) do
-    if not p.character then
-      p.character = get_next_challenger(get_vs(p))
+  foreach_player(function(p, _, vs)
+    if not vs.character then
+      vs.character = get_next_challenger(p)
     end
-  end
+  end)
 
   current_combat = {
     current_stage = current_combat and current_combat.current_stage + 1 or 1,
