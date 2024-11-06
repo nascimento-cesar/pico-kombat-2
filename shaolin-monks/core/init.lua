@@ -8,31 +8,8 @@ function _init()
 end
 
 function define_global_constants()
-  action_stack_timeout = 6
-  backward = -1
-  debug = {}
-  flinch_speed = 4
-  forward = 1
-  jump_speed = 2
-  p1_id = 0
-  p2_id = 1
-  projectile_speed = 3
-  round_duration = 90
-  sprite_h = 8
-  sprite_w = 7
-  stage_offset = 16
-  swept_speed = 3
-  timers = {
-    finishing_move = 90,
-    new_player = 60,
-    round_end = 60,
-    round_start = 60
-  }
-  walk_speed = 1
-  x_shift = 3
-  y_bottom_limit = 127 - 36
-  y_shift = 2
-  y_upper_limit = 127 - 36 - 20
+  action_stack_timeout, backward, debug, flinch_speed, forward, jump_speed, p1_id, p2_id, projectile_speed, round_duration, sprite_h, sprite_w, stage_offset, swept_speed, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, {}, 4, 1, 2, 0, 1, 3, 90, 8, 7, 16, 3, 1, 3, 127 - 36, 2, 127 - 36 - 20
+  timers = string_to_hash("finishing_move,new_player,round_end,round_start", "90,60,60,60")
 end
 
 function define_global_variables()

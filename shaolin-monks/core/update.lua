@@ -1,13 +1,4 @@
 function _update()
   update_debug()
-
-  if is_current_screen_eq "start" then
-    update_start()
-  elseif is_current_screen_eq "character_selection" then
-    update_character_selection()
-  elseif is_current_screen_eq "next_combat" then
-    update_next_combat()
-  elseif is_current_screen_eq "gameplay" then
-    update_gameplay()
-  end
+  string_to_hash("start,character_selection,next_combat,gameplay", { update_start, update_character_selection, update_next_combat, update_gameplay })[current_screen]()
 end

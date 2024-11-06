@@ -1,13 +1,4 @@
 function _draw()
-  if is_current_screen_eq "start" then
-    draw_start()
-  elseif is_current_screen_eq "character_selection" then
-    draw_character_selection()
-  elseif is_current_screen_eq "next_combat" then
-    draw_next_combat()
-  elseif is_current_screen_eq "gameplay" then
-    draw_gameplay()
-  end
-
+  string_to_hash("start,character_selection,next_combat,gameplay", { draw_start, draw_character_selection, draw_next_combat, draw_gameplay })[current_screen]()
   draw_debug()
 end
