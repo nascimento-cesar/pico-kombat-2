@@ -37,16 +37,8 @@ function is_action_type_eq(p, s)
   return p.current_action.type == s
 end
 
-function is_arcade_mode()
-  return not p1.has_joined or not p2.has_joined
-end
-
 function is_player_attacking(p)
   return p.current_action_params.is_player_attacking
-end
-
-function is_current_screen_eq(s)
-  return current_screen == s
 end
 
 function is_limit_left(x)
@@ -62,10 +54,6 @@ function is_p1_ahead_p2()
   local is_p1_behind = p1.x + sprite_w < p2.x + sprite_w and p1.facing == backward
 
   return is_p1_ahead or is_p1_behind
-end
-
-function is_round_loser(p)
-  return current_combat.round_loser == p
 end
 
 function is_round_state_eq(s)

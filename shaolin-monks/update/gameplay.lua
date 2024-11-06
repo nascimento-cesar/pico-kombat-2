@@ -61,7 +61,7 @@ function process_round_end()
       local winner = get_combat_winner()
       local loser = get_vs(winner)
 
-      if is_arcade_mode() then
+      if not p1.has_joined or not p2.has_joined then
         current_screen = "next_combat"
         loser.character = nil
       else
@@ -100,7 +100,7 @@ function update_player(p)
   update_frames_counter(p)
   update_previous_action(p)
 
-  if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and not is_round_loser(p) then
+  if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and current_combat.round_loser ~= p then
     if p.has_joined then
       process_inputs(p)
     else
