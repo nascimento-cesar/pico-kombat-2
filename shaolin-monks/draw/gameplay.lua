@@ -1,17 +1,7 @@
 function draw_gameplay()
   cls(1)
   draw_stage()
-
-  if is_round_state_eq "finishing_move" then
-    draw_finish_him_her()
-  elseif is_round_state_eq "finished" then
-    draw_round_result()
-  elseif is_round_state_eq "countdown" then
-    draw_round_start()
-  elseif is_round_state_eq "new_player" then
-    draw_new_player()
-  end
-
+  function_from_hash("countdown,finished,finishing_move,new_player", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player }, current_combat.round_state)
   draw_round_timer()
   draw_hp()
   draw_player(p1)
@@ -19,24 +9,12 @@ function draw_gameplay()
 end
 
 function draw_stage()
-  local x = (current_combat.current_stage - 1) % 8 * stage_offset
-  local y = flr(current_combat.current_stage / 9) * 16
-
+  local x, y = (current_combat.current_stage - 1) % 8 * stage_offset, flr(current_combat.current_stage / 9) * 16
   map(x, y, 0, 0, 16, 16)
 end
 
 function draw_player(p)
-  local flip_body_x = false
-  local flip_body_y = false
-  local flip_head_x = false
-  local flip_head_y = false
-  local head_x_adjustment = 0
-  local head_y_adjustment = 0
-  local body_id
-  local head_id
-  local index
-  local sprite
-  local sprites = p.current_action.sprites
+  local flip_body_x, flip_body_y, flip_head_x, flip_head_y, head_x_adjustment, head_y_adjustment, sprites, body_id, head_id, index, sprite = false, false, false, false, 0, 0, p.current_action.sprites
 
   if is_action_state_eq(p, "held") then
     index = #sprites
@@ -51,22 +29,13 @@ function draw_player(p)
   sprite = sprites[index]
 
   if type(sprite) == "table" then
-    body_id = sprite[1]
-    head_id = sprite[2]
-    head_x_adjustment = sprite[3] or 0
-    head_y_adjustment = sprite[4] or 0
-    flip_body_x = sprite[5]
-    flip_body_y = sprite[6]
-    flip_head_x = sprite[7]
-    flip_head_y = sprite[8]
+    body_id, head_id, head_x_adjustment, head_y_adjustment, flip_body_x, flip_body_y, flip_head_x, flip_head_y = sprite[1], sprite[2], sprite[3] or 0, sprite[4] or 0, sprite[5], sprite[6], sprite[7], sprite[8]
   else
-    body_id = sprite
-    head_id = 1
+    body_id, head_id = sprite, 1
   end
 
   if p.facing == backward then
-    flip_body_x = not flip_body_x
-    flip_head_x = not flip_head_x
+    flip_body_x, flip_head_x = not flip_body_x, not flip_head_x
   end
 
   draw_head(p, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
@@ -92,23 +61,14 @@ function draw_body(p, id, flip_x, flip_y)
 end
 
 function draw_projectile(p)
-  local flip_x = false
-  local index
-  local sprites = p.character.projectile_sprites
-
-  index = flr(p.projectile.frames_counter / p.character.projectile_fps) + 1
+  local sprites, index = p.character.projectile_sprites, flr(p.projectile.frames_counter / p.character.projectile_fps) + 1
 
   if index > #sprites then
-    index = 1
-    p.projectile.frames_counter = 0
-  end
-
-  if p.facing == backward then
-    flip_x = not flip_x
+    index, p.projectile.frames_counter = 1, 0
   end
 
   shift_pal(p.character.projectile_pal_map)
-  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, flip_x)
+  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.facing == backward)
   pal()
 end
 
@@ -142,56 +102,35 @@ end
 
 function draw_finish_him_her()
   if current_combat.timers.finishing_move > timers.finishing_move / 2 then
-    local pronoun = current_combat.round_loser.character.gender == 1 and "him" or "her"
-    local text = "finish " .. pronoun
-    draw_blinking_text(text)
+    draw_blinking_text("finish " .. (current_combat.round_loser.character.gender == 1 and "him" or "her"))
   end
 end
 
 function draw_round_start()
-  local text = ""
-
-  if current_combat.timers.round_start > timers.round_start / 2 then
-    text = "round " .. current_combat.round
-  else
-    text = "fight"
-  end
-
-  draw_blinking_text(text)
+  draw_blinking_text(current_combat.timers.round_start > timers.round_start / 2 and "round " .. current_combat.round or "fight")
 end
 
 function draw_round_result()
-  local winner = current_combat.round_winner
-  local text = (winner == p1 and "p1" or "p2") .. " wins"
-  draw_blinking_text(text)
+  draw_blinking_text((current_combat.round_winner == p1 and "p1" or "p2") .. " wins")
 end
 
 function draw_new_player()
-  local text = "a new challenger has emerged"
-  draw_blinking_text(text)
+  draw_blinking_text "a new challenger has emerged"
 end
 
 function draw_hp()
   local offset = 8
-  local h = 8
-  local w = (128 - offset * 3) / 2
-  local y = offset * 2
+  local h, w, y = 8, (128 - offset * 3) / 2, offset * 2
 
   foreach_player(function(p, p_id)
-    local x = offset + p_id * w + p_id * offset
-    local hp_w = w * p.hp / 100
-    hp_w = hp_w < 1 and 1 or hp_w
+    local x, hp_w = offset + p_id * w + p_id * offset, max(w * p.hp / 100, 1)
     rectfill(x, y, x + w - 1, y + h - 1, 8)
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
     rect(x, y, x + w - 1, y + h - 1, 6)
     for i = 1, current_combat.rounds_won[p_id] do
-      shift_pal("p50")
+      shift_pal "p50"
       spr(192, x + (i - 1) * 8, y + h + 2)
       pal()
     end
   end)
-end
-
-function draw_blinking_text(s)
-  print(s, get_hcenter(s), get_vcenter(), get_blinking_color())
 end

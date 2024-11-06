@@ -26,6 +26,11 @@ function foreach_player(callback)
   end
 end
 
+function function_from_hash(keys, values, key)
+  local f = string_to_hash(keys, values)[key]
+  return f and f()
+end
+
 function merge(obj1, obj2)
   for k, v in pairs(obj2) do
     obj1[k] = v

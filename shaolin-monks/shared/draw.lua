@@ -9,6 +9,10 @@ function shift_pal(pallete)
   end
 end
 
+function draw_blinking_text(s)
+  print(s, get_hcenter(s), get_vcenter(), get_blinking_color())
+end
+
 function draw_debug()
   local i = 1
 

@@ -5,14 +5,7 @@ function update_gameplay()
     return process_new_player()
   end
 
-  if is_round_state_eq "countdown" then
-    process_round_start()
-  elseif is_round_state_eq "finished" then
-    process_round_end()
-  elseif is_round_state_eq "finishing_move" then
-    process_finishing_move()
-  end
-
+  function_from_hash("countdown,finished,finishing_move,new_player", { process_round_start, process_round_end, process_finishing_move }, current_combat.round_state)
   update_player(p1)
   update_player(p2)
   fix_players_orientation()
