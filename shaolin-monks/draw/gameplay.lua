@@ -2,13 +2,13 @@ function draw_gameplay()
   cls(1)
   draw_stage()
 
-  if is_round_finishing_move() then
+  if is_round_state_eq "finishing_move" then
     draw_finish_him_her()
-  elseif is_round_finished() then
+  elseif is_round_state_eq "finished" then
     draw_round_result()
-  elseif is_round_beginning() then
+  elseif is_round_state_eq "countdown" then
     draw_round_start()
-  elseif player_has_joined() then
+  elseif is_round_state_eq "new_player" then
     draw_new_player()
   end
 
@@ -38,12 +38,12 @@ function draw_player(p)
   local sprite
   local sprites = p.current_action.sprites
 
-  if is_action_held(p) then
+  if is_action_state_eq(p, "held") then
     index = #sprites
   else
     index = flr(p.frames_counter / p.current_action.fps) + 1
 
-    if is_action_released(p) then
+    if is_action_state_eq(p, "released") then
       index = #sprites - index + 1
     end
   end
@@ -107,10 +107,7 @@ function draw_projectile(p)
     flip_x = not flip_x
   end
 
-  for color in all(p.character.projectile_pal_map) do
-    pal(color[1], color[2])
-  end
-
+  shift_pal(p.character.projectile_pal_map)
   spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, flip_x)
   pal()
 end
@@ -137,7 +134,7 @@ function draw_particles(p)
 end
 
 function draw_round_timer()
-  local elapsed = is_round_beginning() and 0 or time() - game.current_combat.round_start_time
+  local elapsed = is_round_state_eq "countdown" and 0 or time() - game.current_combat.round_start_time
   local remaining = ceil(round_duration - elapsed)
   local x = get_hcenter(remaining)
   print(remaining, x, 8, 7)
@@ -190,7 +187,7 @@ function draw_hp()
     rect(x, y, x + w - 1, y + h - 1, 6)
 
     for i = 1, game.current_combat.rounds_won[p.id] do
-      shift_pal("50")
+      shift_pal("p50")
       spr(192, x + (i - 1) * 8, y + h + 2)
       pal()
     end

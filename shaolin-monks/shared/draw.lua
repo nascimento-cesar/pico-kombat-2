@@ -1,5 +1,5 @@
 function shift_pal(pallete)
-  pallete = tostr(pallete)
+  pallete = sub(pallete or "p", 2)
 
   for i = 1, #pallete, 2 do
     pal(
