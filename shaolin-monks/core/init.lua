@@ -58,7 +58,7 @@ function define_characters()
   ), split "name,bg_color,body_pal_map,gender,head_pal_map,head_sprites,projectile_fps,projectile_h,projectile_pal_map,projectile_sprites"
 
   for i, c_attrs in ipairs(c_attr_list) do
-    characters[i] = string_to_hash(c_attr_keys, split(c_attrs, ",", false))
+    characters[i] = string_to_hash(c_attr_keys, split(c_attrs))
     characters[i].special_attacks = define_actions(sa_attr_list[i])
   end
 
@@ -71,7 +71,7 @@ function define_actions(attr_list)
   ), split "name,dmg,fps,handler,is_holdable,is_x_shiftable,reaction_handler,sequence,sprites,type"
 
   for i, attrs in ipairs(attr_list) do
-    attrs = split(attrs, ",", false)
+    attrs = split(attrs)
     actions[attrs[1]] = string_to_hash(attr_keys, attrs)
   end
 

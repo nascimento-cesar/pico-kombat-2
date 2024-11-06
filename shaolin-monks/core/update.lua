@@ -1,13 +1,13 @@
 function _update()
   update_debug()
 
-  if game.current_screen == "start" then
+  if is_current_screen_eq "start" then
     update_start()
-  elseif game.current_screen == "character_selection" then
+  elseif is_current_screen_eq "character_selection" then
     update_character_selection()
-  elseif game.current_screen == "next_combat" then
+  elseif is_current_screen_eq "next_combat" then
     update_next_combat()
-  elseif game.current_screen == "gameplay" then
+  elseif is_current_screen_eq "gameplay" then
     update_gameplay()
   end
 end

@@ -1,3 +1,7 @@
+function is_current_screen_eq(s)
+  return game.current_screen == s
+end
+
 function get_combat_winner()
   local rounds_won = game.current_combat.rounds_won
 

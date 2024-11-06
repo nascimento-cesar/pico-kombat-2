@@ -145,7 +145,7 @@ end
 
 function draw_finish_him_her()
   if game.current_combat.timers.finishing_move > timers.finishing_move / 2 then
-    local pronoun = game.current_combat.round_loser.character.g == 1 and "him" or "her"
+    local pronoun = game.current_combat.round_loser.character.gender == 1 and "him" or "her"
     local text = "finish " .. pronoun
     draw_blinking_text(text)
   end

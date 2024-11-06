@@ -1,5 +1,5 @@
 function shift_pal(pallete)
-  pallete = pallete or ""
+  pallete = tostr(pallete)
 
   for i = 1, #pallete, 2 do
     pal(
@@ -34,9 +34,7 @@ function draw_debug()
 end
 
 function get_blinking_color(c1, c2, s)
-  c1 = c1 or 7
-  c2 = c2 or 8
-  s = s or 4
+  c1, c2, s = c1 or 7, c2 or 8, s or 4
 
   return sin(time() * s) > 0 and c1 or c2
 end
