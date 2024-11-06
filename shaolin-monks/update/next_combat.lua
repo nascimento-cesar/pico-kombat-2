@@ -5,8 +5,8 @@ function update_next_combat()
     end
   end
 
-  game.current_combat = {
-    current_stage = game.current_combat and game.current_combat.current_stage + 1 or 1,
+  current_combat = {
+    current_stage = current_combat and current_combat.current_stage + 1 or 1,
     round = 1,
     round_loser = nil,
     round_start_time = time(),
@@ -20,5 +20,5 @@ function update_next_combat()
   }
 
   reset_timers()
-  game.current_screen = "gameplay"
+  current_screen = "gameplay"
 end

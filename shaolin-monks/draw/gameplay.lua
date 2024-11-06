@@ -19,8 +19,8 @@ function draw_gameplay()
 end
 
 function draw_stage()
-  local x = (game.current_combat.current_stage - 1) % 8 * stage_offset
-  local y = flr(game.current_combat.current_stage / 9) * 16
+  local x = (current_combat.current_stage - 1) % 8 * stage_offset
+  local y = flr(current_combat.current_stage / 9) * 16
 
   map(x, y, 0, 0, 16, 16)
 end
@@ -134,15 +134,15 @@ function draw_particles(p)
 end
 
 function draw_round_timer()
-  local elapsed = is_round_state_eq "countdown" and 0 or time() - game.current_combat.round_start_time
+  local elapsed = is_round_state_eq "countdown" and 0 or time() - current_combat.round_start_time
   local remaining = ceil(round_duration - elapsed)
   local x = get_hcenter(remaining)
   print(remaining, x, 8, 7)
 end
 
 function draw_finish_him_her()
-  if game.current_combat.timers.finishing_move > timers.finishing_move / 2 then
-    local pronoun = game.current_combat.round_loser.character.gender == 1 and "him" or "her"
+  if current_combat.timers.finishing_move > timers.finishing_move / 2 then
+    local pronoun = current_combat.round_loser.character.gender == 1 and "him" or "her"
     local text = "finish " .. pronoun
     draw_blinking_text(text)
   end
@@ -151,8 +151,8 @@ end
 function draw_round_start()
   local text = ""
 
-  if game.current_combat.timers.round_start > timers.round_start / 2 then
-    text = "round " .. game.current_combat.round
+  if current_combat.timers.round_start > timers.round_start / 2 then
+    text = "round " .. current_combat.round
   else
     text = "fight"
   end
@@ -161,7 +161,7 @@ function draw_round_start()
 end
 
 function draw_round_result()
-  local winner = game.current_combat.round_winner
+  local winner = current_combat.round_winner
   local text = (winner == p1 and "p1" or "p2") .. " wins"
   draw_blinking_text(text)
 end
@@ -186,7 +186,7 @@ function draw_hp()
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
     rect(x, y, x + w - 1, y + h - 1, 6)
 
-    for i = 1, game.current_combat.rounds_won[p.id] do
+    for i = 1, current_combat.rounds_won[p.id] do
       shift_pal("p50")
       spr(192, x + (i - 1) * 8, y + h + 2)
       pal()

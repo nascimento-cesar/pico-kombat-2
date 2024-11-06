@@ -26,7 +26,7 @@ function detect_new_player()
     if not has_player_joined(p) and not is_round_state_eq "new_player" then
       if btnp(🅾️, p.id) or btnp(❎, p.id) then
         init_player(p)
-        game.current_combat.round_state = "new_player"
+        current_combat.round_state = "new_player"
       end
     end
   end
@@ -34,34 +34,34 @@ end
 
 function reset_timers()
   for k, v in pairs(timers) do
-    game.current_combat.timers[k] = v
+    current_combat.timers[k] = v
   end
 end
 
 function process_new_player()
-  if game.current_combat.timers.new_player > 0 then
-    game.current_combat.timers.new_player -= 1
+  if current_combat.timers.new_player > 0 then
+    current_combat.timers.new_player -= 1
   else
     reset_players()
-    game.current_screen = "character_selection"
+    current_screen = "character_selection"
     p1.character = nil
     p2.character = nil
   end
 end
 
 function process_finishing_move()
-  if game.current_combat.timers.finishing_move > 0 then
-    game.current_combat.timers.finishing_move -= 1
+  if current_combat.timers.finishing_move > 0 then
+    current_combat.timers.finishing_move -= 1
   else
-    game.current_combat.round_state = "finished"
+    current_combat.round_state = "finished"
   end
 end
 
 function process_round_end()
-  if game.current_combat.timers.round_end > 0 then
-    game.current_combat.timers.round_end -= 1
+  if current_combat.timers.round_end > 0 then
+    current_combat.timers.round_end -= 1
   else
-    game.current_combat.round += 1
+    current_combat.round += 1
     reset_players()
 
     if has_combat_ended() then
@@ -69,32 +69,32 @@ function process_round_end()
       local loser = get_vs(winner)
 
       if is_arcade_mode() then
-        game.current_screen = "next_combat"
+        current_screen = "next_combat"
         loser.character = nil
       else
-        game.current_screen = "character_selection"
+        current_screen = "character_selection"
         loser.character = nil
         winner.character = nil
       end
     else
-      game.current_combat.round_state = "countdown"
+      current_combat.round_state = "countdown"
       reset_timers()
     end
   end
 end
 
 function process_round_start()
-  if game.current_combat.timers.round_start > 0 then
-    game.current_combat.timers.round_start -= 1
+  if current_combat.timers.round_start > 0 then
+    current_combat.timers.round_start -= 1
   else
-    game.current_combat.round_start_time = time()
-    game.current_combat.round_state = "in_progress"
+    current_combat.round_start_time = time()
+    current_combat.round_state = "in_progress"
   end
 end
 
 function get_next_challenger(p)
-  local challenger = characters[game.next_combats[p.id][1]]
-  deli(game.next_combats[p.id], 1)
+  local challenger = characters[next_combats[p.id][1]]
+  deli(next_combats[p.id], 1)
 
   if p.character == challenger then
     return get_next_challenger(p)
@@ -577,17 +577,17 @@ end
 
 function check_defeat(p)
   if is_round_state_eq "finishing_move" then
-    game.current_combat.round_state = "finished"
+    current_combat.round_state = "finished"
   elseif p.hp <= 0 then
     local vs = get_vs(p)
-    game.current_combat.round_loser = p
-    game.current_combat.round_winner = vs
-    game.current_combat.rounds_won[vs.id] += 1
+    current_combat.round_loser = p
+    current_combat.round_winner = vs
+    current_combat.rounds_won[vs.id] += 1
 
     if has_combat_ended() then
-      game.current_combat.round_state = "finishing_move"
+      current_combat.round_state = "finishing_move"
     else
-      game.current_combat.round_state = "finished"
+      current_combat.round_state = "finished"
     end
   end
 end

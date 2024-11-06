@@ -18,7 +18,7 @@ function handle_cursor_movement(p, p_id, vs)
       p.character = characters[new_char]
 
       if not has_player_joined(vs) or has_player_joined(vs) and vs.character then
-        game.current_screen = "next_combat"
+        current_screen = "next_combat"
       end
     end
 

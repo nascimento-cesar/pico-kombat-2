@@ -1,5 +1,5 @@
 function get_combat_winner()
-  local rounds_won = game.current_combat.rounds_won
+  local rounds_won = current_combat.rounds_won
 
   if rounds_won[p1_id] == 2 then
     return p1
@@ -17,14 +17,14 @@ function has_combat_ended()
 end
 
 function has_player_joined(p)
-  return game.joined_status[p.id]
+  return joined_status[p.id]
 end
 
 function init_player(p)
-  game.joined_status[p.id] = true
+  joined_status[p.id] = true
 
   for i = 1, 12 do
-    add(game.next_combats[p.id], i)
+    add(next_combats[p.id], i)
   end
 end
 
@@ -53,7 +53,7 @@ function is_player_attacking(p)
 end
 
 function is_current_screen_eq(s)
-  return game.current_screen == s
+  return current_screen == s
 end
 
 function is_limit_left(x)
@@ -72,11 +72,11 @@ function is_p1_ahead_p2()
 end
 
 function is_round_loser(p)
-  return game.current_combat.round_loser == p
+  return current_combat.round_loser == p
 end
 
 function is_round_state_eq(s)
-  return game.current_combat.round_state == s
+  return current_combat.round_state == s
 end
 
 function update_debug()

@@ -1,13 +1,13 @@
 function _init()
+  define_global_constants()
   define_global_variables()
-  game = define_game()
   actions = define_actions()
   characters = define_characters()
   p1 = create_player(p1_id)
   p2 = create_player(p2_id)
 end
 
-function define_global_variables()
+function define_global_constants()
   action_stack_timeout = 6
   backward = -1
   debug = {}
@@ -35,18 +35,16 @@ function define_global_variables()
   y_upper_limit = 127 - 36 - 20
 end
 
-function define_game()
-  return {
-    current_combat = nil,
-    current_screen = "start",
-    joined_status = {
-      [p1_id] = false,
-      [p2_id] = false
-    },
-    next_combats = {
-      [p1_id] = {},
-      [p2_id] = {}
-    }
+function define_global_variables()
+  current_combat = nil
+  current_screen = "start"
+  joined_status = {
+    [p1_id] = false,
+    [p2_id] = false
+  }
+  next_combats = {
+    [p1_id] = {},
+    [p2_id] = {}
   }
 end
 
