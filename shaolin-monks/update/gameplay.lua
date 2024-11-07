@@ -35,7 +35,6 @@ function process_new_player()
   if combat_round_timers.new_player > 0 then
     combat_round_timers.new_player -= 1
   else
-    reset_players()
     current_screen, p1.character, p2.character = "character_selection"
   end
 end
@@ -52,9 +51,6 @@ function process_round_end()
   if combat_round_timers.round_end > 0 then
     combat_round_timers.round_end -= 1
   else
-    combat_round += 1
-    reset_players()
-
     if has_combat_ended() then
       local winner = get_combat_winner()
       local loser = get_vs(winner)
@@ -65,9 +61,11 @@ function process_round_end()
         current_screen, loser.character, winner.character = "character_selection"
       end
     else
+      combat_round += 1
       combat_round_state = "countdown"
-      reset_timers()
     end
+
+    setup_new_round()
   end
 end
 
@@ -144,7 +142,8 @@ function update_previous_action(p)
 end
 
 function process_inputs(p)
-  local p_id, button_pressed, h🅾️❎, p🅾️, p❎, h⬆️, h⬇️, h⬅️, h➡️ = p.id, btn() > 0, btn(🅾️, p_id) and btn(❎, p_id), btnp(🅾️, p_id), btnp(❎, p_id), btn(⬆️, p_id), btn(⬇️, p_id), btn(⬅️, p_id), btn(➡️, p_id)
+  local p_id = p.id
+  local button_pressed, h🅾️❎, p🅾️, p❎, h⬆️, h⬇️, h⬅️, h➡️ = btn() > 0, btn(🅾️, p_id) and btn(❎, p_id), btnp(🅾️, p_id), btnp(❎, p_id), btn(⬆️, p_id), btn(⬇️, p_id), btn(⬅️, p_id), btn(➡️, p_id)
 
   if button_pressed then
     p.action_stack_timeout = action_stack_timeout
@@ -604,24 +603,10 @@ function walk(p)
 end
 
 function build_particle_set(color, count, x, y)
-  local particle_set = {
-    color = color,
-    particles = {},
-    x = x,
-    y = y
-  }
+  local particle_set = string_to_hash("color,particles,x,y", { color, {}, x, y })
 
   for i = 1, count do
-    add(
-      particle_set.particles, {
-        current_lifespan = rnd(10),
-        max_lifespan = 10,
-        speed_x = rnd() * 2 - 1,
-        speed_y = rnd() * 2 - 1,
-        x = particle_set.x,
-        y = particle_set.y
-      }
-    )
+    add(particle_set.particles, string_to_hash("current_lifespan,max_lifespan,speed_x,speed_y,x,y", { rnd(10), 10, rnd() * 2 - 1, rnd() * 2 - 1, particle_set.x, particle_set.y }))
   end
 
   return particle_set

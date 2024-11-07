@@ -20,7 +20,6 @@ end
 
 function init_player(p)
   p.has_joined = true
-  define_player(p.id, p)
 end
 
 function is_action_eq(p, s)
@@ -62,10 +61,11 @@ function is_round_state_eq(s)
   return combat_round_state == s
 end
 
-function reset_players()
+function setup_new_round()
   foreach_player(function(p, p_id)
     define_player(p_id, p)
   end)
+  reset_timers()
 end
 
 function update_debug()
