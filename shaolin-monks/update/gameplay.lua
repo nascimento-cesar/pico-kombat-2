@@ -151,70 +151,70 @@ function process_inputs(p)
 
     if h⬇️ then
       if h🅾️❎ then
-        setup_action(p, actions.block)
+        setup_action(p, "block")
       elseif p🅾️ then
-        setup_attack(p, actions.hook)
+        setup_attack(p, "hook")
       elseif p❎ then
-        setup_attack(p, actions.sweep)
+        setup_attack(p, "sweep")
       else
-        setup_action(p, actions.crouch)
+        setup_action(p, "crouch")
       end
     elseif h⬆️ and not h🅾️❎ then
       if h⬅️ then
-        setup_action(p, actions.jump, { direction = p.facing * -1 })
+        setup_action(p, "jump", { direction = p.facing * -1 })
 
         if p🅾️ then
-          setup_attack(p, actions.flying_punch)
+          setup_attack(p, "flying_punch")
         elseif p❎ then
-          setup_attack(p, actions.flying_kick)
+          setup_attack(p, "flying_kick")
         end
       elseif h➡️ then
-        setup_action(p, actions.jump, { direction = p.facing })
+        setup_action(p, "jump", { direction = p.facing })
 
         if p🅾️ then
-          setup_attack(p, actions.flying_punch)
+          setup_attack(p, "flying_punch")
         elseif p❎ then
-          setup_attack(p, actions.flying_kick)
+          setup_attack(p, "flying_kick")
         end
       else
-        setup_action(p, actions.jump)
+        setup_action(p, "jump")
 
         if p🅾️ then
-          setup_attack(p, actions.flying_punch)
+          setup_attack(p, "flying_punch")
         elseif p❎ then
-          setup_attack(p, actions.flying_kick)
+          setup_attack(p, "flying_kick")
         end
       end
     elseif h⬅️ and not h➡️ then
       if h🅾️❎ then
-        setup_action(p, actions.block)
+        setup_action(p, "block")
       elseif p🅾️ then
         setup_attack(p, is_action_type_eq(p, "aerial") and actions.flying_punch or actions.punch)
       elseif p❎ then
         if is_action_type_eq(p, "aerial") then
-          setup_attack(p, actions.flying_kick)
+          setup_attack(p, "flying_kick")
         else
           setup_attack(p, p.facing == forward and actions.roundhouse_kick or actions.kick)
         end
       else
-        setup_action(p, actions.walk, { direction = p.facing * -1 })
+        setup_action(p, "walk", { direction = p.facing * -1 })
       end
     elseif h➡️ and not h⬅️ then
       if h🅾️❎ then
-        setup_action(p, actions.block)
+        setup_action(p, "block")
       elseif p🅾️ then
         setup_attack(p, is_action_type_eq(p, "aerial") and actions.flying_punch or actions.punch)
       elseif p❎ then
         if is_action_type_eq(p, "aerial") then
-          setup_attack(p, actions.flying_kick)
+          setup_attack(p, "flying_kick")
         else
           setup_attack(p, p.facing == forward and actions.kick or actions.roundhouse_kick)
         end
       else
-        setup_action(p, actions.walk, { direction = p.facing })
+        setup_action(p, "walk", { direction = p.facing })
       end
     elseif h🅾️❎ then
-      setup_action(p, actions.block)
+      setup_action(p, "block")
     elseif p🅾️ then
       setup_attack(p, is_action_type_eq(p, "aerial") and actions.flying_punch or actions.punch)
     elseif p❎ then
@@ -255,9 +255,9 @@ function update_aerial_action(p)
         p.current_action_params.is_landing = false
 
         if is_action_eq(p, "propelled") then
-          setup_action(p, actions.prone)
+          setup_action(p, "prone")
         else
-          setup_action(p, actions.idle)
+          setup_action(p, "idle")
         end
       end
     else
@@ -342,16 +342,16 @@ end
 
 function handle_no_key_press(p)
   if is_action_eq(p, "walk") then
-    setup_action(p, actions.idle)
+    setup_action(p, "idle")
   elseif p.current_action.is_holdable and is_action_state_eq(p, "held") and not is_action_eq(p, "propelled") then
     setup_action(p, p.current_action, { is_released = true })
   elseif is_action_state_eq(p, "finished") then
-    setup_action(p, actions.idle)
+    setup_action(p, "idle")
   end
 end
 
 function setup_action(p, next_action, params)
-  params = params or {}
+  params, next_action = params or {}, type(next_action) == "string" and actions[next_action] or next_action
 
   if is_action_type_eq(p, "aerial") and next_action.type == "aerial_attack" then
     merge(params, p.current_action_params)
@@ -568,7 +568,7 @@ function check_defeat(p)
 end
 
 function flinch(p)
-  if p.current_action ~= actions.flinch then
+  if not is_action_eq(p, "flinch") then
     start_action(p, actions.flinch)
     move_x(p, -flinch_speed)
   end
@@ -581,15 +581,14 @@ function propelled(p)
 end
 
 function swept(p)
-  if p.current_action ~= actions.swept then
+  if not is_action_eq(p, "swept") then
     move_x(p, -swept_speed)
     start_action(p, actions.swept)
   end
 end
 
 function attack(p)
-  local vs = get_vs(p)
-  local full_sprite_w = sprite_w + 1
+  local vs, full_sprite_w = get_vs(p), sprite_w + 1
 
   if is_player_attacking(p) and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
     if vs.is_blocking then
