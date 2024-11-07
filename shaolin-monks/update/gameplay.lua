@@ -60,12 +60,9 @@ function process_round_end()
       local loser = get_vs(winner)
 
       if not p1.has_joined or not p2.has_joined then
-        current_screen = "next_combat"
-        loser.character = nil
+        current_screen, loser.character = "next_combat"
       else
-        current_screen = "character_selection"
-        loser.character = nil
-        winner.character = nil
+        current_screen, loser.character, winner.character = "character_selection"
       end
     else
       combat_round_state = "countdown"
@@ -78,8 +75,7 @@ function process_round_start()
   if combat_round_timers.round_start > 0 then
     combat_round_timers.round_start -= 1
   else
-    combat_round_start_time = time()
-    combat_round_state = "in_progress"
+    combat_round_start_time, combat_round_state = time(), "in_progress"
   end
 end
 
@@ -95,7 +91,7 @@ function get_next_challenger(p)
 end
 
 function update_player(p)
-  update_frames_counter(p)
+  p.frames_counter += 1
   update_previous_action(p)
 
   if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and combat_round_loser ~= p then
@@ -119,25 +115,23 @@ function next_cpu_action(p)
   handle_no_key_press(p)
 end
 
-function update_frames_counter(p)
-  p.frames_counter += 1
-end
-
 function update_previous_action(p)
   if is_action_animation_finished(p) then
-    if is_action_type_eq(p, "aerial") and not p.current_action_params.has_landed then
+    local has_landed = p.current_action_params.has_landed
+
+    if is_action_type_eq(p, "aerial") and not has_landed then
       restart_action(p)
-    elseif is_action_type_eq(p, "aerial_attack") and not p.current_action_params.has_landed then
+    elseif is_action_type_eq(p, "aerial_attack") and not has_landed then
       hold_action(p)
-    elseif is_action_eq(p, "propelled") and not p.current_action_params.has_landed then
+    elseif is_action_eq(p, "propelled") and not has_landed then
       hold_action(p)
     elseif is_action_type_eq(p, "special_attack") then
       hold_action(p)
-    elseif p.current_action == actions.swept then
+    elseif is_action_eq(p, "swept") then
       start_action(p, actions.prone)
-    elseif p.current_action == actions.flinch and is_round_state_eq "finished" then
+    elseif is_action_eq(p, "flinch") and is_round_state_eq "finished" then
       swept(p)
-    elseif p.current_action == actions.prone then
+    elseif is_action_eq(p, "prone") then
       if is_round_state_eq "finished" then
         hold_action(p)
       else
@@ -150,15 +144,7 @@ function update_previous_action(p)
 end
 
 function process_inputs(p)
-  local p_id = p.id
-  local button_pressed = btn() > 0
-  local h🅾️❎ = btn(🅾️, p_id) and btn(❎, p_id)
-  local p🅾️ = btnp(🅾️, p_id)
-  local p❎ = btnp(❎, p_id)
-  local h⬆️ = btn(⬆️, p_id)
-  local h⬇️ = btn(⬇️, p_id)
-  local h⬅️ = btn(⬅️, p_id)
-  local h➡️ = btn(➡️, p_id)
+  local p_id, button_pressed, h🅾️❎, p🅾️, p❎, h⬆️, h⬇️, h⬅️, h➡️ = p.id, btn() > 0, btn(🅾️, p_id) and btn(❎, p_id), btnp(🅾️, p_id), btnp(❎, p_id), btn(⬆️, p_id), btn(⬇️, p_id), btn(⬅️, p_id), btn(➡️, p_id)
 
   if button_pressed then
     p.action_stack_timeout = action_stack_timeout
@@ -355,7 +341,7 @@ function shift_players_orientation()
 end
 
 function handle_no_key_press(p)
-  if p.current_action == actions.walk then
+  if is_action_eq(p, "walk") then
     setup_action(p, actions.idle)
   elseif p.current_action.is_holdable and is_action_state_eq(p, "held") and not is_action_eq(p, "propelled") then
     setup_action(p, p.current_action, { is_released = true })
@@ -371,8 +357,10 @@ function setup_action(p, next_action, params)
     merge(params, p.current_action_params)
   end
 
+  local is_next_action_eq_previous = p.current_action == next_action
+
   if is_action_state_eq(p, "finished") then
-    if p.current_action == next_action then
+    if is_next_action_eq_previous then
       if p.current_action.is_holdable then
         hold_action(p)
       elseif is_action_type_eq(p, "movement") then
@@ -383,13 +371,13 @@ function setup_action(p, next_action, params)
     else
       start_action(p, next_action, params)
     end
-  elseif p.current_action == next_action then
+  elseif is_next_action_eq_previous then
     if is_action_state_eq(p, "held") and params.is_released then
       release_action(p)
     elseif is_action_type_eq(p, "movement") and p.current_action_params.direction ~= params.direction then
       start_action(p, next_action, params)
     end
-  elseif p.current_action ~= next_action then
+  elseif not is_next_action_eq_previous then
     if is_action_type_eq(p, "aerial") then
       if next_action.type == "aerial_attack" or next_action == actions.idle then
         start_action(p, next_action, params)
