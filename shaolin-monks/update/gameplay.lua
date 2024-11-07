@@ -233,19 +233,15 @@ end
 function update_aerial_action(p)
   if is_action_type_eq(p, "aerial") or is_action_type_eq(p, "aerial_attack") or is_action_eq(p, "propelled") then
     local direction = p.current_action_params.direction
-    local x_speed = jump_speed * (direction or 0) / 2
-    local y_speed = jump_speed
-    local has_changed_orientation = p.current_action_params.has_changed_orientation
+    local x_speed, has_changed_orientation = jump_speed * (direction or 0) / 2, p.current_action_params.has_changed_orientation
 
     if p.current_action_params.is_landing then
-      move_y(p, y_speed)
+      move_y(p, jump_speed)
       move_x(p, x_speed, has_changed_orientation and p.facing * -1 or p.facing)
 
-      if is_p1_ahead_p2() and not has_changed_orientation then
-        if is_action_type_eq(p, "aerial") then
-          p.current_action_params.has_changed_orientation = true
-          shift_players_orientation()
-        end
+      if is_p1_ahead_p2() and not has_changed_orientation and is_action_type_eq(p, "aerial") then
+        p.current_action_params.has_changed_orientation = true
+        shift_players_orientation()
       end
 
       if p.y >= y_bottom_limit then
@@ -253,16 +249,12 @@ function update_aerial_action(p)
         p.current_action_params.has_landed = true
         p.current_action_params.is_landing = false
 
-        if is_action_eq(p, "propelled") then
-          setup_action(p, "prone")
-        else
-          setup_action(p, "idle")
-        end
+        setup_action(p, is_action_eq(p, "propelled") and "prone" or "idle")
       end
     else
       if not p.current_action_params.has_landed then
         p.is_orientation_locked = true
-        move_y(p, -y_speed)
+        move_y(p, -jump_speed)
         move_x(p, x_speed)
 
         if p.y <= y_upper_limit then
@@ -274,9 +266,9 @@ function update_aerial_action(p)
 end
 
 function update_projectile(p)
-  local vs = get_vs(p)
-
   if p.projectile then
+    local vs = get_vs(p)
+
     p.projectile.x += projectile_speed * p.facing
     p.projectile.frames_counter += 1
 
@@ -294,10 +286,8 @@ end
 function fix_players_orientation()
   local is_orientation_locked = p1.is_orientation_locked or p2.is_orientation_locked
 
-  if is_p1_ahead_p2() and not is_orientation_locked then
-    if not is_action_type_eq(p1, "aerial_attack") and not is_action_type_eq(p2, "aerial_attack") then
-      shift_players_orientation()
-    end
+  if is_p1_ahead_p2() and not is_orientation_locked and not is_action_type_eq(p1, "aerial_attack") and not is_action_type_eq(p2, "aerial_attack") then
+    shift_players_orientation()
   end
 end
 
@@ -377,10 +367,8 @@ function setup_action(p, next_action, params)
       start_action(p, next_action, params)
     end
   elseif not is_next_action_eq_previous then
-    if is_action_type_eq(p, "aerial") then
-      if next_action.type == "aerial_attack" or next_action == actions.idle then
-        start_action(p, next_action, params)
-      end
+    if is_action_type_eq(p, "aerial") and next_action.type == "aerial_attack" or next_action == actions.idle then
+      start_action(p, next_action, params)
     elseif is_action_type_eq(p, "movement") then
       start_action(p, next_action, params)
     elseif is_action_state_eq(p, "held") then
@@ -450,13 +438,8 @@ function restart_action(p)
 end
 
 function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w)
-  local a_w = a_w or sprite_w
-  local a_h = a_h or sprite_h
-  local t_w = t_w or sprite_w
-
-  local has_r_col = a_x + a_w > t_x + 8 - t_w and a_x < t_x
-  local has_l_col = a_x + 8 - a_w < t_x + t_w and a_x > t_x
-  local has_v_col = a_y + a_h > t_y
+  local a_w, a_h, t_w = a_w or sprite_w, a_h or sprite_h, t_w or sprite_w
+  local has_r_col, has_l_col, has_v_col = a_x + a_w > t_x + 8 - t_w and a_x < t_x, a_x + 8 - a_w < t_x + t_w and a_x > t_x, a_y + a_h > t_y
 
   if type == "left" then
     return has_l_col and has_v_col
@@ -468,21 +451,7 @@ function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w)
 end
 
 function record_action(p, action, params)
-  local key
-
-  if action == actions.crouch then
-    key = "⬇️"
-  elseif action == actions.hook then
-    key = "🅾️"
-  elseif action == actions.jump then
-    key = "⬆️"
-  elseif action == actions.kick then
-    key = "❎"
-  elseif action == actions.punch then
-    key = "🅾️"
-  elseif action == actions.walk then
-    key = params.direction == forward and "➡️" or "⬅️"
-  end
+  local key = string_to_hash("block,crouch,hook,jump,kick,punch,walk", "🅾️❎,⬇️,🅾️,⬆️,❎,🅾️," .. (params.direction == forward and "➡️" or "⬅️"))[action.name]
 
   if key then
     p.action_stack = p.action_stack .. key
@@ -499,11 +468,9 @@ function shift_player_x(p, unshift)
       move_x(p, -x_shift)
       p.is_x_shifted = false
     end
-  else
-    if not p.is_x_shifted then
-      move_x(p, x_shift, nil, true)
-      p.is_x_shifted = true
-    end
+  elseif not p.is_x_shifted then
+    move_x(p, x_shift, nil, true)
+    p.is_x_shifted = true
   end
 end
 
@@ -513,24 +480,14 @@ function shift_player_y(p, unshift, shift_up)
       move_y(p, y_bottom_limit - p.y)
       p.is_y_shifted = false
     end
-  else
-    if not p.is_y_shifted then
-      move_y(p, y_shift * (shift_up and -1 or 1), nil, true)
-      p.is_y_shifted = true
-    end
+  elseif not p.is_y_shifted then
+    move_y(p, y_shift * (shift_up and -1 or 1), nil, true)
+    p.is_y_shifted = true
   end
 end
 
 function fire_projectile(p)
-  if not p.projectile then
-    local height = p.character.projectile_height or 4
-
-    p.projectile = {
-      frames_counter = 0,
-      x = p.x + sprite_w * p.facing,
-      y = p.y + 5 - ceil(height / 2)
-    }
-  end
+  p.projectile = p.projectile or string_to_hash("frames_counter,x,y", { 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
 end
 
 function deal_damage(action, p)
@@ -545,8 +502,7 @@ function deal_damage(action, p)
 end
 
 function spill_blood(p)
-  local x = p.facing == forward and p.x + sprite_w or p.x
-  add(p.particle_sets, build_particle_set(8, 30, x, p.y))
+  add(p.particle_sets, build_particle_set(8, 30, p.facing == forward and p.x + sprite_w or p.x, p.y))
 end
 
 function check_defeat(p)
@@ -554,15 +510,8 @@ function check_defeat(p)
     combat_round_state = "finished"
   elseif p.hp <= 0 then
     local vs = get_vs(p)
-    combat_round_loser = p
-    combat_round_winner = vs
     combat_rounds_won[vs.id] += 1
-
-    if has_combat_ended() then
-      combat_round_state = "finishing_move"
-    else
-      combat_round_state = "finished"
-    end
+    combat_round_loser, combat_round_winner, combat_round_state = p, vs, has_combat_ended() and "finishing_move" or "finished"
   end
 end
 
@@ -617,8 +566,7 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
 
   local vs = get_vs(p)
   local new_p_x = p.x + x_increment * direction
-  local has_l_col = has_collision(new_p_x, p.y, vs.x, vs.y, "left")
-  local has_r_col = has_collision(new_p_x, p.y, vs.x, vs.y, "right")
+  local has_l_col, has_r_col = has_collision(new_p_x, p.y, vs.x, vs.y, "left"), has_collision(new_p_x, p.y, vs.x, vs.y, "right")
 
   if is_limit_left(new_p_x) then
     p.x = 0
