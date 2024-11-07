@@ -1,9 +1,11 @@
-function get_combat_winner()
-  local rounds_won = current_combat.rounds_won
+function define_combat_variables(v)
+  combat_stage, combat_round, combat_round_loser, combat_round_start_time, combat_round_state, combat_round_winner, combat_rounds_won, combat_round_timers = unpack(v or {})
+end
 
-  if rounds_won[p1_id] == 2 then
+function get_combat_winner()
+  if combat_rounds_won[p1_id] == 2 then
     return p1
-  elseif rounds_won[p2_id] == 2 then
+  elseif combat_rounds_won[p2_id] == 2 then
     return p2
   end
 end
@@ -57,7 +59,7 @@ function is_p1_ahead_p2()
 end
 
 function is_round_state_eq(s)
-  return current_combat.round_state == s
+  return combat_round_state == s
 end
 
 function reset_players()

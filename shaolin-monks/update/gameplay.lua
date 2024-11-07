@@ -5,7 +5,7 @@ function update_gameplay()
     return process_new_player()
   end
 
-  function_from_hash("countdown,finished,finishing_move,new_player", { process_round_start, process_round_end, process_finishing_move }, current_combat.round_state)
+  function_from_hash("countdown,finished,finishing_move,new_player", { process_round_start, process_round_end, process_finishing_move }, combat_round_state)
   update_player(p1)
   update_player(p2)
   fix_players_orientation()
@@ -17,7 +17,7 @@ function detect_new_player()
     if not p.has_joined and not is_round_state_eq "new_player" then
       if btnp(🅾️, p_id) or btnp(❎, p_id) then
         init_player(p)
-        current_combat.round_state = "new_player"
+        combat_round_state = "new_player"
       end
     end
   end)
@@ -27,34 +27,32 @@ end
 
 function reset_timers()
   for k, v in pairs(timers) do
-    current_combat.timers[k] = v
+    combat_round_timers[k] = v
   end
 end
 
 function process_new_player()
-  if current_combat.timers.new_player > 0 then
-    current_combat.timers.new_player -= 1
+  if combat_round_timers.new_player > 0 then
+    combat_round_timers.new_player -= 1
   else
     reset_players()
-    current_screen = "character_selection"
-    p1.character = nil
-    p2.character = nil
+    current_screen, p1.character, p2.character = "character_selection"
   end
 end
 
 function process_finishing_move()
-  if current_combat.timers.finishing_move > 0 then
-    current_combat.timers.finishing_move -= 1
+  if combat_round_timers.finishing_move > 0 then
+    combat_round_timers.finishing_move -= 1
   else
-    current_combat.round_state = "finished"
+    combat_round_state = "finished"
   end
 end
 
 function process_round_end()
-  if current_combat.timers.round_end > 0 then
-    current_combat.timers.round_end -= 1
+  if combat_round_timers.round_end > 0 then
+    combat_round_timers.round_end -= 1
   else
-    current_combat.round += 1
+    combat_round += 1
     reset_players()
 
     if has_combat_ended() then
@@ -70,18 +68,18 @@ function process_round_end()
         winner.character = nil
       end
     else
-      current_combat.round_state = "countdown"
+      combat_round_state = "countdown"
       reset_timers()
     end
   end
 end
 
 function process_round_start()
-  if current_combat.timers.round_start > 0 then
-    current_combat.timers.round_start -= 1
+  if combat_round_timers.round_start > 0 then
+    combat_round_timers.round_start -= 1
   else
-    current_combat.round_start_time = time()
-    current_combat.round_state = "in_progress"
+    combat_round_start_time = time()
+    combat_round_state = "in_progress"
   end
 end
 
@@ -100,7 +98,7 @@ function update_player(p)
   update_frames_counter(p)
   update_previous_action(p)
 
-  if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and current_combat.round_loser ~= p then
+  if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and combat_round_loser ~= p then
     if p.has_joined then
       process_inputs(p)
     else
@@ -566,17 +564,17 @@ end
 
 function check_defeat(p)
   if is_round_state_eq "finishing_move" then
-    current_combat.round_state = "finished"
+    combat_round_state = "finished"
   elseif p.hp <= 0 then
     local vs = get_vs(p)
-    current_combat.round_loser = p
-    current_combat.round_winner = vs
-    current_combat.rounds_won[vs.id] += 1
+    combat_round_loser = p
+    combat_round_winner = vs
+    combat_rounds_won[vs.id] += 1
 
     if has_combat_ended() then
-      current_combat.round_state = "finishing_move"
+      combat_round_state = "finishing_move"
     else
-      current_combat.round_state = "finished"
+      combat_round_state = "finished"
     end
   end
 end

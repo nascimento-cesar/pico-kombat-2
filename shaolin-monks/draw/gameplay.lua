@@ -1,7 +1,7 @@
 function draw_gameplay()
   cls(1)
   draw_stage()
-  function_from_hash("countdown,finished,finishing_move,new_player", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player }, current_combat.round_state)
+  function_from_hash("countdown,finished,finishing_move,new_player", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player }, combat_round_state)
   draw_round_timer()
   draw_hp()
   draw_player(p1)
@@ -9,7 +9,7 @@ function draw_gameplay()
 end
 
 function draw_stage()
-  local x, y = (current_combat.current_stage - 1) % 8 * stage_offset, flr(current_combat.current_stage / 9) * 16
+  local x, y = (combat_stage - 1) % 8 * stage_offset, flr(combat_stage / 9) * 16
   map(x, y, 0, 0, 16, 16)
 end
 
@@ -94,24 +94,24 @@ function draw_particles(p)
 end
 
 function draw_round_timer()
-  local elapsed = is_round_state_eq "countdown" and 0 or time() - current_combat.round_start_time
+  local elapsed = is_round_state_eq "countdown" and 0 or time() - combat_round_start_time
   local remaining = ceil(round_duration - elapsed)
   local x = get_hcenter(remaining)
   print(remaining, x, 8, 7)
 end
 
 function draw_finish_him_her()
-  if current_combat.timers.finishing_move > timers.finishing_move / 2 then
-    draw_blinking_text("finish " .. (current_combat.round_loser.character.gender == 1 and "him" or "her"))
+  if combat_round_timers.finishing_move > timers.finishing_move / 2 then
+    draw_blinking_text("finish " .. (combat_round_loser.character.gender == 1 and "him" or "her"))
   end
 end
 
 function draw_round_start()
-  draw_blinking_text(current_combat.timers.round_start > timers.round_start / 2 and "round " .. current_combat.round or "fight")
+  draw_blinking_text(combat_round_timers.round_start > timers.round_start / 2 and "round " .. combat_round or "fight")
 end
 
 function draw_round_result()
-  draw_blinking_text((current_combat.round_winner == p1 and "p1" or "p2") .. " wins")
+  draw_blinking_text((combat_round_winner == p1 and "p1" or "p2") .. " wins")
 end
 
 function draw_new_player()
@@ -127,7 +127,7 @@ function draw_hp()
     rectfill(x, y, x + w - 1, y + h - 1, 8)
     rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
     rect(x, y, x + w - 1, y + h - 1, 6)
-    for i = 1, current_combat.rounds_won[p_id] do
+    for i = 1, combat_rounds_won[p_id] do
       shift_pal "p50"
       spr(192, x + (i - 1) * 8, y + h + 2)
       pal()

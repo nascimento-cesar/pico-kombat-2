@@ -13,7 +13,8 @@ function define_global_constants()
 end
 
 function define_global_variables()
-  current_combat, current_screen, p1, p2 = nil, "start", {}, {}
+  current_screen, p1, p2 = "start", {}, {}
+  define_combat_variables()
 end
 
 function define_characters()
