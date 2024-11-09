@@ -9,7 +9,10 @@ end
 
 function define_global_constants()
   action_stack_timeout, backward, debug, flinch_speed, forward, jump_speed, p1_id, p2_id, projectile_speed, round_duration, sprite_h, sprite_w, stage_offset, swept_speed, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, {}, 4, 1, 2, 0, 1, 3, 90, 8, 7, 16, 3, 1, 3, 127 - 36, 2, 127 - 36 - 20
-  timers = string_to_hash("finishing_move,new_player,round_end,round_start", "90,60,60,60")
+  actions_map, timers = string_to_hash(
+    "⬅️,➡️,⬆️,⬇️,➡️⬆️,⬅️⬆️,➡️⬇️,⬅️⬇️,🅾️,⬅️🅾️,➡️🅾️,⬆️🅾️,⬇️🅾️,⬅️⬆️🅾️,➡️⬆️🅾️,❎,⬅️❎,➡️❎,⬆️❎,⬇️❎,⬅️⬆️❎,➡️⬆️❎,🅾️❎,⬅️🅾️❎,➡️🅾️❎,⬇️🅾️❎",
+    "1|walk,1|walk,1|jump,1|crouch,1|jump,1|jump,1|crouch,1|crouch,2|punch,2|punch,2|punch,2|flying_punch,2|hook,2|flying_punch,2|flying_punch,2|kick,2|roundhouse_kick,2|kick,2|flying_kick,2|sweep,2|flying_kick,2|flying_kick,1|block,1|block,1|block,1|block"
+  ), string_to_hash("finishing_move,new_player,round_end,round_start", "90,60,60,60")
 end
 
 function define_global_variables()
@@ -21,7 +24,7 @@ function define_characters()
   local characters, special_attacks, c_attr_list, sa_attr_list, c_attr_keys = {}, {}, split(
     [[lk,2,p1f2838485f9fa0b0c0d0e8,1,p50,#64|65|66|67|68|69|68,2,4,nil,#48|49|50|51|50|49;kl,3,p1f2030405f9fa8b8c1d8e0,1,p5085,#70|71|72|73|70|70|74,2,2,p50d5,#58|59|60|61|60|59;jc,13,p1f203f415f91a0b1c0d1e1,1,p5084,#75|76|77|78|75|75|75,2,4,p839bab7b,#48|49|50|51|50|49;rp,4,p1f23435f839fa0b0c0d0e3,1,p1324508398,#79|80|81|82|79|79|102,2,4,p839bab7b,#48|49|50|51|50|49;sz,1,p1f2c3c4c5f8c9fa0b0c0d0ec,1,p508c,#79|80|81|82|79|79|79,2,4,p879cac,#48|49|50|51|50|49;st,8,p1f203f455f9fb5c0daef,1,p5085,#83|84|85|86|83|83|83,2,4,nil,#48|49|50|51|50|49;kn,12,p21314151819fa0b0cfd0e1,2,p5081,#87|88|89|90|87|87|87,2,5,nil,#52|53|54|55|54|53;jx,14,p142834485495a6b6c0d6e4f4,1,p5085f4,#91|92|93|94|91|91|91,2,4,p829ea7,#48|49|50|51|50|49;ml,13,p12324252829fa0b0cfd0e2,2,p5082,#87|88|89|90|87|87|87,2,5,nil,#56;bk,14,p16203f485f869fa7b8c0d7ef,1,nil,#95|96|97|98|95|95|95,2,4,p8d96a6,#48|49|50|51|50|49;sc,2,p1f2a3a4a5f8a9fa0b0c0d0ea,1,p508a,#79|80|81|82|79|79|79,2,3,p50,#57;rd,1,p1f2c3c4c5f8d97a0b0c7d0ec,1,p8d,#99|100|100|101|99|99|99,2,4,p8c97a7,#48|49|50|51|50|49]], ";"
   ), split(
-    [[fireball,20,4,*a2,false,false,*r1,➡️➡️🅾️,#18|$19/7,special_attack@hat_toss,20,4,*a2,false,false,*r1,⬅️➡️🅾️,#$18/7|$20/7,special_attack@shadow_bolt,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$20/7,special_attack@acid_spit,20,4,*a2,false,false,*r1,➡️➡️🅾️,#29|$30/7,special_attack@freeze,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$20/7,special_attack@fire_skull,20,4,*a2,false,false,*r1,⬅️⬅️🅾️,#18|$19/7,special_attack@fan_throw,20,4,*a2,false,false,*r1,➡️➡️🅾️,#18|$20/7,special_attack@energy_wave,20,4,*a2,false,false,*r1,➡️⬇️⬅️❎,#18|$20/7,special_attack@sai_throw,20,4,*a2,false,false,*r1,⬇️⬅️🅾️,#18|$19/7,special_attack@blade_spark,20,4,*a2,false,false,*r1,⬇️⬅️🅾️,#18|$20/7,special_attack@spear,20,4,*a2,false,false,*r1,⬅️⬅️🅾️,#18|$20/7,special_attack@lightning,20,4,*a2,false,false,*r1,⬇️➡️🅾️,#18|$19/7,special_attack]], "@"
+    [[fireball,20,4,*a2,false,false,*r1,➡️+➡️+🅾️,#18|$19/7,special_attack@hat_toss,20,4,*a2,false,false,*r1,⬅️+➡️+🅾️,#$18/7|$20/7,special_attack@shadow_bolt,20,4,*a2,false,false,*r1,⬇️+➡️+🅾️,#18|$20/7,special_attack@acid_spit,20,4,*a2,false,false,*r1,➡️+➡️+🅾️,#29|$30/7,special_attack@freeze,20,4,*a2,false,false,*r1,⬇️+➡️+🅾️,#18|$20/7,special_attack@fire_skull,20,4,*a2,false,false,*r1,⬅️+⬅️+🅾️,#18|$19/7,special_attack@fan_throw,20,4,*a2,false,false,*r1,➡️+➡️+🅾️,#18|$20/7,special_attack@energy_wave,20,4,*a2,false,false,*r1,➡️+⬇️+⬅️+❎,#18|$20/7,special_attack@sai_throw,20,4,*a2,false,false,*r1,⬇️+⬅️+🅾️,#18|$19/7,special_attack@blade_spark,20,4,*a2,false,false,*r1,⬇️+⬅️+🅾️,#18|$20/7,special_attack@spear,20,4,*a2,false,false,*r1,⬅️+⬅️+🅾️,#18|$20/7,special_attack@lightning,20,4,*a2,false,false,*r1,⬇️+➡️+🅾️,#18|$19/7,special_attack]], "@"
   ), split "name,bg_color,body_pal_map,gender,head_pal_map,head_sprites,projectile_fps,projectile_h,projectile_pal_map,projectile_sprites"
 
   for i, c_attrs in ipairs(c_attr_list) do
@@ -56,7 +59,7 @@ function define_player(id, p)
 
   local is_p1 = id == p1_id
   local p = string_to_hash(
-    "action_stack,action_stack_timeout,character,current_action,current_action_params,current_action_state,facing,frames_counter,has_joined,highlighted_char,hp,id,is_orientation_locked,is_x_shifted,is_y_shifted,jump_acceleration,next_combats,particle_sets,projectile,x,y", { "", action_stack_timeout, p.character, actions.idle, {}, "in_progress", is_p1 and forward or backward, 0, p.has_joined, is_p1 and 1 or 4, 100, id, false, false, false, 0, next_combats, {}, nil, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit }
+    "action_stack,action_stack_timeout,character,current_action,current_action_params,current_action_state,facing,frames_counter,has_joined,highlighted_char,hp,held_buttons,held_buttons_timer,id,input_detection_delay,is_orientation_locked,is_x_shifted,is_y_shifted,jump_acceleration,next_combats,particle_sets,previous_buttons,previous_directionals,projectile,released_buttons,x,y", { "", action_stack_timeout, p.character, actions.idle, {}, "in_progress", is_p1 and forward or backward, 0, p.has_joined, is_p1 and 1 or 4, 100, nil, 0, id, 0, false, false, false, 0, next_combats, {}, nil, nil, nil, nil, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit }
   )
 
   if is_p1 then

@@ -1,6 +1,4 @@
 function update_gameplay()
-  disable_hold_function()
-
   if detect_new_player() then
     return process_new_player()
   end
@@ -142,49 +140,72 @@ function update_previous_action(p)
 end
 
 function process_inputs(p)
-  local p_id, is_aerial, is_facing_forward = p.id, is_action_type_eq(p, "aerial"), p.facing == forward
-  local pressed_buttons, actions_map = "", string_to_hash(
-    "⬅️,⬅️🅾️,⬅️❎,⬅️🅾️❎,⬅️⬆️,⬅️⬆️🅾️,⬅️⬆️❎,➡️,➡️🅾️,➡️❎,➡️🅾️❎,➡️⬆️,➡️⬆️🅾️,➡️⬆️❎,⬆️,⬆️🅾️,⬆️❎,⬇️,⬇️🅾️,⬇️❎,⬇️🅾️❎,🅾️,❎,🅾️❎", {
-      { setup_action, "walk", { direction = p.facing * -1 } },
-      { setup_attack, is_aerial and "flying_punch" or "punch" },
-      { setup_attack, is_aerial and "flying_kick" or is_facing_forward and "roundhouse_kick" or "kick" },
-      { setup_action, "block" },
-      { setup_action, "jump", { direction = p.facing * -1 } },
-      { setup_attack, "flying_punch" },
-      { setup_attack, "flying_kick" },
-      { setup_action, "walk", { direction = p.facing } },
-      { setup_attack, is_aerial and "flying_punch" or "punch" },
-      { setup_attack, is_aerial and "flying_kick" or is_facing_forward and "kick" or "roundhouse_kick" },
-      { setup_action, "block" },
-      { setup_action, "jump", { direction = p.facing } },
-      { setup_attack, "flying_punch" },
-      { setup_attack, "flying_kick" },
-      { setup_action, "jump" },
-      { setup_attack, "flying_punch" },
-      { setup_attack, "flying_kick" },
-      { setup_action, "crouch" },
-      { setup_attack, "hook" },
-      { setup_attack, "sweep" },
-      { setup_action, "block" },
-      { setup_attack, is_aerial and "flying_punch" or "punch" },
-      { setup_attack, is_aerial and "flying_kick" or "kick" },
-      { setup_action, "block" }
-    }
-  )
+  local pressed_buttons, pressed_directionals, direction = get_pressed_inputs(p)
+  local action, pressed_chord, is_blocking = nil, pressed_directionals .. pressed_buttons, pressed_buttons == "🅾️❎"
 
-  for i, k in ipairs(split "⬅️,➡️,⬆️,⬇️,🅾️,❎") do
-    if btn(i - 1, p_id) then
-      pressed_buttons = pressed_buttons .. k
+  if p.held_buttons then
+    if p.held_buttons == pressed_buttons then
+      p.held_buttons_timer += 1
+    else
+      release_held_buttons(p)
+    end
+  elseif pressed_buttons ~= "" then
+    if p.held_buttons_timer == 0 then
+      if pressed_buttons == p.previous_buttons or not p.previous_buttons then
+        p.held_buttons_timer += 1
+      else
+        p.held_buttons_timer, p.previous_buttons = 0, pressed_buttons
+      end
+    else
+      p.held_buttons = pressed_buttons
     end
   end
 
-  local action = actions_map[pressed_buttons]
+  if pressed_directionals ~= p.previous_directionals then
+    p.input_detection_delay, p.previous_directionals = 0, pressed_directionals ~= "" and pressed_directionals or nil
+  end
+
+  action = actions_map[is_blocking and pressed_buttons or (p.held_buttons and pressed_directionals or pressed_chord)]
 
   if action then
-    action[1](p, action[2], action[3])
+    local type, name = unpack_split(action, "|")
+    local handler = type == "1" and setup_action or setup_attack
+    record_action(p, p.held_buttons and pressed_directionals or pressed_chord)
+    handler(p, name, direction and { direction = direction })
   else
     handle_no_key_press(p)
   end
+end
+
+function get_pressed_inputs(p)
+  local pressed_buttons, pressed_directionals, direction = "", "", nil
+
+  for i, k in ipairs(split "⬅️,➡️,⬆️,⬇️,🅾️,❎") do
+    if btn(i - 1, p.id) then
+      if i < 5 then
+        if k == "⬅️" then
+          direction = p.facing * -1
+        elseif k == "➡️" then
+          direction = p.facing
+        end
+
+        if p.facing == backward then
+          k = k == "⬅️" and "➡️" or (k == "➡️" and "⬅️" or k)
+        end
+
+        pressed_directionals = pressed_directionals .. k
+      else
+        pressed_buttons = pressed_buttons .. k
+      end
+    end
+  end
+
+  return pressed_buttons, pressed_directionals, direction
+end
+
+function release_held_buttons(p)
+  p.released_buttons = (p.held_buttons and p.held_buttons_timer > 10) and p.held_buttons .. flr(p.held_buttons_timer / 10) or nil
+  p.held_buttons, p.held_buttons_timer = nil, 0
 end
 
 function perform_current_action(p)
@@ -276,12 +297,12 @@ function fix_players_placement()
   end
 end
 
-function cleanup_action_stack(p)
-  if p.action_stack_timeout > 0 then
-    p.action_stack_timeout -= 1
-  else
+function cleanup_action_stack(p, force)
+  if force or p.action_stack_timeout <= 0 then
     p.action_stack_timeout = action_stack_timeout
     p.action_stack = ""
+  else
+    p.action_stack_timeout -= 1
   end
 end
 
@@ -342,20 +363,18 @@ function setup_action(p, next_action, params)
   end
 end
 
-function setup_attack(p, next_action)
-  setup_action(p, next_action, { is_player_attacking = true })
+function setup_attack(p, next_action, params)
+  setup_action(p, next_action, merge(params or {}, { is_player_attacking = true }))
 end
 
 function start_action(p, action, params)
   params = params or {}
 
-  record_action(p, action, params)
-
   for _, special_attack in pairs(p.character.special_attacks) do
     local current_sequence = sub(p.action_stack, #p.action_stack - #special_attack.sequence + 1, #p.action_stack)
 
     if current_sequence == special_attack.sequence then
-      p.action_stack = ""
+      cleanup_action_stack(p, true)
 
       return setup_attack(p, special_attack)
     end
@@ -411,14 +430,14 @@ function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w)
   end
 end
 
-function record_action(p, action, params)
-  local key = string_to_hash("block,crouch,hook,jump,kick,punch,walk", "🅾️❎,⬇️,🅾️,⬆️,❎,🅾️," .. (params.direction == forward and "➡️" or "⬅️"))[action.name]
+function record_action(p, input)
+  if p.input_detection_delay <= 0 and input ~= "" then
+    p.action_stack = p.action_stack .. (p.action_stack ~= "" and "+" or "") .. input
+    p.action_stack_timeout = action_stack_timeout
+    p.input_detection_delay = 1
 
-  if key then
-    p.action_stack = p.action_stack .. key
-
-    if #p.action_stack > 10 then
-      p.action_stack = sub(p.action_stack, 2, 11)
+    if #p.action_stack > 20 then
+      p.action_stack = sub(p.action_stack, 2, 21)
     end
   end
 end

@@ -1,7 +1,3 @@
-function disable_hold_function()
-  poke(0x5f5c, 255)
-end
-
 function eval_str(v)
   if v == "true" then
     return true
@@ -35,6 +31,8 @@ function merge(obj1, obj2)
   for k, v in pairs(obj2) do
     obj1[k] = v
   end
+
+  return obj1
 end
 
 function split_sprites(s, separator)
