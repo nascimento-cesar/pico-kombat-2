@@ -219,27 +219,26 @@ end
 function update_aerial_action(p)
   if is_in_air(p) then
     local direction, vs = p.current_action_params.direction, get_vs(p)
-    local x_speed, has_changed_orientation = jump_speed * (direction or 0) / 2, p.current_action_params.has_changed_orientation
+    local x_speed, is_turn_around_attack = jump_speed * (direction or 0) / 2, p.current_action_params.is_turn_around_attack
 
     if p.current_action_params.is_landing then
       move_y(p, jump_speed)
-      move_x(p, x_speed, has_changed_orientation and p.facing * -1 or p.facing)
+      move_x(p, x_speed, is_turn_around_attack and p.facing * -1 or p.facing)
 
-      if is_p1_ahead_p2() and not has_changed_orientation then
+      if is_p1_ahead_p2() and not is_turn_around_attack then
         if not is_action_type_eq(p, "aerial_attack") then
-          p.current_action_params.has_changed_orientation = true
+          p.current_action_params.is_turn_around_attack = true
           shift_player_orientation(p, nil, true)
         end
 
-        if not vs.is_orientation_locked then
+        if not p.current_action_params.vs_has_turned_around then
           shift_player_orientation(vs)
-          vs.is_orientation_locked = true
+          p.current_action_params.vs_has_turned_around = true
         end
       end
 
       if p.y >= y_bottom_limit then
         p.is_orientation_locked = false
-        vs.is_orientation_locked = false
         p.current_action_params.has_landed = true
         p.current_action_params.is_landing = false
 
@@ -291,24 +290,26 @@ function shift_player_orientation(p, facing, force)
 end
 
 function fix_players_placement()
-  if p1.y >= y_bottom_limit and p2.y >= y_bottom_limit then
+  if not is_in_air(p1) and not is_in_air(p2) then
+    local half_sprite_w = sprite_w / 2
+
     if p1.x < sprite_w and p2.x < sprite_w then
       if p1.facing == forward then
-        p1.x = 0
-        p2.x = sprite_w - 1
+        p1.x = map_min_x
+        p2.x = sprite_w
       else
-        p1.x = sprite_w - 1
-        p2.x = 0
+        p1.x = sprite_w
+        p2.x = map_min_x
       end
     end
 
-    if p1.x + sprite_w > 127 - sprite_w and p2.x + sprite_w > 127 - sprite_w then
+    if p1.x + sprite_w > map_max_x - sprite_w and p2.x + sprite_w > map_max_x - sprite_w then
       if p1.facing == forward then
-        p1.x = 127 - sprite_w * 2 + 1
-        p2.x = 127 - sprite_w
+        p1.x = map_max_x - sprite_w * 2 + 1
+        p2.x = map_max_x - sprite_w
       else
-        p1.x = 127 - sprite_w
-        p2.x = 127 - sprite_w * 2 + 1
+        p1.x = map_max_x - sprite_w
+        p2.x = map_max_x - sprite_w * 2 + 1
       end
     end
   end
@@ -395,6 +396,7 @@ function start_action(p, action, params)
 
     if current_sequence == special_attack.sequence then
       cleanup_action_stack(p, true)
+      p.is_orientation_locked = true
 
       return setup_attack(p, special_attack)
     end
@@ -428,6 +430,10 @@ function release_action(p)
 end
 
 function finish_action(p)
+  if is_action_type_eq(p, "special_attack") then
+    p.is_orientation_locked = false
+  end
+
   p.current_action_state = "finished"
   shift_player_x(p, true)
 end
@@ -437,16 +443,16 @@ function restart_action(p)
   p.frames_counter = 0
 end
 
-function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w)
-  local a_w, a_h, t_w = a_w or sprite_w, a_h or sprite_h, t_w or sprite_w
-  local has_r_col, has_l_col, has_v_col = a_x + a_w > t_x + 8 - t_w and a_x < t_x, a_x + 8 - a_w < t_x + t_w and a_x > t_x, a_y + a_h > t_y
+function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)
+  local a_w, a_h, t_w, t_h = a_w or sprite_w, a_h or sprite_h, t_w or sprite_w, t_h or sprite_h
+  local has_r_col, has_l_col, has_u_col, has_d_col = a_x + a_w > t_x and a_x < t_x, a_x < t_x + t_w and a_x > t_x, t_y + t_h > a_y and t_y <= a_y, a_y + a_h > t_y and t_y >= a_y
 
   if type == "left" then
-    return has_l_col and has_v_col
+    return has_l_col and (has_u_col or has_d_col)
   elseif type == "right" then
-    return has_r_col and has_v_col
+    return has_r_col and (has_u_col or has_d_col)
   else
-    return (has_r_col or has_l_col) and has_v_col
+    return (has_r_col or has_l_col) and (has_u_col or has_d_col)
   end
 end
 
@@ -524,6 +530,8 @@ function attack(p, collision_callback)
         collision_callback()
       end
     end
+  elseif is_limit_left(p.x) or is_limit_right(p.x) then
+    finish_action(p)
   end
 end
 
@@ -549,17 +557,17 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
   local has_l_col, has_r_col = has_collision(new_p_x, p.y, vs.x, vs.y, "left"), has_collision(new_p_x, p.y, vs.x, vs.y, "right")
 
   if is_limit_left(new_p_x) then
-    p.x = 0
+    p.x = map_min_x
   elseif is_limit_right(new_p_x) then
-    p.x = 127 - sprite_w
+    p.x = map_max_x - sprite_w + 1
   elseif has_l_col and not ignore_collision then
     if allow_overlap then
       p.x = new_p_x
     else
       local vs_x_increment = vs.x - new_p_x + sprite_w - 1
 
-      if not is_limit_left(vs.x - vs_x_increment) then
-        if not is_action_type_eq(vs, "aerial") and not is_action_type_eq(vs, "aerial_attack") then
+      if not is_limit_left(vs.x - vs_x_increment + 1) then
+        if not is_in_air(vs) then
           move_x(vs, vs_x_increment * -1, nil, false, true)
         end
 
@@ -572,8 +580,8 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
     else
       local vs_x_increment = new_p_x + sprite_w - vs.x - 1
 
-      if not is_limit_right(vs.x + vs_x_increment) then
-        if not is_action_type_eq(vs, "aerial") and not is_action_type_eq(vs, "aerial_attack") then
+      if not is_limit_right(vs.x + vs_x_increment - 1) then
+        if not is_in_air(vs) then
           move_x(vs, vs_x_increment * -1, nil, false, true)
         end
 

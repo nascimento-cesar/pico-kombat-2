@@ -3,12 +3,10 @@ function fire_projectile(p)
 end
 
 function flying_kick(p)
-  -- problema na colisão no final da tela
   move_x(p, jump_speed * 1)
-  p.is_orientation_locked = true
-  -- attack(
-  --   p, function()
-  --     finish_action(p)
-  --   end
-  -- )
+  attack(
+    p, function()
+      finish_action(p)
+    end
+  )
 end

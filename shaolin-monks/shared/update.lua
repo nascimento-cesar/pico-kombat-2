@@ -50,12 +50,12 @@ function is_player_attacking(p)
   return p.current_action_params.is_player_attacking
 end
 
-function is_limit_left(x)
-  return x < 0
+function is_limit_left(x, tollerance)
+  return x <= map_min_x - (tollerance or 0)
 end
 
-function is_limit_right(x)
-  return x + sprite_w > 127
+function is_limit_right(x, tollerance)
+  return x + sprite_w > map_max_x + (tollerance or 0)
 end
 
 function is_p1_ahead_p2()

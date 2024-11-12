@@ -21,6 +21,10 @@ function draw_debug()
 
     if type(v) == "table" then
       for v2 in all(v) do
+        if type(v2) == "boolean" then
+          v2 = v2 and "true" or "false"
+        end
+
         if s ~= "" then
           s = s and s .. ", " .. v2 or v2
         else
@@ -28,6 +32,10 @@ function draw_debug()
         end
       end
     else
+      if type(v) == "boolean" then
+        v = v and "true" or "false"
+      end
+
       s = v
     end
 
