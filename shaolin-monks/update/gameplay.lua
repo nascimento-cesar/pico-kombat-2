@@ -336,8 +336,16 @@ end
 function setup_action(p, next_action, params)
   params, next_action = params or {}, type(next_action) == "string" and actions[next_action] or next_action
 
-  if is_action_type_eq(p, "aerial") and next_action.type == "aerial_attack" then
-    merge(params, p.current_action_params)
+  if is_action_type_eq(p, "aerial") then
+    if next_action.type == "kick_attack" then
+      next_action = actions.flying_kick
+    elseif next_action.type == "punch_attack" then
+      next_action = actions.flying_punch
+    end
+
+    if next_action.type == "aerial_attack" then
+      merge(params, p.current_action_params)
+    end
   end
 
   local is_next_action_eq_previous = p.current_action == next_action
@@ -366,7 +374,7 @@ function setup_action(p, next_action, params)
     elseif is_action_type_eq(p, "movement") then
       start_action(p, next_action, params)
     elseif is_action_state_eq(p, "held") then
-      if not is_action_type_eq(p, "aerial_attack") and not is_action_type_eq(p, "special_attack") and next_action.type == "attack" then
+      if next_action.type == "kick_attack" or next_action.type == "punch_attack" then
         start_action(p, next_action, params)
       elseif next_action == actions.prone then
         start_action(p, next_action, params)
