@@ -126,7 +126,11 @@ function update_previous_action(p)
     elseif is_action_eq(p, "propelled") and not has_landed then
       hold_action(p)
     elseif is_action_type_eq(p, "special_attack") then
-      hold_action(p)
+      if p.current_action.name == "bicycle_kick" then
+        restart_action(p, 2)
+      else
+        hold_action(p)
+      end
     elseif is_action_eq(p, "swept") then
       start_action(p, actions.prone)
     elseif is_action_eq(p, "flinch") and is_round_state_eq "finished" then
@@ -208,7 +212,7 @@ function get_pressed_inputs(p)
 end
 
 function release_held_buttons(p)
-  p.released_buttons = (p.held_buttons and p.held_buttons_timer > 10) and p.held_buttons .. flr(p.held_buttons_timer / 10) or nil
+  p.released_buttons = (p.held_buttons and p.held_buttons_timer > 10) and p.held_buttons .. "," .. flr(p.held_buttons_timer / 10) or nil
   p.held_buttons, p.held_buttons_timer = nil, 0
 end
 
@@ -388,9 +392,16 @@ function start_action(p, action, params)
   params = params or {}
 
   for _, special_attack in pairs(p.character.special_attacks) do
-    local current_sequence = sub(p.action_stack, #p.action_stack - #special_attack.sequence + 1, #p.action_stack)
+    local sequence, should_trigger = special_attack.sequence, false
 
-    if current_sequence == special_attack.sequence then
+    if sub(sequence, 1, 1) == "h" and p.released_buttons then
+      local released_buttons, released_buttons_timer = unpack_split(p.released_buttons)
+      p.released_buttons, should_trigger = nil, released_buttons == sub(sequence, 3) and released_buttons_timer >= sub(sequence, 2)
+    else
+      should_trigger = sub(p.action_stack, #p.action_stack - #sequence + 1, #p.action_stack) == sequence
+    end
+
+    if should_trigger then
       cleanup_action_stack(p, true)
 
       return setup_attack(p, special_attack)
@@ -429,9 +440,9 @@ function finish_action(p)
   shift_player_x(p, true)
 end
 
-function restart_action(p)
+function restart_action(p, restart_from)
   p.current_action_state = "in_progress"
-  p.frames_counter = 0
+  p.frames_counter = (restart_from or 0) * p.current_action.fps
 end
 
 function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)

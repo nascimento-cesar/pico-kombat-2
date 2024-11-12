@@ -7,7 +7,7 @@ function eval_str(v)
     return split_sprites(sub(v, 2))
   elseif sub(v, 1, 1) == "*" then
     return ({
-      a = { attack, fire_projectile, flinch, walk, flying_kick },
+      a = { attack, fire_projectile, flinch, walk, flying_kick, bicycle_kick },
       r = { flinch, propelled, swept, frozen }
     })[sub(v, 2, 2)][tonum(sub(v, 3))]
   elseif v ~= "nil" then
