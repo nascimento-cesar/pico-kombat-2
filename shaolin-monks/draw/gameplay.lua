@@ -38,6 +38,7 @@ function draw_player(p)
     flip_body_x, flip_head_x = not flip_body_x, not flip_head_x
   end
 
+  draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
   draw_head(p, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
   draw_body(p, body_id, flip_body_x, flip_body_y)
 
@@ -46,6 +47,24 @@ function draw_player(p)
   end
 
   draw_particles(p)
+end
+
+function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
+  local pal_string, body_x, body_y, head_x, head_y = "p", p.x, p.y, p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment
+
+  for i in all(split "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f") do
+    pal_string = pal_string .. i .. "1"
+  end
+
+  shift_pal(pal_string)
+
+  for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
+    local x, y = unpack_split(axes, "|")
+    spr(body_id, body_x + x, body_y + y, 1, 1, flip_body_x, flip_body_y)
+    spr(p.character.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
+  end
+
+  pal()
 end
 
 function draw_head(p, id, x_adjustment, y_adjustment, flip_x, flip_y)
