@@ -291,8 +291,6 @@ end
 
 function fix_players_placement()
   if not is_in_air(p1) and not is_in_air(p2) then
-    local half_sprite_w = sprite_w / 2
-
     if p1.x < sprite_w and p2.x < sprite_w then
       if p1.facing == forward then
         p1.x = map_min_x
@@ -303,13 +301,13 @@ function fix_players_placement()
       end
     end
 
-    if p1.x + sprite_w > map_max_x - sprite_w and p2.x + sprite_w > map_max_x - sprite_w then
+    if p1.x + sprite_w > map_max_x - sprite_w + 2 and p2.x + sprite_w > map_max_x - sprite_w + 2 then
       if p1.facing == forward then
-        p1.x = map_max_x - sprite_w * 2 + 1
-        p2.x = map_max_x - sprite_w
+        p1.x = map_max_x - (sprite_w - 1) * 2
+        p2.x = map_max_x - (sprite_w - 1)
       else
-        p1.x = map_max_x - sprite_w
-        p2.x = map_max_x - sprite_w * 2 + 1
+        p1.x = map_max_x - (sprite_w - 1)
+        p2.x = map_max_x - (sprite_w - 1) * 2
       end
     end
   end
@@ -564,11 +562,11 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
     if allow_overlap then
       p.x = new_p_x
     else
-      local vs_x_increment = vs.x - new_p_x + sprite_w - 1
+      local vs_x_increment = new_p_x - vs.x - sprite_w + 1
 
-      if not is_limit_left(vs.x - vs_x_increment + 1) then
+      if not is_limit_left(vs.x + vs_x_increment + 1) then
         if not is_in_air(vs) then
-          move_x(vs, vs_x_increment * -1, nil, false, true)
+          move_x(vs, vs_x_increment, nil, false, true)
         end
 
         p.x = new_p_x
@@ -578,11 +576,11 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
     if allow_overlap then
       p.x = new_p_x
     else
-      local vs_x_increment = new_p_x + sprite_w - vs.x - 1
+      local vs_x_increment = vs.x - new_p_x - sprite_w + 1
 
-      if not is_limit_right(vs.x + vs_x_increment - 1) then
+      if not is_limit_right(vs.x - vs_x_increment - 1) then
         if not is_in_air(vs) then
-          move_x(vs, vs_x_increment * -1, nil, false, true)
+          move_x(vs, vs_x_increment, nil, false, true)
         end
 
         p.x = new_p_x
