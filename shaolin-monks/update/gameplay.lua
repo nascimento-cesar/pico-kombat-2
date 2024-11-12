@@ -226,9 +226,9 @@ function update_aerial_action(p)
       move_x(p, x_speed, is_turn_around_attack and p.facing * -1 or p.facing)
 
       if is_p1_ahead_p2() and not is_turn_around_attack then
-        if not is_action_type_eq(p, "aerial_attack") then
+        if is_action_type_eq(p, "aerial") then
           p.current_action_params.is_turn_around_attack = true
-          shift_player_orientation(p, nil, true)
+          shift_player_orientation(p)
         end
 
         if not p.current_action_params.vs_has_turned_around then
@@ -238,7 +238,6 @@ function update_aerial_action(p)
       end
 
       if p.y >= y_bottom_limit then
-        p.is_orientation_locked = false
         p.current_action_params.has_landed = true
         p.current_action_params.is_landing = false
 
@@ -246,7 +245,6 @@ function update_aerial_action(p)
       end
     else
       if not p.current_action_params.has_landed then
-        p.is_orientation_locked = true
         move_y(p, -jump_speed)
         move_x(p, x_speed)
 
@@ -277,14 +275,14 @@ function update_projectile(p)
 end
 
 function fix_players_orientation()
-  if p1.facing == p2.facing and not is_in_air(p1) and not is_in_air(p2) then
+  if (p1.facing == p2.facing or is_p1_ahead_p2()) and not is_in_air(p1) and not is_in_air(p2) then
     shift_player_orientation(p1, p1.x < p2.x and forward or backward)
     shift_player_orientation(p2, p1.x < p2.x and backward or forward)
   end
 end
 
-function shift_player_orientation(p, facing, force)
-  if force or (not p.is_orientation_locked and not is_frozen(p)) then
+function shift_player_orientation(p, facing)
+  if not is_action_type_eq(p, "special_attack") and not is_frozen(p) then
     p.facing = facing or p.facing * -1
   end
 end
@@ -373,7 +371,7 @@ function setup_action(p, next_action, params)
     elseif is_action_type_eq(p, "movement") then
       start_action(p, next_action, params)
     elseif is_action_state_eq(p, "held") then
-      if next_action.type == "kick_attack" or next_action.type == "punch_attack" then
+      if not is_action_type_eq(p, "aerial_attack") and not is_action_type_eq(p, "special_attack") and (next_action.type == "kick_attack" or next_action.type == "punch_attack") then
         start_action(p, next_action, params)
       elseif next_action == actions.prone then
         start_action(p, next_action, params)
@@ -394,7 +392,6 @@ function start_action(p, action, params)
 
     if current_sequence == special_attack.sequence then
       cleanup_action_stack(p, true)
-      p.is_orientation_locked = true
 
       return setup_attack(p, special_attack)
     end
@@ -428,10 +425,6 @@ function release_action(p)
 end
 
 function finish_action(p)
-  if is_action_type_eq(p, "special_attack") then
-    p.is_orientation_locked = false
-  end
-
   p.current_action_state = "finished"
   shift_player_x(p, true)
 end

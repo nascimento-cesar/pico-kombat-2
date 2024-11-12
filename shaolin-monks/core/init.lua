@@ -8,7 +8,7 @@ function _init()
 end
 
 function define_global_constants()
-  action_stack_timeout, backward, debug, flinch_speed, forward, frozen_body_pal_map, frozen_head_pal_map, jump_speed, map_min_x, map_max_x, p1_id, p2_id, projectile_speed, round_duration, sprite_h, sprite_w, stage_offset, swept_speed, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, {}, 4, 1, "p0c1c2c3c4c5c6c7c8c9cacbcdcecfc", "p0c1c2c374c5c6c8c9cacbcdcecfc", 2, 1, 126, 0, 1, 3, 90, 8, 8, 16, 3, 1, 3, 127 - 36, 2, 127 - 36 - 20
+  action_stack_timeout, backward, debug, flinch_speed, forward, frozen_body_pal_map, frozen_head_pal_map, jump_speed, map_min_x, map_max_x, p1_id, p2_id, projectile_speed, round_duration, sprite_h, sprite_w, stage_offset, swept_speed, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, {}, 4, 1, "p0c1c2c3c4c5c6c7c8c9cacbcdcecfc", "p0c1c2c374c5c6c8c9cacbcdcecfc", 2, 1, 126, 0, 1, 3, 90, 8, 8, 16, 3, 1, 3, 127 - 36, 2, 127 - 36 - 28
   actions_map, timers = string_to_hash(
     "⬅️,➡️,⬆️,⬇️,➡️⬆️,⬅️⬆️,➡️⬇️,⬅️⬇️,🅾️,⬅️🅾️,➡️🅾️,⬆️🅾️,⬇️🅾️,⬅️⬆️🅾️,➡️⬆️🅾️,❎,⬅️❎,➡️❎,⬆️❎,⬇️❎,⬅️⬆️❎,➡️⬆️❎,🅾️❎,⬅️🅾️❎,➡️🅾️❎,⬇️🅾️❎",
     "1|walk,1|walk,1|jump,1|crouch,1|jump,1|jump,1|crouch,1|crouch,2|punch,2|punch,2|punch,2|flying_punch,2|hook,2|flying_punch,2|flying_punch,2|kick,2|roundhouse_kick,2|kick,2|flying_kick,2|sweep,2|flying_kick,2|flying_kick,1|block,1|block,1|block,1|block"
