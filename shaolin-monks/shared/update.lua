@@ -38,6 +38,10 @@ function is_action_type_eq(p, s)
   return p.current_action.type == s
 end
 
+function is_frozen(p)
+  return p.frozen_timer > 0
+end
+
 function is_player_attacking(p)
   return p.current_action_params.is_player_attacking
 end

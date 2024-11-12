@@ -87,23 +87,27 @@ function get_next_challenger(p)
 end
 
 function update_player(p)
-  p.frames_counter += 1
-  update_previous_action(p)
+  if is_frozen(p) then
+    p.frozen_timer -= 1
+  else
+    p.frames_counter += 1
+    update_previous_action(p)
 
-  if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and combat_round_loser ~= p then
-    if p.has_joined then
-      process_inputs(p)
-    else
-      next_cpu_action(p)
+    if (is_round_state_eq "in_progress" or is_round_state_eq "finishing_move") and combat_round_loser ~= p then
+      if p.has_joined then
+        process_inputs(p)
+      else
+        next_cpu_action(p)
+      end
     end
-  end
 
-  perform_current_action(p)
-  update_aerial_action(p)
-  update_projectile(p)
+    perform_current_action(p)
+    update_aerial_action(p)
+    update_projectile(p)
 
-  if p.has_joined then
-    cleanup_action_stack(p)
+    if p.has_joined then
+      cleanup_action_stack(p)
+    end
   end
 end
 
@@ -492,26 +496,6 @@ function check_defeat(p)
     local vs = get_vs(p)
     combat_rounds_won[vs.id] += 1
     combat_round_loser, combat_round_winner, combat_round_state = p, vs, has_combat_ended() and "finishing_move" or "finished"
-  end
-end
-
-function flinch(p)
-  if not is_action_eq(p, "flinch") then
-    start_action(p, actions.flinch)
-    move_x(p, -flinch_speed)
-  end
-end
-
-function propelled(p)
-  if not is_action_eq(p, "propelled") then
-    start_action(p, actions.propelled, { direction = backward })
-  end
-end
-
-function swept(p)
-  if not is_action_eq(p, "swept") then
-    move_x(p, -swept_speed)
-    start_action(p, actions.swept)
   end
 end
 

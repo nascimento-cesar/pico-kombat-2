@@ -8,7 +8,7 @@ function eval_str(v)
   elseif sub(v, 1, 1) == "*" then
     return ({
       a = { attack, fire_projectile, flinch, walk },
-      r = { flinch, propelled, swept }
+      r = { flinch, propelled, swept, frozen }
     })[sub(v, 2, 2)][tonum(sub(v, 3))]
   elseif v ~= "nil" then
     return v
