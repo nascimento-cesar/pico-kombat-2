@@ -38,6 +38,10 @@ function is_action_type_eq(p, s)
   return p.current_action.type == s
 end
 
+function is_in_air(p)
+  return is_action_type_eq(p, "aerial") or is_action_type_eq(p, "aerial_attack") or is_action_eq(p, "propelled")
+end
+
 function is_frozen(p)
   return p.frozen_timer > 0
 end

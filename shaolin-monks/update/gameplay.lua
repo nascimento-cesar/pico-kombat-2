@@ -217,21 +217,29 @@ function perform_current_action(p)
 end
 
 function update_aerial_action(p)
-  if is_action_type_eq(p, "aerial") or is_action_type_eq(p, "aerial_attack") or is_action_eq(p, "propelled") then
-    local direction = p.current_action_params.direction
+  if is_in_air(p) then
+    local direction, vs = p.current_action_params.direction, get_vs(p)
     local x_speed, has_changed_orientation = jump_speed * (direction or 0) / 2, p.current_action_params.has_changed_orientation
 
     if p.current_action_params.is_landing then
       move_y(p, jump_speed)
       move_x(p, x_speed, has_changed_orientation and p.facing * -1 or p.facing)
 
-      if is_p1_ahead_p2() and not has_changed_orientation and is_action_type_eq(p, "aerial") then
-        p.current_action_params.has_changed_orientation = true
-        shift_players_orientation()
+      if is_p1_ahead_p2() and not has_changed_orientation then
+        if not is_action_type_eq(p, "aerial_attack") then
+          p.current_action_params.has_changed_orientation = true
+          shift_player_orientation(p, nil, true)
+        end
+
+        if not vs.is_orientation_locked then
+          shift_player_orientation(vs)
+          vs.is_orientation_locked = true
+        end
       end
 
       if p.y >= y_bottom_limit then
         p.is_orientation_locked = false
+        vs.is_orientation_locked = false
         p.current_action_params.has_landed = true
         p.current_action_params.is_landing = false
 
@@ -270,10 +278,15 @@ function update_projectile(p)
 end
 
 function fix_players_orientation()
-  local is_orientation_locked = p1.is_orientation_locked or p2.is_orientation_locked
+  if p1.facing == p2.facing and not is_in_air(p1) and not is_in_air(p2) then
+    shift_player_orientation(p1, p1.x < p2.x and forward or backward)
+    shift_player_orientation(p2, p1.x < p2.x and backward or forward)
+  end
+end
 
-  if is_p1_ahead_p2() and not is_orientation_locked and not is_action_type_eq(p1, "aerial_attack") and not is_action_type_eq(p2, "aerial_attack") then
-    shift_players_orientation()
+function shift_player_orientation(p, facing, force)
+  if force or (not p.is_orientation_locked and not is_frozen(p)) then
+    p.facing = facing or p.facing * -1
   end
 end
 
@@ -308,11 +321,6 @@ function cleanup_action_stack(p, force)
   else
     p.action_stack_timeout -= 1
   end
-end
-
-function shift_players_orientation()
-  p1.facing *= -1
-  p2.facing *= -1
 end
 
 function handle_no_key_press(p)
@@ -470,10 +478,6 @@ function shift_player_y(p, unshift, shift_up)
   end
 end
 
-function fire_projectile(p)
-  p.projectile = p.projectile or string_to_hash("frames_counter,x,y", { 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
-end
-
 function deal_damage(action, p)
   p.hp -= action.dmg
   action.reaction_handler(p)
@@ -499,7 +503,7 @@ function check_defeat(p)
   end
 end
 
-function attack(p)
+function attack(p, collision_callback)
   local vs, full_sprite_w = get_vs(p), sprite_w + 1
 
   if is_player_attacking(p) and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
@@ -507,6 +511,10 @@ function attack(p)
     else
       deal_damage(p.current_action, vs)
       p.current_action_params.is_player_attacking = false
+
+      if collision_callback then
+        collision_callback()
+      end
     end
   end
 end
