@@ -9,7 +9,7 @@
 - [ ] particles on projectiles
 - [x] kl projectile sprites
 - [x] hold button support
-- [ ] bug when fly-attack at the edge of the screen
+- [x] bug when fly-attack at the edge of the screen
 - [ ] sometimes hitting an opponent doesn't make the special action end
 - [ ] finishing the round with a special attack does not end the action
 - [ ] support triggering release action in middle of another action like jumping and walking

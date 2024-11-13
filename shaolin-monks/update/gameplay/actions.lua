@@ -11,7 +11,7 @@ function attack(p, collision_callback)
         collision_callback()
       end
     end
-  elseif is_limit_left(p.x) or is_limit_right(p.x) then
+  elseif is_action_type_eq(p, "special_attack") and (is_limit_left(p.x) or is_limit_right(p.x)) then
     finish_action(p)
   end
 end

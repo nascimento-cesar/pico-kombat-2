@@ -126,7 +126,7 @@ function update_previous_action(p)
     elseif is_action_eq(p, "propelled") and not has_landed then
       hold_action(p)
     elseif is_action_type_eq(p, "special_attack") then
-      if p.current_action.name == "bicycle_kick" then
+      if p.current_action.name == "lk_bicycle_kick" then
         restart_action(p, 2)
       else
         hold_action(p)
