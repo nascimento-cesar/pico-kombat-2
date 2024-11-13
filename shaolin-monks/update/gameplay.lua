@@ -542,7 +542,7 @@ function build_particle_set(color, count, x, y)
   return particle_set
 end
 
-function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
+function move_x(p, x_increment, direction, allow_overlap)
   direction = direction or p.facing
 
   local vs = get_vs(p)
@@ -553,33 +553,25 @@ function move_x(p, x_increment, direction, allow_overlap, ignore_collision)
     p.x = map_min_x
   elseif is_limit_right(new_p_x) then
     p.x = map_max_x - sprite_w + 1
-  elseif has_l_col and not ignore_collision then
-    if allow_overlap then
-      p.x = new_p_x
-    else
-      local vs_x_increment = new_p_x - vs.x - sprite_w + 1
+  elseif has_l_col and not allow_overlap then
+    local vs_x_increment = new_p_x - vs.x - sprite_w + 1
 
-      if not is_limit_left(vs.x + vs_x_increment + 1) then
-        if not is_in_air(vs) then
-          move_x(vs, vs_x_increment, nil, false, true)
-        end
-
-        p.x = new_p_x
+    if not is_limit_left(vs.x + vs_x_increment + 1) then
+      if not is_in_air(vs) then
+        move_x(vs, vs_x_increment, nil, true)
       end
+
+      p.x = new_p_x
     end
-  elseif has_r_col and not ignore_collision then
-    if allow_overlap then
-      p.x = new_p_x
-    else
-      local vs_x_increment = vs.x - new_p_x - sprite_w + 1
+  elseif has_r_col and not allow_overlap then
+    local vs_x_increment = vs.x - new_p_x - sprite_w + 1
 
-      if not is_limit_right(vs.x - vs_x_increment - 1) then
-        if not is_in_air(vs) then
-          move_x(vs, vs_x_increment, nil, false, true)
-        end
-
-        p.x = new_p_x
+    if not is_limit_right(vs.x - vs_x_increment - 1) then
+      if not is_in_air(vs) then
+        move_x(vs, vs_x_increment, nil, true)
       end
+
+      p.x = new_p_x
     end
   else
     p.x = new_p_x
