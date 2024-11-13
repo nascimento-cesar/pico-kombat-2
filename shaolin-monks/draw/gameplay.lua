@@ -14,12 +14,12 @@ function draw_stage()
 end
 
 function draw_player(p)
-  local flip_body_x, flip_body_y, flip_head_x, flip_head_y, head_x_adjustment, head_y_adjustment, sprites, body_id, head_id, index, sprite = false, false, false, false, 0, 0, p.current_action.sprites
+  local flip_body_x, flip_body_y, flip_head_x, flip_head_y, head_x_adjustment, head_y_adjustment, sprites, body_id, head_id, index, sprite = false, false, false, false, 0, 0, p.ca.sprites
 
   if is_action_state_eq(p, "held") then
     index = #sprites
   else
-    index = flr(p.frames_counter / p.current_action.fps) + 1
+    index = flr(p.frames_counter / p.ca.fps) + 1
 
     if is_action_state_eq(p, "released") then
       index = #sprites - index + 1

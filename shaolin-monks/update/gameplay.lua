@@ -117,7 +117,7 @@ end
 
 function update_previous_action(p)
   if is_action_animation_finished(p) then
-    local has_landed = p.current_action_params.has_landed
+    local has_landed = p.cap.has_landed
 
     if is_action_type_eq(p, "aerial") and not has_landed then
       restart_action(p)
@@ -126,7 +126,7 @@ function update_previous_action(p)
     elseif is_action_eq(p, "propelled") and not has_landed then
       hold_action(p)
     elseif is_action_type_eq(p, "special_attack") then
-      if p.current_action.name == "lk_bicycle_kick" then
+      if p.ca.name == "lk_bicycle_kick" then
         restart_action(p, 2)
       else
         hold_action(p)
@@ -217,50 +217,50 @@ function release_held_buttons(p)
 end
 
 function perform_current_action(p)
-  return p.current_action.handler and p.current_action.handler(p)
+  return p.ca.handler and p.ca.handler(p)
 end
 
 function update_aerial_action(p)
   if is_in_air(p) then
-    local direction, vs, is_propelled_back = p.current_action_params.direction, get_vs(p), p.current_action_params.is_propelled_back
-    local x_speed, is_turn_around_attack = (is_propelled_back and offensive_speed or jump_speed) * (direction or 0) / 2, p.current_action_params.is_turn_around_attack
+    local direction, vs, is_propelled_back = p.cap.direction, get_vs(p), p.cap.is_propelled_back
+    local x_speed, is_turn_around_attack = (is_propelled_back and offensive_speed or jump_speed) * (direction or 0) / 2, p.cap.is_turn_around_attack
 
-    if p.current_action_params.is_landing then
-      if not is_propelled_back or (is_propelled_back and p.current_action_params.air_hold_frames <= 0) then
+    if p.cap.is_landing then
+      if not is_propelled_back or (is_propelled_back and p.cap.air_hold_frames <= 0) then
         move_y(p, jump_speed)
       else
-        p.current_action_params.air_hold_frames -= 1
+        p.cap.air_hold_frames -= 1
       end
 
       move_x(p, x_speed, is_turn_around_attack and p.facing * -1 or p.facing)
 
       if is_p1_ahead_p2() and not is_turn_around_attack then
         if is_action_type_eq(p, "aerial") then
-          p.current_action_params.is_turn_around_attack = true
+          p.cap.is_turn_around_attack = true
           shift_player_orientation(p)
         end
 
-        if not p.current_action_params.vs_has_turned_around then
+        if not p.cap.vs_has_turned_around then
           shift_player_orientation(vs)
-          p.current_action_params.vs_has_turned_around = true
+          p.cap.vs_has_turned_around = true
         end
       end
 
       if p.y >= y_bottom_limit then
-        p.current_action_params.has_landed = true
-        p.current_action_params.is_landing = false
+        p.cap.has_landed = true
+        p.cap.is_landing = false
 
         setup_action(p, is_action_eq(p, "propelled") and "prone" or "idle")
       end
     else
-      if not p.current_action_params.has_landed then
+      if not p.cap.has_landed then
         move_y(p, -jump_speed)
         move_x(p, x_speed)
 
-        p.current_action_params.air_hold_frames = p.current_action_params.air_hold_frames or 4
+        p.cap.air_hold_frames = p.cap.air_hold_frames or 4
 
         if p.y <= (is_propelled_back and y_upper_limit + 16 or y_upper_limit) then
-          p.current_action_params.is_landing = true
+          p.cap.is_landing = true
         end
       end
     end
@@ -276,7 +276,7 @@ function update_projectile(p)
 
     if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
       p.projectile = nil
-      deal_damage(p.current_action, vs)
+      deal_damage(p.ca, vs)
       start_action(p, actions.idle)
     elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) then
       p.projectile = nil
@@ -334,8 +334,8 @@ end
 function handle_no_key_press(p)
   if is_action_eq(p, "walk") then
     setup_action(p, "idle")
-  elseif p.current_action.is_holdable and is_action_state_eq(p, "held") and not is_action_eq(p, "propelled") then
-    setup_action(p, p.current_action, { is_released = true })
+  elseif p.ca.is_holdable and is_action_state_eq(p, "held") and not is_action_eq(p, "propelled") then
+    setup_action(p, p.ca, { is_released = true })
   elseif is_action_state_eq(p, "finished") then
     setup_action(p, "idle")
   end
@@ -352,15 +352,15 @@ function setup_action(p, next_action, params)
     end
 
     if next_action.type == "aerial_attack" then
-      merge(params, p.current_action_params)
+      merge(params, p.cap)
     end
   end
 
-  local is_next_action_eq_previous = p.current_action == next_action
+  local is_next_action_eq_previous = p.ca == next_action
 
   if is_action_state_eq(p, "finished") then
     if is_next_action_eq_previous then
-      if p.current_action.is_holdable then
+      if p.ca.is_holdable then
         hold_action(p)
       elseif is_action_type_eq(p, "movement") then
         restart_action(p)
@@ -373,7 +373,7 @@ function setup_action(p, next_action, params)
   elseif is_next_action_eq_previous then
     if is_action_state_eq(p, "held") and params.is_released then
       release_action(p)
-    elseif is_action_type_eq(p, "movement") and p.current_action_params.direction ~= params.direction then
+    elseif is_action_type_eq(p, "movement") and p.cap.direction ~= params.direction then
       start_action(p, next_action, params)
     end
   elseif not is_next_action_eq_previous then
@@ -415,9 +415,9 @@ function start_action(p, action, params)
     end
   end
 
-  p.current_action = action
-  p.current_action_state = "in_progress"
-  p.current_action_params = params
+  p.ca = action
+  p.cas = "in_progress"
+  p.cap = params
   p.frames_counter = 0
 
   if action.is_x_shiftable then
@@ -432,24 +432,24 @@ function start_action(p, action, params)
 end
 
 function hold_action(p)
-  p.current_action_state = "held"
+  p.cas = "held"
   p.frames_counter = 0
 end
 
 function release_action(p)
-  p.current_action_state = "released"
-  p.current_action_params = { is_released = true }
+  p.cas = "released"
+  p.cap = { is_released = true }
   p.frames_counter = 0
 end
 
 function finish_action(p)
-  p.current_action_state = "finished"
+  p.cas = "finished"
   shift_player_x(p, true)
 end
 
 function restart_action(p, restart_from)
-  p.current_action_state = "in_progress"
-  p.frames_counter = (restart_from or 0) * p.current_action.fps
+  p.cas = "in_progress"
+  p.frames_counter = (restart_from or 0) * p.ca.fps
 end
 
 function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)

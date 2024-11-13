@@ -23,19 +23,19 @@ function init_player(p)
 end
 
 function is_action_eq(p, s)
-  return p.current_action == actions[s]
+  return p.ca == actions[s]
 end
 
 function is_action_state_eq(p, s)
-  return p.current_action_state == s
+  return p.cas == s
 end
 
 function is_action_animation_finished(p)
-  return p.frames_counter > p.current_action.fps * #p.current_action.sprites - 1
+  return p.frames_counter > p.ca.fps * #p.ca.sprites - 1
 end
 
 function is_action_type_eq(p, s)
-  return p.current_action.type == s
+  return p.ca.type == s
 end
 
 function is_in_air(p)
@@ -47,7 +47,7 @@ function is_frozen(p)
 end
 
 function is_player_attacking(p)
-  return p.current_action_params.is_player_attacking
+  return p.cap.is_player_attacking
 end
 
 function is_limit_left(x, tollerance)

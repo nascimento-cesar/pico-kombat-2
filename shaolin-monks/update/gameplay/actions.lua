@@ -4,8 +4,8 @@ function attack(p, collision_callback)
   if is_player_attacking(p) and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
     if vs.is_blocking then
     else
-      deal_damage(p.current_action, vs)
-      p.current_action_params.is_player_attacking = false
+      deal_damage(p.ca, vs)
+      p.cap.is_player_attacking = false
 
       if collision_callback then
         collision_callback()
@@ -52,5 +52,5 @@ function swept(p)
 end
 
 function walk(p)
-  move_x(p, walk_speed * p.current_action_params.direction)
+  move_x(p, walk_speed * p.cap.direction)
 end
