@@ -101,7 +101,7 @@ function update_player(p)
       end
     end
 
-    perform_current_action(p)
+    perform_action(p, p.ca.handler)
     update_aerial_action(p)
     update_projectile(p)
 
@@ -136,7 +136,7 @@ function update_previous_action(p)
     elseif is_action_eq(p, "swept") then
       start_action(p, actions.prone)
     elseif is_action_eq(p, "flinch") and is_round_state_eq "finished" then
-      swept(p)
+      perform_action(p, "swept")
     elseif is_action_eq(p, "prone") then
       if is_round_state_eq "finished" then
         hold_action(p)
@@ -216,10 +216,6 @@ end
 function release_held_buttons(p)
   p.released_buttons = (p.held_buttons and p.held_buttons_timer > 10) and p.held_buttons .. "," .. flr(p.held_buttons_timer / 10) or nil
   p.held_buttons, p.held_buttons_timer = nil, 0
-end
-
-function perform_current_action(p)
-  return p.ca.handler and p.ca.handler(p)
 end
 
 function update_aerial_action(p)
@@ -508,9 +504,9 @@ function deal_damage(action, p)
   p.frozen_timer = 0
 
   if is_in_air(p) and not any_match("freeze,hook", action.name) then
-    propelled_back(p)
+    perform_action(p, "propelled_back")
   else
-    action.reaction_handler(p)
+    perform_action(p, action.reaction_handler)
   end
 
   if action ~= actions.sweep then
