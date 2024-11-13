@@ -1,3 +1,15 @@
+function any_match(arr, val)
+  arr = type(arr) == "string" and split(arr) or arr
+
+  for item in all(arr) do
+    if item == val then
+      return true
+    end
+  end
+
+  return false
+end
+
 function eval_str(v)
   if v == "true" then
     return true

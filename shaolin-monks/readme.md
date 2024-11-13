@@ -1,6 +1,7 @@
 # TODO LIST
 
-- [ ] attacking a propelled opponent from ground breaks opponent's position
+- [x] attacking a propelled opponent from ground breaks opponent's position
+- [ ] should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] block not implemented
 - [ ] time's up not implemented
 - [ ] support draw and more than 3 rounds

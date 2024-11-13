@@ -503,7 +503,13 @@ end
 
 function deal_damage(action, p)
   p.hp -= action.dmg
-  action.reaction_handler(p)
+  p.frozen_timer = 0
+
+  if is_in_air(p) and not any_match("freeze,hook", action.name) then
+    propelled_back(p)
+  else
+    action.reaction_handler(p)
+  end
 
   if action ~= actions.sweep then
     spill_blood(p)
