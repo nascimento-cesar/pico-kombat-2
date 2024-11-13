@@ -44,6 +44,12 @@ function propelled_up(p)
   end
 end
 
+function stumble(p)
+  if not is_action_eq(p, "stumble") then
+    start_action(p, actions.stumble)
+  end
+end
+
 function swept(p)
   if not is_action_eq(p, "swept") then
     move_x(p, -swept_speed)

@@ -116,7 +116,7 @@ function next_cpu_action(p)
 end
 
 function update_previous_action(p)
-  if is_action_animation_finished(p) then
+  if is_action_animation_finished(p) and p.cas ~= "finished" then
     local has_landed = p.cap.has_landed
 
     if is_action_type_eq(p, "aerial") and not has_landed then
@@ -125,6 +125,8 @@ function update_previous_action(p)
       hold_action(p)
     elseif is_action_eq(p, "propelled") and not has_landed then
       hold_action(p)
+    elseif is_action_eq(p, "stumble") then
+      restart_action(p)
     elseif is_action_type_eq(p, "special_attack") then
       if p.ca.name == "lk_bicycle_kick" then
         restart_action(p, 2)
