@@ -13,7 +13,7 @@ __lua__
 #include draw/start.lua
 #include update/character_selection.lua
 #include update/gameplay.lua
-#include update/gameplay/reactions.lua
+#include update/gameplay/actions.lua
 #include update/gameplay/special_attacks.lua
 #include update/next_combat.lua
 #include update/start.lua

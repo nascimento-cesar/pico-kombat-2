@@ -1,10 +1,9 @@
 function bicycle_kick(p)
   shift_player_y(p, false, true)
-  move_x(p, jump_speed * 1)
+  move_x(p, offensive_speed, nil, true)
   attack(
     p, function()
       finish_action(p)
-      shift_player_y(p, true)
     end
   )
 end
@@ -14,7 +13,8 @@ function fire_projectile(p)
 end
 
 function flying_kick(p)
-  move_x(p, jump_speed * 1)
+  shift_player_y(p, false, true)
+  move_x(p, offensive_speed, nil, true)
   attack(
     p, function()
       finish_action(p)

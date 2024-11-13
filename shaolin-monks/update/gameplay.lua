@@ -222,11 +222,16 @@ end
 
 function update_aerial_action(p)
   if is_in_air(p) then
-    local direction, vs = p.current_action_params.direction, get_vs(p)
-    local x_speed, is_turn_around_attack = jump_speed * (direction or 0) / 2, p.current_action_params.is_turn_around_attack
+    local direction, vs, is_propelled_back = p.current_action_params.direction, get_vs(p), p.current_action_params.is_propelled_back
+    local x_speed, is_turn_around_attack = (is_propelled_back and offensive_speed or jump_speed) * (direction or 0) / 2, p.current_action_params.is_turn_around_attack
 
     if p.current_action_params.is_landing then
-      move_y(p, jump_speed)
+      if not is_propelled_back or (is_propelled_back and p.current_action_params.air_hold_frames <= 0) then
+        move_y(p, jump_speed)
+      else
+        p.current_action_params.air_hold_frames -= 1
+      end
+
       move_x(p, x_speed, is_turn_around_attack and p.facing * -1 or p.facing)
 
       if is_p1_ahead_p2() and not is_turn_around_attack then
@@ -252,7 +257,9 @@ function update_aerial_action(p)
         move_y(p, -jump_speed)
         move_x(p, x_speed)
 
-        if p.y <= y_upper_limit then
+        p.current_action_params.air_hold_frames = p.current_action_params.air_hold_frames or 4
+
+        if p.y <= (is_propelled_back and y_upper_limit + 16 or y_upper_limit) then
           p.current_action_params.is_landing = true
         end
       end
@@ -419,7 +426,7 @@ function start_action(p, action, params)
 
   if action == actions.prone then
     shift_player_y(p)
-  elseif action == actions.get_up then
+  elseif p.is_y_shifted then
     shift_player_y(p, true)
   end
 end
@@ -517,28 +524,6 @@ function check_defeat(p)
     combat_rounds_won[vs.id] += 1
     combat_round_loser, combat_round_winner, combat_round_state = p, vs, has_combat_ended() and "finishing_move" or "finished"
   end
-end
-
-function attack(p, collision_callback)
-  local vs, full_sprite_w = get_vs(p), sprite_w + 1
-
-  if is_player_attacking(p) and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
-    if vs.is_blocking then
-    else
-      deal_damage(p.current_action, vs)
-      p.current_action_params.is_player_attacking = false
-
-      if collision_callback then
-        collision_callback()
-      end
-    end
-  elseif is_limit_left(p.x) or is_limit_right(p.x) then
-    finish_action(p)
-  end
-end
-
-function walk(p)
-  move_x(p, walk_speed * p.current_action_params.direction)
 end
 
 function build_particle_set(color, count, x, y)

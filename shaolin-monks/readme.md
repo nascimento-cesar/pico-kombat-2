@@ -9,17 +9,21 @@
 - [x] kl projectile sprites
 - [x] hold button support
 - [ ] bug when fly-attack at the edge of the screen
-- [ ] trigger release action in middle of another action like jumping and walking
+- [ ] sometimes hitting an opponent doesn't make the special action end
+- [ ] finishing the round with a special attack does not end the action
+- [ ] support triggering release action in middle of another action like jumping and walking
 - [ ] kr and sk characters
 - [ ] pixel art stages
 - [ ] game over screen
 - [ ] next combat screen
-- [ ] finishing moves
-- [ ] special moves
+- [ ] all finishing moves
+- [ ] all special moves
 - [ ] game end screen
 - [ ] sfx
 - [ ] music
 - [ ] victory stance
 
-# LAST TOKEN COUNT
-4306
+# LATEST COUNTS
+tokens: 4.637/8.192
+chars: 36.633/65.535
+compressed: 60%
