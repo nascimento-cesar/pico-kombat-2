@@ -22,32 +22,8 @@ function init_player(p)
   p.has_joined = true
 end
 
-function is_action_eq(p, s)
-  return p.ca == actions[s]
-end
-
-function is_action_state_eq(p, s)
-  return p.cas == s
-end
-
-function is_action_animation_finished(p)
-  return p.frames_counter > p.ca.fps * #p.ca.sprites - 1
-end
-
-function is_action_type_eq(p, s)
-  return p.ca.type == s
-end
-
-function is_in_air(p)
-  return is_action_type_eq(p, "aerial") or is_action_type_eq(p, "aerial_attack") or is_action_eq(p, "propelled")
-end
-
 function is_frozen(p)
-  return p.frozen_timer > 0
-end
-
-function is_player_attacking(p)
-  return p.cap.is_player_attacking
+  return p.st_frozen_timer > 0
 end
 
 function is_limit_left(x, tollerance)
@@ -69,11 +45,35 @@ function is_round_state_eq(s)
   return combat_round_state == s
 end
 
+function is_timer_active(obj, timer, init_with)
+  obj[timer] = obj[timer] or init_with
+
+  if obj[timer] > 0 then
+    obj[timer] -= 1
+    return true
+  end
+
+  return false
+end
+
 function setup_new_round()
   foreach_player(function(p, p_id)
     define_player(p_id, p)
   end)
   reset_timers()
+end
+
+function update_frames_counter(p)
+  if not p.cap.is_animation_locked then
+    local prev, is_animation_complete = p.caf, false
+    p.caf += p.cap.is_reversing and -1 or 1
+
+    is_animation_complete = p.cap.is_reversing and p.caf <= 0 or p.caf > p.ca.fps * #p.ca.sprites
+
+    if is_animation_complete then
+      p.caf, p.cap.is_animation_complete = prev, true
+    end
+  end
 end
 
 function update_debug()

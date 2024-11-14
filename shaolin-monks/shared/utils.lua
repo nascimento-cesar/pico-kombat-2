@@ -29,7 +29,7 @@ function foreach_player(callback)
   end
 end
 
-function function_from_hash(keys, values, key)
+function function_lookup(keys, values, key)
   local f = string_to_hash(keys, values)[key]
   return f and f()
 end

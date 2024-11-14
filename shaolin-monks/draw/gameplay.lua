@@ -1,7 +1,7 @@
 function draw_gameplay()
-  cls(1)
+  cls()
   draw_stage()
-  function_from_hash("countdown,finished,finishing_move,new_player", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player }, combat_round_state)
+  function_lookup("countdown,finished,finishing_move,new_player", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player }, combat_round_state)
   draw_round_timer()
   draw_hp()
   draw_player(p1)
@@ -14,19 +14,7 @@ function draw_stage()
 end
 
 function draw_player(p)
-  local flip_body_x, flip_body_y, flip_head_x, flip_head_y, head_x_adjustment, head_y_adjustment, sprites, body_id, head_id, index, sprite = false, false, false, false, 0, 0, p.ca.sprites
-
-  if is_action_state_eq(p, "held") then
-    index = #sprites
-  else
-    index = flr(p.frames_counter / p.ca.fps) + 1
-
-    if is_action_state_eq(p, "released") then
-      index = #sprites - index + 1
-    end
-  end
-
-  sprite = sprites[index]
+  local flip_body_x, flip_body_y, flip_head_x, flip_head_y, head_x_adjustment, head_y_adjustment, sprite, body_id, head_id, index = false, false, false, false, 0, 0, p.ca.sprites[flr((p.caf - 1) / p.ca.fps) + 1]
 
   if type(sprite) == "table" then
     body_id, head_id, head_x_adjustment, head_y_adjustment, flip_body_x, flip_body_y, flip_head_x, flip_head_y = sprite[1], sprite[2], sprite[3] or 0, sprite[4] or 0, sprite[5], sprite[6], sprite[7], sprite[8]
@@ -80,10 +68,10 @@ function draw_body(p, id, flip_x, flip_y)
 end
 
 function draw_projectile(p)
-  local sprites, index = p.character.projectile_sprites, flr(p.projectile.frames_counter / p.character.projectile_fps) + 1
+  local sprites, index = p.character.projectile_sprites, flr(p.projectile.frames / p.character.projectile_fps) + 1
 
   if index > #sprites then
-    index, p.projectile.frames_counter = 1, 0
+    index, p.projectile.frames = 1, 0
   end
 
   shift_pal(p.character.projectile_pal_map)

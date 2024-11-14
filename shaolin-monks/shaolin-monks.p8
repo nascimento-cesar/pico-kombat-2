@@ -12,8 +12,11 @@ __lua__
 #include draw/next_combat.lua
 #include draw/start.lua
 #include update/character_selection.lua
-#include update/gameplay.lua
 #include update/gameplay/actions.lua
+#include update/gameplay/combat.lua
+#include update/gameplay/controls.lua
+#include update/gameplay/core.lua
+#include update/gameplay/movement.lua
 #include update/gameplay/special_attacks.lua
 #include update/next_combat.lua
 #include update/start.lua

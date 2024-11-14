@@ -1,41 +1,69 @@
-function perform_special_attack(p, action_name)
-  string_to_hash("fire_projectile,lk_bicycle_kick,lk_flying_kick", { fire_projectile, lk_bicycle_kick, lk_flying_kick })[action_name](p)
+function handle_special_attack(p)
+  string_to_hash("fire_projectile,lk_bicycle_kick,lk_flying_kick", { fire_projectile, lk_bicycle_kick, lk_flying_kick })[p.ca.handler](p)
+end
+
+function detect_special_attack(p)
+  for _, special_attack in pairs(p.character.special_attacks) do
+    local sequence, should_trigger = special_attack.sequence, false
+
+    if sub(sequence, 1, 1) == "h" and p.released_buttons then
+      local released_buttons, released_buttons_timer = unpack_split(p.released_buttons)
+      p.released_buttons, should_trigger = nil, released_buttons == sub(sequence, 3) and released_buttons_timer >= sub(sequence, 2)
+    else
+      should_trigger = sub(p.action_stack, #p.action_stack - #sequence + 1, #p.action_stack) == sequence
+    end
+
+    if should_trigger then
+      cleanup_action_stack(p, true)
+
+      return special_attack
+    end
+  end
 end
 
 function fire_projectile(p)
-  p.projectile = p.projectile or string_to_hash("frames_counter,x,y", { 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+  p.projectile = p.projectile or string_to_hash("frames,x,y", { 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+end
+
+function update_projectile(p)
+  if p.projectile then
+    local vs = get_vs(p)
+
+    p.projectile.x += projectile_speed * p.facing
+    p.projectile.frames += 1
+
+    if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
+      p.projectile = nil
+      deal_damage(p.ca, vs)
+      finish_action(p)
+    elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) then
+      p.projectile = nil
+      finish_action(p)
+    end
+  end
 end
 
 function lk_bicycle_kick(p)
   if p.cap.has_hit then
-    p.cap.hit_timer = p.cap.hit_timer or 30
-
-    if p.cap.hit_timer <= 0 then
-      finish_action(p)
-      start_action(get_vs(p), actions.flinch)
-      move_x(get_vs(p), -1, nil)
+    if is_timer_active(p.cap, "hit_timer", 30) then
+      move_x(p, offensive_speed / 2)
+      move_x(get_vs(p), -1)
     else
-      move_x(p, offensive_speed / 2, nil)
-      move_x(get_vs(p), -1, nil)
-      p.cap.hit_timer -= 1
+      finish_action(p)
+      finish_action(get_vs(p))
+      move_x(get_vs(p), -1)
     end
   else
-    shift_player_y(p, false, true)
-    move_x(p, offensive_speed, nil, true)
-    perform_action(
-      p, "attack", function()
-        p.cap.has_hit = true
-      end
-    )
+    move_x(p, offensive_speed)
+    attack(p)
   end
 end
 
 function lk_flying_kick(p)
-  shift_player_y(p, false, true)
-  move_x(p, offensive_speed, nil, true)
-  perform_action(
-    p, "attack", function()
-      finish_action(p)
-    end
-  )
+  if p.cap.has_hit then
+    finish_action(p)
+  else
+    move_x(p, offensive_speed)
+    attack(p)
+  end
 end
