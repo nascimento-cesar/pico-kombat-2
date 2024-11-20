@@ -1,6 +1,6 @@
 function process_inputs(p)
   local pressed_buttons, pressed_directionals, direction = get_pressed_inputs(p)
-  local pressed_chord, is_blocking = pressed_directionals .. pressed_buttons, pressed_buttons == "🅾️❎"
+  local pressed_chord, actions_map, is_blocking, action_name, command_to_record = pressed_directionals .. pressed_buttons, (p.ca.is_aerial and aerial_actions_map or ground_actions_map), pressed_buttons == "🅾️❎"
 
   if p.held_buttons then
     if p.held_buttons == pressed_buttons then
@@ -24,10 +24,20 @@ function process_inputs(p)
     p.input_detection_delay, p.previous_directionals = 0, pressed_directionals ~= "" and pressed_directionals or nil
   end
 
-  local action_name = actions_map[is_blocking and pressed_buttons or (p.held_buttons and pressed_directionals or pressed_chord)]
+  if is_blocking then
+    action_name = actions_map[pressed_buttons]
+  else
+    command_to_record = p.held_buttons and pressed_directionals or pressed_chord
+    action_name = actions_map[command_to_record]
 
-  if action_name then
-    record_action(p, p.held_buttons and pressed_directionals or pressed_chord)
+    if not action_name and not p.held_buttons then
+      command_to_record = pressed_buttons ~= "" and pressed_buttons or pressed_directionals
+      action_name = actions_map[command_to_record]
+    end
+  end
+
+  if action_name and command_to_record then
+    record_action(p, command_to_record)
   end
 
   setup_next_action(p, action_name, direction and { direction = direction })

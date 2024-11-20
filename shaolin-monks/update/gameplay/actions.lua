@@ -152,6 +152,10 @@ function setup_next_action(p, action_name, params, force)
     elseif p.ca == actions.walk then
       return start_action(p, actions.idle)
     end
+  elseif next_action and p.ca == actions.jump then
+    if next_action.is_aerial and next_action.is_attack then
+      return start_action(p, next_action, p.cap)
+    end
   end
 end
 
