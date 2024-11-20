@@ -1,6 +1,6 @@
-function finish_action(p)
-  p.cap.has_finished = true
-  start_action(p, actions[p.ca.complementary_action] or actions.idle)
+function finish_action(p, next_action, next_action_params)
+  p.cap.has_finished, next_action = true, next_action or (actions[p.ca.complementary_action] or actions.idle)
+  start_action(p, next_action, next_action_params)
 end
 
 function aerial_action(p)
@@ -125,6 +125,8 @@ function resolve_previous_action(p)
       return start_action(p, p.ca, p.cap)
     elseif p.ca.requires_forced_stop then
       return set_current_action_animation_lock(p, true)
+    elseif p.ca.is_aerial and p.ca.is_special_attack then
+      return finish_action(p, actions.jump, { is_landing = true, blocks_special_attacks = true })
     else
       return finish_action(p)
     end
@@ -152,8 +154,8 @@ function setup_next_action(p, action_name, params, force)
     elseif p.ca == actions.walk then
       return start_action(p, actions.idle)
     end
-  elseif next_action and p.ca == actions.jump then
-    if next_action.is_aerial and next_action.is_attack then
+  elseif p.ca == actions.jump and next_action and next_action.is_aerial then
+    if next_action.is_attack or (next_action.is_special_attack and not p.cap.blocks_special_attacks) then
       return start_action(p, next_action, p.cap)
     end
   end
