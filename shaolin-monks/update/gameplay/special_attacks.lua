@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,lk_bicycle_kick,lk_flying_kick", { fire_projectile, lk_bicycle_kick, lk_flying_kick })[p.ca.handler](p)
+  string_to_hash("fire_projectile,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p)
@@ -23,8 +23,11 @@ function detect_special_attack(p)
   end
 end
 
-function fire_projectile(p)
-  p.projectile = p.projectile or string_to_hash("action,frames,x,y", { p.ca, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+function fire_projectile(p, callback)
+  if not p.cap.has_fired_projectile then
+    p.projectile = p.projectile or string_to_hash("action,callback,frames,x,y", { p.ca, callback, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.cap.has_fired_projectile = true
+  end
 end
 
 function update_projectile(p)
@@ -35,7 +38,7 @@ function update_projectile(p)
     p.projectile.frames += 1
 
     if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
-      deal_damage(p.projectile.action, vs)
+      deal_damage(p.projectile.action, vs, p.projectile.callback)
       p.projectile = nil
     elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) then
       p.projectile = nil
@@ -66,4 +69,17 @@ function lk_flying_kick(p)
     move_x(p, offensive_speed)
     attack(p)
   end
+end
+
+function sz_freeze(p)
+  fire_projectile(
+    p, function(p)
+      if p.st_frozen_timer <= 0 then
+        p.st_frozen_timer = 60
+      else
+        p.st_frozen_timer = 0
+        get_vs(p).st_frozen_timer = 60
+      end
+    end
+  )
 end

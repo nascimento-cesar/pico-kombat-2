@@ -27,19 +27,25 @@ function check_defeat(p)
   end
 end
 
-function deal_damage(action, p)
+function deal_damage(action, p, callback)
   p.hp -= action.dmg
 
-  remove_temporary_conditions(p)
+  if action.reaction then
+    if p.ca.is_aerial and any_match("flinch,swept", action.reaction) then
+      setup_next_action(p, "thrown_lower", nil, true)
+    else
+      setup_next_action(p, action.reaction, nil, true)
+    end
 
-  if p.ca.is_aerial and not any_match("freeze,hook", action.name) then
-    setup_next_action(p, "thrown_lower", nil, true)
-  else
-    setup_next_action(p, action.reaction, nil, true)
+    remove_temporary_conditions(p)
   end
 
-  if action ~= actions.sweep then
+  if action.spills_blood then
     spill_blood(p)
+  end
+
+  if callback then
+    callback(p)
   end
 
   -- check_defeat(p)

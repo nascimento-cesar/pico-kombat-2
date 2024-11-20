@@ -55,13 +55,6 @@ function handle_action(p)
     if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
       move_x(p, -walk_speed)
     end
-  elseif handler == "frozen" then
-    if p.st_frozen_timer <= 0 then
-      p.st_frozen_timer = 60
-    else
-      p.st_frozen_timer = 0
-      setup_next_action(get_vs(p), "frozen", nil, true)
-    end
   elseif handler == "jump" then
     aerial_action(p)
   elseif handler == "jump_attack" then

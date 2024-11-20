@@ -16,6 +16,8 @@
 - [ ] support triggering release action in middle of another action like jumping and walking
 - [ ] kr and sk characters
 - [ ] add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
+- [ ] freeze the opponent in middle air while overlapping it causes stack overflow
+- [ ] cannot push a frozen enemy in middle air
 - [ ] pixel art stages
 - [ ] game over screen
 - [ ] next combat screen
