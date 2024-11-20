@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,kl_hat_toss,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_hat_toss, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p)
@@ -23,27 +23,48 @@ function detect_special_attack(p)
   end
 end
 
-function fire_projectile(p, callback)
+function fire_projectile(p, callback, collision_callback)
   if not p.cap.has_fired_projectile then
-    p.projectile = p.projectile or string_to_hash("action,callback,frames,x,y", { p.ca, callback, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("action,callback,collision_callback,frames,x,y", { p.ca, callback, collision_callback, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end
 
 function update_projectile(p)
   if p.projectile then
-    local vs = get_vs(p)
+    local vs, action = get_vs(p), p.projectile.action
 
     p.projectile.x += projectile_speed * p.facing
     p.projectile.frames += 1
 
+    if p.projectile.callback then
+      p.projectile.callback(p)
+    end
+
     if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
-      deal_damage(p.projectile.action, vs, p.projectile.callback)
+      deal_damage(action, vs, p.projectile.collision_callback)
       p.projectile = nil
     elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) then
       p.projectile = nil
     end
+
+    if not p.projectile and action.requires_forced_stop then
+      finish_action(p)
+    end
   end
+end
+
+function kl_hat_toss(p)
+  fire_projectile(
+    p, function(p)
+      if btn(⬆️, p.id) then
+        p.projectile.y_speed = -0.75
+      elseif btn(⬇️, p.id) then
+        p.projectile.y_speed = 0.75
+      end
+      p.projectile.y += p.projectile.y_speed or 0
+    end
+  )
 end
 
 function lk_bicycle_kick(p)
@@ -73,7 +94,7 @@ end
 
 function sz_freeze(p)
   fire_projectile(
-    p, function(p)
+    p, nil, function(p)
       if p.st_frozen_timer <= 0 then
         p.st_frozen_timer = 60
       else
