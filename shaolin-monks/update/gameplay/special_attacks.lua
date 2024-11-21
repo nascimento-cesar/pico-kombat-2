@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p)
@@ -40,6 +40,7 @@ function teleport(p)
       p.x = vs.x - sprite_w * vs.facing
       p.facing *= -1
       p.cap.has_teleported = true
+      fix_players_orientation()
     end
   else
     finish_action(p, actions.jump)
@@ -68,6 +69,10 @@ function update_projectile(p)
       finish_action(p)
     end
   end
+end
+
+function kl_diving_kick(p)
+  setup_next_action(p, "jump_kick", { direction = forward, is_landing = true, x_speed = offensive_speed }, true)
 end
 
 function kl_hat_toss(p)

@@ -37,7 +37,7 @@ function process_inputs(p)
     end
   end
 
-  if action_name and command_to_record then
+  if command_to_record then
     record_action(p, command_to_record)
   end
 
