@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,kl_hat_toss,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_hat_toss, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,kl_hat_toss,kl_spin,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_hat_toss, kl_spin, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p)
@@ -65,6 +65,23 @@ function kl_hat_toss(p)
       p.projectile.y += p.projectile.y_speed or 0
     end
   )
+end
+
+function kl_spin(p)
+  if is_timer_active(p.cap, "spin_timer", 30) then
+    attack(p)
+
+    if p.cap.spin_timer < 20 then
+      p.cap.boosts = p.cap.boosts or 0
+
+      if btnp(⬆️, p.id) and p.cap.boosts < 3 then
+        p.cap.spin_timer += 10
+        p.cap.boosts += 1
+      end
+    end
+  else
+    finish_action(p)
+  end
 end
 
 function lk_bicycle_kick(p)

@@ -25,6 +25,7 @@ function process_inputs(p)
   end
 
   if is_blocking then
+    command_to_record = pressed_directionals
     action_name = actions_map[pressed_buttons]
   else
     command_to_record = p.held_buttons and pressed_directionals or pressed_chord
