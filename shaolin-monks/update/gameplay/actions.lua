@@ -129,7 +129,7 @@ function resolve_previous_action(p)
 end
 
 function setup_next_action(p, action_name, params, force)
-  local params, next_action = params or {}, detect_special_attack(p) or actions[action_name]
+  local params, next_action = params or {}, actions[action_name] or p.character.special_attacks[action_name]
 
   if p.ca == next_action and p.ca.is_holdable and not p.cap.is_held then
     hold_current_action(p)
@@ -159,4 +159,8 @@ function start_action(p, next_action, params, keep_current_frame)
   p.cap.is_animation_complete = false
   shift_player_x(p, next_action.is_x_shiftable)
   shift_player_y(p, next_action.is_y_shiftable)
+
+  if next_action.is_special_attack then
+    cleanup_action_stack(p, true)
+  end
 end

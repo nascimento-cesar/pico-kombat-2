@@ -1,4 +1,4 @@
-function attack(p)
+function attack(p, callback)
   local vs, full_sprite_w = get_vs(p), sprite_w + 1
 
   if not p.cap.has_hit and has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w) then
@@ -8,8 +8,8 @@ function attack(p)
     else
       deal_damage(p.ca, vs)
 
-      if p.cap.callback then
-        p.cap.callback()
+      if callback then
+        callback(p)
       end
     end
   elseif p.ca.is_special_attack and (is_limit_left(p.x) or is_limit_right(p.x)) then

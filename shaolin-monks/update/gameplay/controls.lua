@@ -1,47 +1,48 @@
 function process_inputs(p)
   local pressed_buttons, pressed_directionals, direction = get_pressed_inputs(p)
-  local pressed_chord, actions_map, is_blocking, action_name, command_to_record = pressed_directionals .. pressed_buttons, (p.ca.is_aerial and aerial_actions_map or ground_actions_map), pressed_buttons == "🅾️❎"
+  local pressed_combination, is_blocking, action_name, input_candidate = pressed_directionals .. pressed_buttons, pressed_buttons == "🅾️❎"
 
-  if p.held_buttons then
-    if p.held_buttons == pressed_buttons then
-      p.held_buttons_timer += 1
-    else
-      release_held_buttons(p)
+  hold_or_release_inputs(p, pressed_buttons, pressed_directionals)
+
+  if pressed_combination ~= "" then
+    if is_blocking then
+      input_candidate = p.input_detection_delay <= 0 and pressed_directionals or ""
+      action_name = detect_special_attack(p, input_candidate) or "block"
     end
-  elseif pressed_buttons ~= "" then
-    if p.held_buttons_timer == 0 then
-      if pressed_buttons == p.previous_buttons or not p.previous_buttons then
-        p.held_buttons_timer += 1
-      else
-        p.held_buttons_timer, p.previous_buttons = 0, pressed_buttons
+
+    if not action_name then
+      if not p.held_buttons then
+        input_candidate = pressed_combination
+        action_name = get_action_from_input(p, input_candidate)
       end
-    else
-      p.held_buttons = pressed_buttons
+
+      if not action_name then
+        if not p.held_buttons then
+          input_candidate = pressed_buttons
+          action_name = get_action_from_input(p, input_candidate)
+        end
+
+        if not action_name then
+          input_candidate = pressed_directionals
+          action_name = get_action_from_input(p, input_candidate)
+
+          if not action_name and p.ca == actions.jump and pressed_directionals ~= "⬆️" then
+            record_action(p, pressed_directionals)
+          end
+        end
+      end
     end
   end
 
-  if pressed_directionals ~= p.previous_directionals then
-    p.input_detection_delay, p.previous_directionals = 0, pressed_directionals ~= "" and pressed_directionals or nil
-  end
-
-  if is_blocking then
-    command_to_record = pressed_directionals
-    action_name = actions_map[pressed_buttons]
-  else
-    command_to_record = p.held_buttons and pressed_directionals or pressed_chord
-    action_name = actions_map[command_to_record]
-
-    if not action_name and not p.held_buttons then
-      command_to_record = pressed_buttons ~= "" and pressed_buttons or pressed_directionals
-      action_name = actions_map[command_to_record]
-    end
-  end
-
-  if command_to_record then
-    record_action(p, command_to_record)
+  if action_name and input_candidate then
+    record_action(p, input_candidate)
   end
 
   setup_next_action(p, action_name, direction and { direction = direction })
+end
+
+function get_action_from_input(p, input_candidate)
+  return detect_special_attack(p, input_candidate) or (p.ca.is_aerial and aerial_actions_map or ground_actions_map)[input_candidate]
 end
 
 function get_pressed_inputs(p)
@@ -68,6 +69,30 @@ function get_pressed_inputs(p)
   end
 
   return pressed_buttons, pressed_directionals, direction
+end
+
+function hold_or_release_inputs(p, pressed_buttons, pressed_directionals)
+  if p.held_buttons then
+    if p.held_buttons == pressed_buttons then
+      p.held_buttons_timer += 1
+    else
+      release_held_buttons(p)
+    end
+  elseif pressed_buttons ~= "" then
+    if p.held_buttons_timer == 0 then
+      if pressed_buttons == p.previous_buttons or not p.previous_buttons then
+        p.held_buttons_timer += 1
+      else
+        p.held_buttons_timer, p.previous_buttons = 0, pressed_buttons
+      end
+    else
+      p.held_buttons = pressed_buttons
+    end
+  end
+
+  if pressed_directionals ~= p.previous_directionals then
+    p.input_detection_delay, p.previous_directionals = 0, pressed_directionals ~= "" and pressed_directionals or nil
+  end
 end
 
 function release_held_buttons(p)
