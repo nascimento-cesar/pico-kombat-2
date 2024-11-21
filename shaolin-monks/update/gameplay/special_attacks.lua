@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,kl_hat_toss,kl_spin,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_hat_toss, kl_spin, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p)
@@ -27,6 +27,22 @@ function fire_projectile(p, callback, collision_callback)
   if not p.cap.has_fired_projectile then
     p.projectile = p.projectile or string_to_hash("action,callback,collision_callback,frames,x,y", { p.ca, callback, collision_callback, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
+  end
+end
+
+function teleport(p)
+  local vs = get_vs(p)
+
+  if not p.cap.has_teleported then
+    if p.y < y_bottom_limit + (sprite_h * 2) + stroke_width then
+      move_y(p, jump_speed)
+    else
+      p.x = vs.x - sprite_w * vs.facing
+      p.facing *= -1
+      p.cap.has_teleported = true
+    end
+  else
+    finish_action(p, actions.jump)
   end
 end
 
@@ -82,6 +98,10 @@ function kl_spin(p)
   else
     finish_action(p)
   end
+end
+
+function kl_teleport(p)
+  teleport(p)
 end
 
 function lk_bicycle_kick(p)
