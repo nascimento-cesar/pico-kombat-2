@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,jc_high_green_bolt,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -60,7 +60,7 @@ function update_projectile(p)
     if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
       deal_damage(action, vs, p.projectile.collision_callback)
       p.projectile = nil
-    elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) then
+    elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) or (p.projectile.y > y_bottom_limit + sprite_h * 2) then
       p.projectile = nil
     end
 
@@ -68,6 +68,21 @@ function update_projectile(p)
       finish_action(p)
     end
   end
+end
+
+function jc_high_green_bolt(p)
+  fire_projectile(
+    p, function(p)
+      if is_timer_active(p.projectile, "up_timer", sprite_h) and not p.projectile.top_height_reached then
+        p.projectile.y -= 2
+      else
+        p.projectile.top_height_reached = true
+      end
+      if p.projectile.top_height_reached then
+        p.projectile.y += 2
+      end
+    end
+  )
 end
 
 function kl_diving_kick(p)

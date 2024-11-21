@@ -68,6 +68,10 @@ function get_pressed_inputs(p)
     end
   end
 
+  if pressed_directionals == "➡️⬇️" or pressed_directionals == "⬅️⬇️" then
+    pressed_directionals = "⬇️"
+  end
+
   return pressed_buttons, pressed_directionals, direction
 end
 
