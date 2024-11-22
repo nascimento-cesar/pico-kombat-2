@@ -22,8 +22,8 @@ function init_player(p)
   p.has_joined = true
 end
 
-function is_frozen(p)
-  return p.st_frozen_timer > 0
+function is_st_eq(p, st)
+  return p.st_timers[st] > 0
 end
 
 function is_limit_left(x, tollerance)

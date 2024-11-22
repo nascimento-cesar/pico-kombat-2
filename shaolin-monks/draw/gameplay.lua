@@ -26,9 +26,11 @@ function draw_player(p)
     flip_body_x, flip_head_x = not flip_body_x, not flip_head_x
   end
 
-  draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
-  draw_head(p, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
-  draw_body(p, body_id, flip_body_x, flip_body_y)
+  if not is_st_eq(p, "invisible") then
+    draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
+    draw_head(p, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
+    draw_body(p, body_id, flip_body_x, flip_body_y)
+  end
 
   if p.projectile then
     draw_projectile(p)
@@ -56,13 +58,13 @@ function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjus
 end
 
 function draw_head(p, id, x_adjustment, y_adjustment, flip_x, flip_y)
-  shift_pal(is_frozen(p) and frozen_head_pal_map or p.character.head_pal_map)
+  shift_pal(is_st_eq(p, "frozen") and frozen_head_pal_map or p.character.head_pal_map)
   spr(p.character.head_sprites[id], p.x + x_adjustment * p.facing, p.y + y_adjustment, 1, 1, flip_x, flip_y)
   pal()
 end
 
 function draw_body(p, id, flip_x, flip_y)
-  shift_pal(is_frozen(p) and frozen_body_pal_map or p.character.body_pal_map)
+  shift_pal(is_st_eq(p, "frozen") and frozen_body_pal_map or p.character.body_pal_map)
   spr(id, p.x, p.y, 1, 1, flip_x, flip_y)
   pal()
 end

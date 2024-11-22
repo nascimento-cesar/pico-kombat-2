@@ -84,10 +84,11 @@ function reset_timers()
 end
 
 function update_player(p)
-  if is_timer_active(p, "st_frozen_timer") then
+  if is_timer_active(p.st_timers, "frozen") then
     return
   end
 
+  is_timer_active(p.st_timers, "invisible")
   update_frames_counter(p)
   resolve_previous_action(p)
 

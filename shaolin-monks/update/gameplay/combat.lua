@@ -65,7 +65,7 @@ function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)
 end
 
 function remove_temporary_conditions(p)
-  p.st_frozen_timer = 0
+  p.st_timers.frozen = 0
 end
 
 function spill_blood(p)

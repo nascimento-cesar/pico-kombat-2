@@ -13,13 +13,13 @@
 - [ ] bug when special attack vs at the edge of the screen
 - [x] sometimes hitting an opponent doesn't make the special action end
 - [ ] finishing the round with a special attack does not end the action
-- [ ] support triggering release action in middle of another action like jumping and walking
+- [x] support triggering release action in middle of another action like jumping and walking
 - [ ] kr and sk characters
 - [ ] add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
 - [ ] freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
 - [ ] fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] hit an opponent teleporting makes it stops inside the ground
-- [ ] move sz_freeeze_timer to cap
+- [x] move sz_freeeze_timer to cap
 - [ ] cannot push a frozen enemy in middle air
 - [ ] pixel art stages
 - [ ] game over screen

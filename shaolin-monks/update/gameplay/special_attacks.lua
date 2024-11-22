@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,rp_force_ball,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, rp_force_ball, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -194,14 +194,20 @@ function rp_force_ball(p)
   )
 end
 
+function rp_invisibility(p)
+  if not is_timer_active(p.cap, "action_timer", 10) then
+    p.st_timers.invisible = 300
+  end
+end
+
 function sz_freeze(p)
   fire_projectile(
     p, nil, function(p)
-      if p.st_frozen_timer <= 0 then
-        p.st_frozen_timer = 60
+      if not is_st_eq(p, "frozen") then
+        p.st_timers.frozen = 60
       else
-        p.st_frozen_timer = 0
-        get_vs(p).st_frozen_timer = 60
+        p.st_timers.frozen = 0
+        get_vs(p).st_timers.frozen = 60
       end
     end
   )
