@@ -19,6 +19,7 @@
 - [ ] freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
 - [ ] fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] hit an opponent teleporting makes it stops inside the ground
+- [ ] move sz_freeeze_timer to cap
 - [ ] cannot push a frozen enemy in middle air
 - [ ] pixel art stages
 - [ ] game over screen

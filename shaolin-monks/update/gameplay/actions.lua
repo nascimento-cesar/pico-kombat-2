@@ -31,6 +31,7 @@ function aerial_action(p)
     end
 
     if p.y >= y_bottom_limit then
+      p.y = y_bottom_limit
       finish_action(p)
     end
   else

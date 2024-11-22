@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -73,13 +73,11 @@ end
 function jc_high_green_bolt(p)
   fire_projectile(
     p, function(p)
-      if is_timer_active(p.projectile, "action_timer", 10) and not p.projectile.top_height_reached then
-        p.projectile.y /= 1.05
-      else
-        p.projectile.top_height_reached = true
-      end
       if p.projectile.top_height_reached then
         p.projectile.y *= 1.05
+      else
+        p.projectile.y /= 1.05
+        p.projectile.top_height_reached = p.projectile.y <= y_upper_limit
       end
     end
   )
@@ -105,6 +103,18 @@ function jc_shadow_kick(p)
   end
 end
 
+function jc_uppercut(p)
+  if p.cap.top_height_reached then
+    if not is_timer_active(p.cap, "action_timer", 3) then
+      finish_action(p, actions.jump)
+    end
+  else
+    move_x(p, 1)
+    move_y(p, -offensive_speed)
+    p.cap.top_height_reached = p.y <= y_upper_limit
+  end
+end
+
 function kl_diving_kick(p)
   setup_next_action(p, "jump_kick", { direction = forward, is_landing = true, x_speed = offensive_speed }, true)
 end
@@ -113,11 +123,10 @@ function kl_hat_toss(p)
   fire_projectile(
     p, function(p)
       if btn(⬆️, p.id) then
-        p.projectile.y_speed = -0.75
+        p.projectile.y -= 0.75
       elseif btn(⬇️, p.id) then
-        p.projectile.y_speed = 0.75
+        p.projectile.y += 0.75
       end
-      p.projectile.y += p.projectile.y_speed or 0
     end
   )
 end
