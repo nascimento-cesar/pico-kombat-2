@@ -72,11 +72,15 @@ function handle_action(p)
     if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
       move_x(p, -walk_speed)
     end
-  elseif handler == "thrown_lower" then
+  elseif handler == "thrown_backward" then
     p.cap.direction = backward
     p.cap.is_thrown_lower = true
     aerial_action(p)
-  elseif handler == "thrown_higher" then
+  elseif handler == "thrown_forward" then
+    p.cap.direction = forward
+    p.cap.is_thrown_lower = true
+    aerial_action(p)
+  elseif handler == "thrown_up" then
     p.cap.direction = backward
     aerial_action(p)
   elseif handler == "walk" then

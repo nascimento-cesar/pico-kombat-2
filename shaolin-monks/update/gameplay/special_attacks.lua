@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -26,6 +26,18 @@ function fire_projectile(p, callback, collision_callback)
   if not p.cap.has_fired_projectile then
     p.projectile = p.projectile or string_to_hash("action,callback,collision_callback,frames,x,y", { p.ca, callback, collision_callback, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
+  end
+end
+
+function slide(p)
+  if is_timer_active(p.cap, "action_timer", 15) then
+    attack(p)
+
+    if p.cap.action_timer > 8 then
+      move_x(p, offensive_speed)
+    end
+  else
+    finish_action(p)
   end
 end
 
@@ -92,15 +104,7 @@ function jc_nut_cracker(p)
 end
 
 function jc_shadow_kick(p)
-  if is_timer_active(p.cap, "action_timer", 15) then
-    attack(p)
-
-    if p.cap.action_timer > 8 then
-      move_x(p, offensive_speed)
-    end
-  else
-    finish_action(p)
-  end
+  slide(p)
 end
 
 function jc_uppercut(p)

@@ -32,7 +32,7 @@ function deal_damage(action, p, callback)
 
   if action.reaction then
     if p.ca.is_aerial and any_match("flinch,swept", action.reaction) then
-      setup_next_action(p, "thrown_lower", nil, true)
+      setup_next_action(p, "thrown_backward", nil, true)
     else
       setup_next_action(p, action.reaction, nil, true)
     end
