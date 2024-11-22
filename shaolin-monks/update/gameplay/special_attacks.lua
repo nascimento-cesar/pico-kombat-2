@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,rp_force_ball,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, rp_force_ball, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -22,10 +22,36 @@ function detect_special_attack(p, next_input)
   end
 end
 
+function destroy_projectile(p)
+  p.projectile = nil
+end
+
 function fire_projectile(p, callback, collision_callback)
   if not p.cap.has_fired_projectile then
     p.projectile = p.projectile or string_to_hash("action,callback,collision_callback,frames,x,y", { p.ca, callback, collision_callback, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
+  end
+end
+
+function update_projectile(p)
+  if p.projectile then
+    local vs, action = get_vs(p), p.projectile.action
+
+    p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.facing
+    p.projectile.frames += 1
+
+    if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
+      deal_damage(action, vs, p.projectile.collision_callback)
+      destroy_projectile(p)
+    elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) or (p.projectile.y > y_bottom_limit + sprite_h * 2) then
+      destroy_projectile(p)
+    elseif p.projectile.callback then
+      p.projectile.callback(p)
+    end
+
+    if not p.projectile and action.requires_forced_stop then
+      finish_action(p)
+    end
   end
 end
 
@@ -55,30 +81,6 @@ function teleport(p)
     end
   else
     finish_action(p, actions.jump)
-  end
-end
-
-function update_projectile(p)
-  if p.projectile then
-    local vs, action = get_vs(p), p.projectile.action
-
-    p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.facing
-    p.projectile.frames += 1
-
-    if p.projectile.callback then
-      p.projectile.callback(p)
-    end
-
-    if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
-      deal_damage(action, vs, p.projectile.collision_callback)
-      p.projectile = nil
-    elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) or (p.projectile.y > y_bottom_limit + sprite_h * 2) then
-      p.projectile = nil
-    end
-
-    if not p.projectile and action.requires_forced_stop then
-      finish_action(p)
-    end
   end
 end
 
@@ -179,6 +181,17 @@ function lk_flying_kick(p)
     move_x(p, offensive_speed)
     attack(p)
   end
+end
+
+function rp_force_ball(p)
+  fire_projectile(
+    p, function(p)
+      p.projectile.x_speed = 0.5
+      if not is_timer_active(p.projectile, "projectile_timer", 90) then
+        destroy_projectile(p)
+      end
+    end
+  )
 end
 
 function sz_freeze(p)
