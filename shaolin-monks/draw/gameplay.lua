@@ -41,7 +41,7 @@ function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjus
   local pal_string, body_x, body_y, head_x, head_y = "p", p.x, p.y, p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment
 
   for i in all(split "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f") do
-    pal_string = pal_string .. i .. "1"
+    pal_string = pal_string .. i .. "5"
   end
 
   shift_pal(pal_string)

@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,jc_high_green_bolt,jc_shadow_kick,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, jc_shadow_kick, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -73,7 +73,7 @@ end
 function jc_high_green_bolt(p)
   fire_projectile(
     p, function(p)
-      if is_timer_active(p.projectile, "up_timer", 10) and not p.projectile.top_height_reached then
+      if is_timer_active(p.projectile, "action_timer", 10) and not p.projectile.top_height_reached then
         p.projectile.y /= 1.05
       else
         p.projectile.top_height_reached = true
@@ -85,11 +85,19 @@ function jc_high_green_bolt(p)
   )
 end
 
+function jc_nut_cracker(p)
+  if is_timer_active(p.cap, "action_timer", 15) then
+    attack(p)
+  else
+    finish_action(p)
+  end
+end
+
 function jc_shadow_kick(p)
-  if is_timer_active(p.cap, "kick_timer", 15) then
+  if is_timer_active(p.cap, "action_timer", 15) then
     attack(p)
 
-    if p.cap.kick_timer > 8 then
+    if p.cap.action_timer > 8 then
       move_x(p, offensive_speed)
     end
   else
@@ -115,14 +123,14 @@ function kl_hat_toss(p)
 end
 
 function kl_spin(p)
-  if is_timer_active(p.cap, "spin_timer", 30) then
+  if is_timer_active(p.cap, "action_timer", 30) then
     attack(p)
 
-    if p.cap.spin_timer < 20 then
+    if p.cap.action_timer < 20 then
       p.cap.boosts = p.cap.boosts or 0
 
       if btnp(⬆️, p.id) and p.cap.boosts < 3 then
-        p.cap.spin_timer += 10
+        p.cap.action_timer += 10
         p.cap.boosts += 1
       end
     end
@@ -137,7 +145,7 @@ end
 
 function lk_bicycle_kick(p)
   if p.cap.has_hit then
-    if is_timer_active(p.cap, "hit_timer", 30) then
+    if is_timer_active(p.cap, "action_timer", 30) then
       move_x(p, offensive_speed / 2)
       move_x(get_vs(p), -1)
     else

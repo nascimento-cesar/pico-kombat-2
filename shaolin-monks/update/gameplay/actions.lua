@@ -1,6 +1,10 @@
 function finish_action(p, next_action, next_action_params)
-  p.cap.has_finished, next_action = true, next_action or (actions[p.ca.complementary_action] or actions.idle)
-  start_action(p, next_action, next_action_params)
+  p.cap.has_finished = true
+  set_current_action_animation_lock(p, false)
+
+  if not p.ca.is_reversible or p.cap.is_reversed then
+    start_action(p, next_action or (actions[p.ca.complementary_action] or actions.idle), next_action_params)
+  end
 end
 
 function aerial_action(p)
@@ -59,6 +63,14 @@ function handle_action(p)
     aerial_action(p)
   elseif handler == "jump_attack" then
     aerial_action(p)
+  elseif handler == "ouch" then
+    if not is_timer_active(p.cap, "reaction_timer", 30) then
+      finish_action(p)
+    end
+  elseif handler == "swept" then
+    if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
+      move_x(p, -walk_speed)
+    end
   elseif handler == "thrown_lower" then
     p.cap.direction = backward
     p.cap.is_thrown_lower = true
@@ -66,10 +78,6 @@ function handle_action(p)
   elseif handler == "thrown_higher" then
     p.cap.direction = backward
     aerial_action(p)
-  elseif handler == "swept" then
-    if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
-      move_x(p, -walk_speed)
-    end
   elseif handler == "walk" then
     move_x(p, walk_speed * p.cap.direction)
   end
@@ -99,11 +107,6 @@ function release_current_action(p)
   p.cap.is_released = true
 end
 
-function reverse_current_action(p)
-  p.cap.is_reversing = true
-  set_current_action_animation_lock(p, false)
-end
-
 function set_current_action_animation_lock(p, lock)
   p.cap.is_animation_locked = lock
 end
@@ -112,15 +115,11 @@ function resolve_previous_action(p)
   if p.cap.is_animation_complete and not p.cap.has_finished then
     if p.cap.is_held then
       return set_current_action_animation_lock(p, true)
-    elseif p.ca.is_reversible and not p.cap.is_reversing then
-      return reverse_current_action(p)
     elseif p.ca.is_resetable then
       return start_action(p, p.ca, p.cap)
-    elseif p.ca.requires_forced_stop then
-      return set_current_action_animation_lock(p, true)
     elseif p.ca.is_aerial and p.ca.is_special_attack then
       return finish_action(p, actions.jump, { is_landing = true, blocks_special_attacks = true })
-    else
+    elseif not p.ca.requires_forced_stop then
       return finish_action(p)
     end
   elseif p.cap.is_released then
@@ -159,6 +158,7 @@ function start_action(p, next_action, params, keep_current_frame)
   p.cap.is_animation_complete = false
   shift_player_x(p, next_action.is_x_shiftable)
   shift_player_y(p, next_action.is_y_shiftable)
+  set_current_action_animation_lock(p, false)
 
   if next_action.is_special_attack then
     cleanup_action_stack(p, true)

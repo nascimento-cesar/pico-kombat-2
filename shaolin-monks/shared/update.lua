@@ -71,7 +71,21 @@ function update_frames_counter(p)
     is_animation_complete = p.cap.is_reversing and p.caf <= 0 or p.caf > p.ca.fps * #p.ca.sprites
 
     if is_animation_complete then
-      p.caf, p.cap.is_animation_complete = prev, true
+      p.caf = prev
+
+      if p.ca.requires_forced_stop and not p.cap.is_reversing then
+        set_current_action_animation_lock(p, true)
+      end
+
+      if p.ca.is_reversible and not p.cap.is_reversing then
+        if p.ca.name == "nut_cracker" then
+          debug.c1 = true
+        end
+
+        p.cap.is_reversing = true
+      else
+        p.cap.is_animation_complete, p.cap.is_reversed = true, p.cap.is_reversing
+      end
     end
   end
 end

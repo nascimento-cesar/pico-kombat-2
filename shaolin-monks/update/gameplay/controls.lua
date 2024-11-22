@@ -5,7 +5,7 @@ function process_inputs(p)
   hold_or_release_inputs(p, pressed_buttons, pressed_directionals)
 
   if pressed_combination ~= "" then
-    if is_blocking then
+    if is_blocking and p.held_buttons then
       input_candidate = p.input_detection_delay <= 0 and pressed_directionals or ""
       action_name = detect_special_attack(p, input_candidate) or "block"
     end
@@ -26,7 +26,7 @@ function process_inputs(p)
           input_candidate = pressed_directionals
           action_name = get_action_from_input(p, input_candidate)
 
-          if not action_name and p.ca == actions.jump and pressed_directionals ~= "⬆️" then
+          if not action_name and p.ca == actions.jump then
             record_action(p, pressed_directionals)
           end
         end
@@ -59,6 +59,10 @@ function get_pressed_inputs(p)
 
         if p.facing == backward then
           k = k == "⬅️" and "➡️" or (k == "➡️" and "⬅️" or k)
+        end
+
+        if k == "⬆️" and p.ca.is_aerial then
+          k = ""
         end
 
         pressed_directionals = pressed_directionals .. k
