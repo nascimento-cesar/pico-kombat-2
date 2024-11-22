@@ -78,10 +78,6 @@ function update_frames_counter(p)
       end
 
       if p.ca.is_reversible and not p.cap.is_reversing then
-        if p.ca.name == "nut_cracker" then
-          debug.c1 = true
-        end
-
         p.cap.is_reversing = true
       else
         p.cap.is_animation_complete, p.cap.is_reversed = true, p.cap.is_reversing

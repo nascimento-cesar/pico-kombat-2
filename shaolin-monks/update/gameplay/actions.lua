@@ -127,6 +127,8 @@ function resolve_previous_action(p)
     elseif not p.ca.requires_forced_stop then
       return finish_action(p)
     end
+  elseif p.cap.is_reversing and p.cap.is_held then
+    return set_current_action_animation_lock(p, true)
   elseif p.cap.is_released then
     return set_current_action_animation_lock(p, false)
   end
