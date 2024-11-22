@@ -1,5 +1,5 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,jc_high_green_bolt,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
+  string_to_hash("fire_projectile,jc_high_green_bolt,jc_shadow_kick,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,sz_freeze", { fire_projectile, jc_high_green_bolt, jc_shadow_kick, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, sz_freeze })[p.ca.handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -83,6 +83,18 @@ function jc_high_green_bolt(p)
       end
     end
   )
+end
+
+function jc_shadow_kick(p)
+  if is_timer_active(p.cap, "kick_timer", 15) then
+    attack(p)
+
+    if p.cap.kick_timer > 8 then
+      move_x(p, offensive_speed)
+    end
+  else
+    finish_action(p)
+  end
 end
 
 function kl_diving_kick(p)
