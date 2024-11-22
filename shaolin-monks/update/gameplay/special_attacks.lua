@@ -50,7 +50,7 @@ function update_projectile(p)
   if p.projectile then
     local vs, action = get_vs(p), p.projectile.action
 
-    p.projectile.x += projectile_speed * p.facing
+    p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.facing
     p.projectile.frames += 1
 
     if p.projectile.callback then
@@ -73,13 +73,13 @@ end
 function jc_high_green_bolt(p)
   fire_projectile(
     p, function(p)
-      if is_timer_active(p.projectile, "up_timer", sprite_h) and not p.projectile.top_height_reached then
-        p.projectile.y -= 2
+      if is_timer_active(p.projectile, "up_timer", 10) and not p.projectile.top_height_reached then
+        p.projectile.y /= 1.05
       else
         p.projectile.top_height_reached = true
       end
       if p.projectile.top_height_reached then
-        p.projectile.y += 2
+        p.projectile.y *= 1.05
       end
     end
   )
