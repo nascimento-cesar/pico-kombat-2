@@ -20,6 +20,8 @@
 - [ ] fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] hit an opponent teleporting makes it stops inside the ground
 - [x] move sz_freeeze_timer to cap
+- [ ] fix morph kn bl+bl+bl
+- [ ] fix morph ml hold button
 - [ ] cannot push a frozen enemy in middle air
 - [ ] pixel art stages
 - [ ] game over screen

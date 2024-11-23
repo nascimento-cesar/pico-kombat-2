@@ -84,11 +84,11 @@ function reset_timers()
 end
 
 function update_player(p)
-  if is_timer_active(p.st_timers, "frozen") then
+  if is_st_eq(p, "frozen") then
     return
   end
 
-  is_timer_active(p.st_timers, "invisible")
+  update_st_timers(p)
   update_frames_counter(p)
   resolve_previous_action(p)
 
@@ -108,5 +108,14 @@ function update_player(p)
 
   if p.has_joined then
     cleanup_action_stack(p)
+  end
+end
+
+function update_st_timers(p)
+  is_timer_active(p.st_timers, "frozen")
+  is_timer_active(p.st_timers, "invisible")
+
+  if not is_timer_active(p.st_timers, "morphed") then
+    p.character = characters[6]
   end
 end

@@ -1,5 +1,11 @@
 function handle_special_attack(p)
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,st_morph_lk,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, st_morph_lk, sz_freeze })[p.ca.handler](p)
+  local handler, params = unpack_split(p.ca.handler, "#")
+
+  if handler == "st_morph" then
+    return st_morph(p, params)
+  end
+
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -201,12 +207,10 @@ function rp_invisibility(p)
 end
 
 function st_morph(p, id)
-  -- continuar daqui
-  p.character = characters[id]
-end
-
-function st_morph_lk(p)
-  st_morph(p, 1)
+  if not is_st_eq(p, "morphed") then
+    p.st_timers.morphed = 300
+    p.character = characters[tonum(id)]
+  end
 end
 
 function sz_freeze(p)
