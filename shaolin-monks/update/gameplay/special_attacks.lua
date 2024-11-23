@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -164,6 +164,19 @@ function kl_teleport(p)
   teleport(p)
 end
 
+function kn_flying_punch(p)
+  if p.cap.top_height_reached then
+    if is_timer_active(p.cap, "action_timer", 15) then
+      move_x(p, offensive_speed * 1.5)
+    else
+      finish_action(p, actions.jump)
+    end
+  else
+    move_y(p, -offensive_speed * 1.5)
+    p.cap.top_height_reached = p.y <= y_upper_limit
+  end
+end
+
 function lk_bicycle_kick(p)
   if p.cap.has_hit then
     if is_timer_active(p.cap, "action_timer", 30) then
@@ -208,6 +221,7 @@ end
 
 function st_morph(p, id)
   if not is_st_eq(p, "morphed") then
+    p.is_morphed = true
     p.st_timers.morphed = 300
     p.character = characters[tonum(id)]
   end

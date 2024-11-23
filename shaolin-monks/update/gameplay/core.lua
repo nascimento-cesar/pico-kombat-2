@@ -115,7 +115,7 @@ function update_st_timers(p)
   is_timer_active(p.st_timers, "frozen")
   is_timer_active(p.st_timers, "invisible")
 
-  if not is_timer_active(p.st_timers, "morphed") then
+  if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
     p.character = characters[6]
   end
 end
