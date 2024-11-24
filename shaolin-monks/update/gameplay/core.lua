@@ -105,6 +105,10 @@ function update_player(p)
     handle_action(p)
   end
 
+  if p.cap.reaction_callback then
+    p.cap.reaction_callback(p)
+  end
+
   update_projectile(p)
 
   if p.has_joined then

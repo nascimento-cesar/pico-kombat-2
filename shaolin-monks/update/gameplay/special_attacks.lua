@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -145,6 +145,27 @@ function jc_uppercut(p)
   end
 end
 
+function jx_ground_pound(p)
+  if is_timer_active(p.cap, "action_timer", 15) then
+    attack(
+      p, function(p)
+        local vs = get_vs(p)
+        if not vs.is_paralyzed then
+          vs.st_timers.paralyzed, vs.is_paralyzed = 15, true
+        end
+        vs.cap.reaction_callback = function(p)
+          move_x(p, -1)
+        end
+      end,
+      function(p)
+        return get_vs(p).y == y_bottom_limit
+      end
+    )
+  else
+    finish_action(p)
+  end
+end
+
 function kl_diving_kick(p)
   setup_next_action(p, "jump_kick", { direction = forward, is_landing = true, x_speed = offensive_speed }, true)
 end
@@ -190,8 +211,10 @@ function kn_fan_lift(p)
       local vs = get_vs(p)
       if not vs.is_paralyzed then
         vs.st_timers.paralyzed, vs.is_paralyzed = 60, true
-        shift_player_x(vs, -1)
-        shift_player_y(vs, -1)
+        vs.cap.reaction_callback = function(p)
+          shift_player_x(vs, -1)
+          shift_player_y(vs, -1)
+        end
       end
     end
   )
