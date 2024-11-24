@@ -150,11 +150,11 @@ function jx_ground_pound(p)
     attack(
       p, function(p)
         local vs = get_vs(p)
-        if not vs.is_paralyzed then
-          vs.st_timers.paralyzed, vs.is_paralyzed = 15, true
-        end
         vs.cap.reaction_callback = function(p)
           move_x(p, -1)
+          if not is_timer_active(p.cap, "reaction_timer", 15) then
+            finish_action(p)
+          end
         end
       end,
       function(p)
@@ -209,11 +209,12 @@ function kn_fan_lift(p)
       p.projectile.x_speed = 0
     end, nil, function(p)
       local vs = get_vs(p)
-      if not vs.is_paralyzed then
-        vs.st_timers.paralyzed, vs.is_paralyzed = 60, true
-        vs.cap.reaction_callback = function(p)
-          shift_player_x(vs, -1)
-          shift_player_y(vs, -1)
+      vs.cap.reaction_callback = function(p)
+        if not is_timer_active(p.cap, "reaction_timer", 60) then
+          finish_action(p, actions.fall)
+        elseif p.cap.reaction_timer > 50 then
+          move_x(vs, -1)
+          move_y(vs, -1)
         end
       end
     end

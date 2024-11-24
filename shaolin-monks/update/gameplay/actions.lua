@@ -11,7 +11,7 @@ function aerial_action(p)
   local direction, vs, is_thrown_lower = p.cap.direction, get_vs(p), p.cap.is_thrown_lower
   local x_speed, is_turn_around_jump = p.cap.x_speed or ((is_thrown_lower and offensive_speed or jump_speed) * (direction or 0) / 2), p.cap.is_turn_around_jump
 
-  if p.cap.is_landing then
+  if p.cap.is_landing or p.ca == actions.fall then
     if not is_thrown_lower or (is_thrown_lower and not is_timer_active(p.cap, "air_hold_frames", 4)) then
       move_y(p, jump_speed)
     end
@@ -56,6 +56,8 @@ function handle_action(p)
 
   if handler == "attack" then
     attack(p)
+  elseif handler == "fall" then
+    aerial_action(p)
   elseif handler == "flinch" then
     if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
       move_x(p, -walk_speed)
