@@ -27,7 +27,7 @@ function check_defeat(p)
   end
 end
 
-function deal_damage(action, p, callback)
+function deal_damage(action, p)
   p.hp -= action.dmg
 
   if action.reaction then
@@ -42,10 +42,6 @@ function deal_damage(action, p, callback)
 
   if action.spills_blood then
     spill_blood(p)
-  end
-
-  if callback then
-    callback(p)
   end
 
   -- check_defeat(p)

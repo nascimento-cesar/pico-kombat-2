@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -32,9 +32,9 @@ function destroy_projectile(p)
   p.projectile = nil
 end
 
-function fire_projectile(p, callback, collision_callback)
+function fire_projectile(p, timer, before_callback, after_callback, collision_callback)
   if not p.cap.has_fired_projectile then
-    p.projectile = p.projectile or string_to_hash("action,callback,collision_callback,frames,x,y", { p.ca, callback, collision_callback, 0, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,timer,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, timer, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end
@@ -43,19 +43,36 @@ function update_projectile(p)
   if p.projectile then
     local vs, action = get_vs(p), p.projectile.action
 
+    if p.projectile.before_callback then
+      p.projectile.before_callback(p)
+    end
+
     p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.facing
     p.projectile.frames += 1
 
     if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
-      deal_damage(action, vs, p.projectile.collision_callback)
-      destroy_projectile(p)
+      deal_damage(action, vs)
+
+      if p.projectile.collision_callback then
+        p.projectile.collision_callback(p)
+      else
+        destroy_projectile(p)
+      end
     elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) or (p.projectile.y > y_bottom_limit + sprite_h * 2) then
       destroy_projectile(p)
-    elseif p.projectile.callback then
-      p.projectile.callback(p)
     end
 
-    if not p.projectile and action.requires_forced_stop then
+    if p.projectile then
+      if p.projectile.after_callback then
+        p.projectile.after_callback(p)
+      end
+
+      if p.projectile.timer and not is_timer_active(p.projectile, "timer") then
+        destroy_projectile(p)
+      end
+    end
+
+    if not p.projectile and p.ca.requires_forced_stop then
       finish_action(p)
     end
   end
@@ -92,7 +109,7 @@ end
 
 function jc_high_green_bolt(p)
   fire_projectile(
-    p, function(p)
+    p, nil, function(p)
       if p.projectile.top_height_reached then
         p.projectile.y *= 1.05
       else
@@ -121,6 +138,7 @@ function jc_uppercut(p)
       finish_action(p, actions.jump)
     end
   else
+    attack(p)
     move_x(p, 1)
     move_y(p, -offensive_speed)
     p.cap.top_height_reached = p.y <= y_upper_limit
@@ -133,7 +151,7 @@ end
 
 function kl_hat_toss(p)
   fire_projectile(
-    p, function(p)
+    p, nil, function(p)
       if btn(⬆️, p.id) then
         p.projectile.y -= 0.75
       elseif btn(⬇️, p.id) then
@@ -164,16 +182,37 @@ function kl_teleport(p)
   teleport(p)
 end
 
-function kn_flying_punch(p)
-  if p.cap.top_height_reached then
-    if is_timer_active(p.cap, "action_timer", 15) then
-      move_x(p, offensive_speed * 1.5)
-    else
-      finish_action(p, actions.jump)
+function kn_fan_lift(p)
+  fire_projectile(
+    p, 30, function(p)
+      p.projectile.x_speed = 0
+    end, nil, function(p)
+      local vs = get_vs(p)
+      if not vs.is_paralyzed then
+        vs.st_timers.paralyzed, vs.is_paralyzed = 60, true
+        shift_player_x(vs, -1)
+        shift_player_y(vs, -1)
+      end
     end
+  )
+end
+
+function kn_flying_punch(p)
+  if p.cap.has_hit then
+    finish_action(p)
   else
-    move_y(p, -offensive_speed * 1.5)
-    p.cap.top_height_reached = p.y <= y_upper_limit
+    attack(p)
+
+    if p.cap.top_height_reached then
+      if is_timer_active(p.cap, "action_timer", 15) then
+        move_x(p, offensive_speed * 1.5)
+      else
+        finish_action(p, actions.jump)
+      end
+    else
+      move_y(p, -offensive_speed * 1.5)
+      p.cap.top_height_reached = p.y <= y_upper_limit + sprite_h
+    end
   end
 end
 
@@ -204,11 +243,8 @@ end
 
 function rp_force_ball(p)
   fire_projectile(
-    p, function(p)
+    p, 90, function(p)
       p.projectile.x_speed = 0.5
-      if not is_timer_active(p.projectile, "projectile_timer", 90) then
-        destroy_projectile(p)
-      end
     end
   )
 end
@@ -229,13 +265,15 @@ end
 
 function sz_freeze(p)
   fire_projectile(
-    p, nil, function(p)
-      if not is_st_eq(p, "frozen") then
-        p.st_timers.frozen = 60
+    p, nil, nil, nil, function(p)
+      local vs = get_vs(p)
+      if not is_st_eq(vs, "frozen") then
+        vs.st_timers.frozen = 60
       else
-        p.st_timers.frozen = 0
-        get_vs(p).st_timers.frozen = 60
+        vs.st_timers.frozen = 0
+        p.st_timers.frozen = 60
       end
+      destroy_projectile(p)
     end
   )
 end

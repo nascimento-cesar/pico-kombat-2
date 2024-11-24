@@ -84,11 +84,12 @@ function reset_timers()
 end
 
 function update_player(p)
+  update_st_timers(p)
+
   if is_st_eq(p, "frozen") then
     return
   end
 
-  update_st_timers(p)
   update_frames_counter(p)
   resolve_previous_action(p)
 
@@ -115,7 +116,13 @@ function update_st_timers(p)
   is_timer_active(p.st_timers, "frozen")
   is_timer_active(p.st_timers, "invisible")
 
+  if not is_timer_active(p.st_timers, "paralyzed") and p.is_paralyzed then
+    finish_action(p)
+    p.is_paralyzed = false
+  end
+
   if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
     p.character = characters[6]
+    p.is_morphed = false
   end
 end

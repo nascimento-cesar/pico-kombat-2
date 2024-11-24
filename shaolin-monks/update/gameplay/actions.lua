@@ -161,10 +161,11 @@ function setup_next_action(p, action_name, params, force)
 end
 
 function start_action(p, next_action, params, keep_current_frame)
+  local keep_x_shift, keep_y_shift = (p.ca.is_resetable and p.is_x_shifted), (p.ca.is_resetable and p.is_y_shifted)
   p.ca, p.cap, p.caf = next_action, params or {}, keep_current_frame and p.caf or 1
   p.cap.is_animation_complete = false
-  shift_player_x(p, next_action.is_x_shiftable)
-  shift_player_y(p, next_action.is_y_shiftable)
+  shift_player_x(p, keep_x_shift or next_action.is_x_shiftable)
+  shift_player_y(p, keep_y_shift or next_action.is_y_shiftable)
   set_current_action_animation_lock(p, false)
 
   if next_action.is_special_attack then
