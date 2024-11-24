@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -34,14 +34,14 @@ end
 
 function fire_projectile(p, timer, before_callback, after_callback, collision_callback)
   if not p.cap.has_fired_projectile then
-    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,timer,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, timer, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,params,timer,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, p.cap, timer, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end
 
 function update_projectile(p)
   if p.projectile then
-    local vs, action = get_vs(p), p.projectile.action
+    local vs, action, params = get_vs(p), p.projectile.action, p.projectile.params
 
     if p.projectile.before_callback then
       p.projectile.before_callback(p)
@@ -51,7 +51,7 @@ function update_projectile(p)
     p.projectile.frames += 1
 
     if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
-      deal_damage(action, vs)
+      deal_damage(action, params, vs)
 
       if p.projectile.collision_callback then
         p.projectile.collision_callback(p)
@@ -142,6 +142,37 @@ function jc_uppercut(p)
     move_x(p, 1)
     move_y(p, -offensive_speed)
     p.cap.top_height_reached = p.y <= y_upper_limit
+  end
+end
+
+function jx_gotcha(p)
+  local vs, max_punches_landed = get_vs(p)
+
+  if p.cap.has_hit then
+    p.cap.punches, p.cap.max_punches = p.cap.punches or 1, p.cap.max_punches or 2
+    local is_last_punch = p.cap.punches >= p.cap.max_punches
+
+    if btnp(🅾️, p.id) and p.held_buttons ~= "🅾️" then
+      p.cap.max_punches = 3
+    end
+
+    if not is_timer_active(p.cap, "grab_timer", 10) then
+      setup_next_action(
+        p, "punch", {
+          is_x_shiftable = 0,
+          skip_reaction = not is_last_punch,
+          next_action = is_last_punch and actions.idle or p.character.special_attacks["gotcha"],
+          next_action_params = is_last_punch and {} or { punches = p.cap.punches + 1 },
+          reaction = is_last_punch and "thrown_backward"
+        }, true
+      )
+    end
+  else
+    if not is_timer_active(p.cap, "action_timer", 15) and vs.ca ~= actions.grabbed then
+      finish_action(p)
+    else
+      attack(p)
+    end
   end
 end
 

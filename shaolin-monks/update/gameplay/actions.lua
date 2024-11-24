@@ -3,7 +3,7 @@ function finish_action(p, next_action, next_action_params)
   set_current_action_animation_lock(p, false)
 
   if not p.ca.is_reversible or p.cap.is_reversed then
-    start_action(p, next_action or (actions[p.ca.complementary_action] or actions.idle), next_action_params)
+    start_action(p, next_action or p.cap.next_action or (actions[p.ca.complementary_action] or actions.idle), p.cap.next_action_params or next_action_params)
   end
 end
 
@@ -165,8 +165,8 @@ end
 function start_action(p, next_action, params, keep_current_frame)
   p.ca, p.cap, p.caf = next_action, params or {}, keep_current_frame and p.caf or 1
   p.cap.is_animation_complete = false
-  shift_player_x(p, next_action.is_x_shiftable)
-  shift_player_y(p, next_action.is_y_shiftable)
+  shift_player_x(p, p.cap.is_x_shiftable or next_action.is_x_shiftable)
+  shift_player_y(p, p.cap.is_y_shiftable or next_action.is_y_shiftable)
   set_current_action_animation_lock(p, false)
 
   if next_action.is_special_attack then

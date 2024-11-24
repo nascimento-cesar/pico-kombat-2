@@ -4,8 +4,17 @@ function draw_gameplay()
   function_lookup("countdown,finished,finishing_move,new_player", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player }, combat_round_state)
   draw_round_timer()
   draw_hp()
-  draw_player(p1)
-  draw_player(p2)
+  draw_players()
+end
+
+function draw_players()
+  if p1.cap.has_hit then
+    draw_player(p2)
+    draw_player(p1)
+  else
+    draw_player(p1)
+    draw_player(p2)
+  end
 end
 
 function draw_stage()

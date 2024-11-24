@@ -7,7 +7,7 @@ function attack(p, callback, collision_handler)
 
     if vs.ca == actions.block then
     else
-      deal_damage(p.ca, vs)
+      deal_damage(p.ca, p.cap, vs)
 
       if callback then
         callback(p)
@@ -28,14 +28,15 @@ function check_defeat(p)
   end
 end
 
-function deal_damage(action, p)
+function deal_damage(action, params, p)
   p.hp -= action.dmg
+  local reaction = params.reaction or action.reaction
 
-  if action.reaction then
-    if p.ca.is_aerial and any_match("flinch,swept", action.reaction) then
+  if reaction and not params.skip_reaction then
+    if p.ca.is_aerial and any_match("flinch,swept", reaction) then
       setup_next_action(p, "thrown_backward", nil, true)
     else
-      setup_next_action(p, action.reaction, nil, true)
+      setup_next_action(p, reaction, nil, true)
     end
 
     remove_temporary_conditions(p)
