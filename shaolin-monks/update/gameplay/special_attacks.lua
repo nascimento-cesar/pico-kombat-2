@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_teleport_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_teleport_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -78,13 +78,13 @@ function update_projectile(p)
   end
 end
 
-function slide(p)
+function slide(p, ignore_break)
   if is_timer_active(p.cap, "action_timer", 15) then
-    attack(p)
-
-    if p.cap.action_timer > 8 then
+    if p.cap.action_timer > (ignore_break and 0 or 8) then
       move_x(p, offensive_speed)
     end
+
+    attack(p)
   else
     finish_action(p)
   end
@@ -269,21 +269,17 @@ function kn_fan_lift(p)
 end
 
 function kn_flying_punch(p)
-  if p.cap.has_hit then
-    finish_action(p)
-  else
-    attack(p)
+  attack(p, finish_action)
 
-    if p.cap.top_height_reached then
-      if is_timer_active(p.cap, "action_timer", 15) then
-        move_x(p, offensive_speed * 1.5)
-      else
-        finish_action(p, actions.jump)
-      end
+  if p.cap.top_height_reached then
+    if is_timer_active(p.cap, "action_timer", 15) then
+      move_x(p, offensive_speed * 1.5)
     else
-      move_y(p, -offensive_speed * 1.5)
-      p.cap.top_height_reached = p.y <= y_upper_limit + sprite_h
+      finish_action(p, actions.jump)
     end
+  else
+    move_y(p, -offensive_speed * 1.5)
+    p.cap.top_height_reached = p.y <= y_upper_limit + sprite_h
   end
 end
 
@@ -304,12 +300,12 @@ function lk_bicycle_kick(p)
 end
 
 function lk_flying_kick(p)
-  if p.cap.has_hit then
-    finish_action(p)
-  else
-    move_x(p, offensive_speed)
-    attack(p)
-  end
+  move_x(p, offensive_speed)
+  attack(p, finish_action)
+end
+
+function ml_ground_roll(p)
+  slide(p, true)
 end
 
 function ml_teleport_kick(p)
