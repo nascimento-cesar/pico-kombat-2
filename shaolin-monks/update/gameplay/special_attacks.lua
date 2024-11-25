@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rp_force_ball,rp_invisibility,sc_spear,sz_freeze", { fire_projectile, slide, bk_blade_fury, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rp_force_ball, rp_invisibility, sc_spear, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sz_freeze", { fire_projectile, slide, bk_blade_fury, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rp_force_ball, rp_invisibility, sc_spear, sc_teleport_punch, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -396,6 +396,27 @@ function sc_spear(p)
       p.projectile.x_speed = 0
     end
   )
+end
+
+function sc_teleport_punch(p)
+  local vs = get_vs(p)
+
+  if not p.cap.has_teleported then
+    if not p.cap.has_changed_orientation then
+      p.facing *= -1
+      p.cap.has_changed_orientation = true
+    end
+
+    if not is_limit_left(p.x) and not is_limit_right(p.x) then
+      move_x(p, jump_speed)
+    else
+      p.cap.has_teleported = true
+      p.x = is_limit_left(p.x) and map_max_x or map_min_x
+      p.y = y_upper_limit
+    end
+  else
+    finish_action(p, actions.jump_punch, { is_landing = true, direction = forward, x_speed = offensive_speed })
+  end
 end
 
 function sz_freeze(p)
