@@ -86,14 +86,14 @@ function draw_projectiles()
 end
 
 function draw_projectile(p)
-  local sprites, index = p.character.projectile_sprites, flr(p.projectile.frames / p.character.projectile_fps) + 1
+  local sprites, index = p.projectile.sprites, flr(p.projectile.frames / p.character.projectile_fps) + 1
 
   if index > #sprites then
     index, p.projectile.frames = 1, 0
   end
 
   shift_pal(p.character.projectile_pal_map)
-  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.facing == backward)
+  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.projectile.flip_x or p.facing == backward)
   pal()
 
   if p.projectile.has_rope then

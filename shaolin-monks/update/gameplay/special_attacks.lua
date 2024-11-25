@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sk_projectile,sz_freeze", { fire_projectile, slide, bk_blade_fury, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rd_electric_grab, rd_teleport, rd_torpedo, rp_force_ball, rp_invisibility, sc_spear, sc_teleport_punch, sk_projectile, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sk_projectile,sk_sledgehammer,sz_freeze", { fire_projectile, slide, bk_blade_fury, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rd_electric_grab, rd_teleport, rd_torpedo, rp_force_ball, rp_invisibility, sc_spear, sc_teleport_punch, sk_projectile, sk_sledgehammer, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -34,7 +34,7 @@ end
 
 function fire_projectile(p, timer, before_callback, after_callback, collision_callback)
   if not p.cap.has_fired_projectile then
-    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,params,timer,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, p.cap, timer, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,params,sprites,timer,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, p.cap, p.character.projectile_sprites, timer, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end
@@ -474,6 +474,43 @@ function sk_projectile(p)
     p, nil, function(p)
       p.projectile.x_speed = projectile_speed * 1.5
     end
+  )
+end
+
+function sk_sledgehammer(p)
+  fire_projectile(
+    p, nil, function(p)
+      p.projectile.x_speed = 0
+    end,
+    function(p)
+      local total_frames = get_total_frames(p)
+      if is_timer_active(p.projectile, "action_timer", 21) then
+        local action_timer = p.projectile.action_timer
+        if action_timer >= 18 then
+          p.projectile.sprites = { 126 }
+          p.projectile.x = p.x - 4
+          p.projectile.y = p.y - 5
+          p.projectile.flip_x = true
+        elseif action_timer >= 15 then
+          p.projectile.sprites = { 125 }
+          p.projectile.x = p.x + 2
+          p.projectile.y = p.y - 6
+          p.projectile.flip_x = false
+        elseif action_timer >= 12 then
+          p.projectile.sprites = { 126 }
+          p.projectile.x = p.x + 8
+          p.projectile.y = p.y - 5
+        elseif action_timer >= 9 then
+          p.projectile.sprites = { 127 }
+          p.projectile.x = p.x + 8
+          p.projectile.y = p.y - 1
+        end
+      else
+        destroy_projectile(p)
+        finish_action(p)
+      end
+    end,
+    function(p) end
   )
 end
 
