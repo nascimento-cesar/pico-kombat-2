@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, bk_blade_fury, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -102,6 +102,30 @@ function teleport(p, next_action, next_action_params, teleport_callback)
     end
   else
     finish_action(p, next_action, next_action_params)
+  end
+end
+
+function bk_blade_fury(p)
+  if not p.cap.has_hit then
+    if is_timer_active(p.cap, "action_timer", 30) then
+      attack(
+        p, function(p)
+          local vs = get_vs(p)
+          move_x(vs, -1)
+          move_y(vs, -1)
+          vs.cap.reaction_callback = function(p)
+            if not is_timer_active(p.cap, "reaction_timer", 30) then
+              finish_action(get_vs(p))
+              finish_action(p, actions.thrown_backward)
+            elseif p.cap.reaction_timer % 5 == 0 then
+              spill_blood(p)
+            end
+          end
+        end
+      )
+    else
+      finish_action(p)
+    end
   end
 end
 
