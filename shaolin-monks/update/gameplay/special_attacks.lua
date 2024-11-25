@@ -17,7 +17,7 @@ function detect_special_attack(p, next_input)
         local released_buttons, released_buttons_timer = unpack_split(p.released_buttons)
         p.released_buttons, should_trigger = nil, released_buttons == sub(sequence, 3) and released_buttons_timer >= sub(sequence, 2)
       else
-        local command = p.action_stack .. (p.action_stack ~= "" and "+" or "") .. next_input
+        local command = p.action_stack .. (p.action_stack ~= "" and "+" or "") .. (next_input or "")
         should_trigger = sub(command, #command - #sequence + 1, #command) == sequence
       end
     end

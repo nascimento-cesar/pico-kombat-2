@@ -4,7 +4,9 @@ function process_inputs(p)
 
   hold_or_release_inputs(p, pressed_buttons, pressed_directionals)
 
-  if pressed_combination ~= "" then
+  if p.released_buttons then
+    action_name = detect_special_attack(p)
+  elseif pressed_combination ~= "" then
     if is_blocking and p.held_buttons then
       input_candidate = p.input_detection_delay <= 0 and pressed_directionals or ""
       action_name = detect_special_attack(p, input_candidate) or "block"
