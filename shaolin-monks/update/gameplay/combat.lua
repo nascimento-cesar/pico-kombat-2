@@ -1,6 +1,6 @@
 function attack(p, callback, collision_handler)
-  local vs, full_sprite_w = get_vs(p), sprite_w + 1
-  local should_hit = collision_handler and collision_handler(p) or has_collision(p.x, p.y, vs.x, vs.y, nil, full_sprite_w)
+  local vs = get_vs(p)
+  local should_hit = collision_handler and collision_handler(p) or has_collision(p.x, p.y, vs.x, vs.y)
 
   if not p.cap.has_hit and should_hit then
     p.cap.has_hit = true
