@@ -177,7 +177,7 @@ function jx_gotcha(p)
 end
 
 function jx_ground_pound(p)
-  if is_timer_active(p.cap, "action_timer", 15) then
+  if is_timer_active(p.cap, "action_timer", 20) then
     attack(
       p, function(p)
         local vs = get_vs(p)

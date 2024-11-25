@@ -51,25 +51,27 @@ function get_pressed_inputs(p)
   for i, k in ipairs(split "⬅️,➡️,⬆️,⬇️,🅾️,❎") do
     if btn(i - 1, p.id) then
       if i < 5 then
-        if k == "⬅️" then
-          direction = p.facing * -1
-        elseif k == "➡️" then
-          direction = p.facing
-        end
+        if k ~= "⬆️" then
+          if k == "⬅️" then
+            direction = p.facing * -1
+          elseif k == "➡️" then
+            direction = p.facing
+          end
 
-        if p.facing == backward then
-          k = k == "⬅️" and "➡️" or (k == "➡️" and "⬅️" or k)
-        end
+          if p.facing == backward then
+            k = k == "⬅️" and "➡️" or (k == "➡️" and "⬅️" or k)
+          end
 
-        if k == "⬆️" and p.ca.is_aerial then
-          k = ""
+          pressed_directionals = pressed_directionals .. k
         end
-
-        pressed_directionals = pressed_directionals .. k
       else
         pressed_buttons = pressed_buttons .. k
       end
     end
+  end
+
+  if btnp(⬆️, p.id) and not p.ca.is_aerial then
+    pressed_directionals = pressed_directionals .. "⬆️"
   end
 
   if pressed_directionals == "➡️⬇️" or pressed_directionals == "⬅️⬇️" then
