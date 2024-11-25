@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_teleport_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_teleport_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -90,20 +90,18 @@ function slide(p)
   end
 end
 
-function teleport(p)
+function teleport(p, next_action, next_action_params, teleport_callback)
   local vs = get_vs(p)
 
   if not p.cap.has_teleported then
     if p.y < y_bottom_limit + (sprite_h * 2) + stroke_width then
       move_y(p, jump_speed)
     else
-      p.x = vs.x - sprite_w * vs.facing
-      p.facing *= -1
       p.cap.has_teleported = true
-      fix_players_orientation()
+      teleport_callback(p, vs)
     end
   else
-    finish_action(p, actions.jump)
+    finish_action(p, next_action, next_action_params)
   end
 end
 
@@ -243,7 +241,13 @@ function kl_spin(p)
 end
 
 function kl_teleport(p)
-  teleport(p)
+  teleport(
+    p, actions.jump, nil, function(p, vs)
+      p.x = vs.x - sprite_w * vs.facing
+      p.facing *= -1
+      fix_players_orientation()
+    end
+  )
 end
 
 function kn_fan_lift(p)
@@ -306,6 +310,15 @@ function lk_flying_kick(p)
     move_x(p, offensive_speed)
     attack(p)
   end
+end
+
+function ml_teleport_kick(p)
+  teleport(
+    p, actions.jump_kick, { is_landing = true }, function(p, vs)
+      p.x = get_vs(p).x - (sprite_w / 2)
+      p.y = y_upper_limit
+    end
+  )
 end
 
 function rp_force_ball(p)
