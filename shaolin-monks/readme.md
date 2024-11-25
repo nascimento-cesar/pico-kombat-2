@@ -33,6 +33,7 @@
 - [ ] music
 - [ ] victory stance
 - [ ] sc spear does not work on right side
+- [ ] pressing directionals after landing a hook does not work
 
 # LATEST COUNTS
 tokens: 5.820/8.192
