@@ -11,13 +11,13 @@ function any_match(arr, val)
 end
 
 function eval_str(v)
-  if v == "true" then
+  if v == "t" then
     return true
-  elseif v == "false" then
+  elseif v == "f" then
     return false
   elseif sub(v, 1, 1) == "#" then
     return split_sprites(sub(v, 2))
-  elseif v ~= "nil" then
+  elseif v ~= "n" then
     return v
   end
 end

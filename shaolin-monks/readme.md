@@ -34,6 +34,6 @@
 - [ ] victory stance
 
 # LATEST COUNTS
-tokens: 4.637/8.192
-chars: 36.633/65.535
-compressed: 60%
+tokens: 5.820/8.192
+chars: 51.550/65.535
+compressed: 80%
