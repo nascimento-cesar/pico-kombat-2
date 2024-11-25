@@ -5,7 +5,7 @@ function handle_special_attack(p)
     return st_morph(p, params)
   end
 
-  string_to_hash("fire_projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rp_force_ball,rp_invisibility,sz_freeze", { fire_projectile, slide, bk_blade_fury, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rp_force_ball, rp_invisibility, sz_freeze })[handler](p)
+  string_to_hash("fire_projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rp_force_ball,rp_invisibility,sc_spear,sz_freeze", { fire_projectile, slide, bk_blade_fury, jc_high_green_bolt, jc_nut_cracker, jc_shadow_kick, jc_uppercut, jx_back_breaker, jx_gotcha, jx_ground_pound, kl_diving_kick, kl_hat_toss, kl_spin, kl_teleport, kn_fan_lift, kn_flying_punch, lk_bicycle_kick, lk_flying_kick, ml_ground_roll, ml_teleport_kick, rp_force_ball, rp_invisibility, sc_spear, sz_freeze })[handler](p)
 end
 
 function detect_special_attack(p, next_input)
@@ -50,7 +50,8 @@ function update_projectile(p)
     p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.facing
     p.projectile.frames += 1
 
-    if has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
+    if not p.projectile.has_hit and has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
+      p.projectile.has_hit = true
       deal_damage(action, params, vs)
 
       if p.projectile.collision_callback then
@@ -62,14 +63,12 @@ function update_projectile(p)
       destroy_projectile(p)
     end
 
-    if p.projectile then
-      if p.projectile.after_callback then
-        p.projectile.after_callback(p)
-      end
+    if p.projectile and p.projectile.after_callback then
+      p.projectile.after_callback(p)
+    end
 
-      if p.projectile.timer and not is_timer_active(p.projectile, "timer") then
-        destroy_projectile(p)
-      end
+    if p.projectile and p.projectile.timer and not is_timer_active(p.projectile, "timer") then
+      destroy_projectile(p)
     end
 
     if not p.projectile and p.ca.requires_forced_stop then
@@ -296,12 +295,15 @@ function kn_flying_punch(p)
   attack(p, finish_action)
 
   if p.cap.top_height_reached then
+    set_current_action_animation_lock(p, false)
+
     if is_timer_active(p.cap, "action_timer", 15) then
       move_x(p, offensive_speed * 1.5)
     else
       finish_action(p, actions.jump)
     end
   else
+    set_current_action_animation_lock(p, true)
     move_y(p, -offensive_speed * 1.5)
     p.cap.top_height_reached = p.y <= y_upper_limit + sprite_h
   end
@@ -361,6 +363,39 @@ function st_morph(p, id)
     p.st_timers.morphed = 300
     p.character = characters[tonum(id)]
   end
+end
+
+function sc_spear(p)
+  fire_projectile(
+    p,
+    nil,
+    function(p)
+      p.projectile.has_rope = true
+    end,
+    function(p)
+      if p.projectile.has_hit then
+        if not is_timer_active(p.cap, "grab_timer", 10) then
+          local vs = get_vs(p)
+          if has_collision(p.x, p.y, vs.x, vs.y) then
+            finish_action(p)
+            setup_next_action(vs, "stumble", nil, true)
+            vs.cap.reaction_callback = function(p)
+              if not is_timer_active(p.cap, "reaction_timer", get_total_frames(p, 4) - 1) then
+                finish_action(p)
+              end
+            end
+            destroy_projectile(p)
+          else
+            p.projectile.x -= offensive_speed
+            move_x(vs, offensive_speed)
+          end
+        end
+      end
+    end,
+    function(p)
+      p.projectile.x_speed = 0
+    end
+  )
 end
 
 function sz_freeze(p)

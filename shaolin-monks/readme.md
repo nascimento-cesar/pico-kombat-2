@@ -32,6 +32,7 @@
 - [ ] sfx
 - [ ] music
 - [ ] victory stance
+- [ ] sc spear does not work on right side
 
 # LATEST COUNTS
 tokens: 5.820/8.192

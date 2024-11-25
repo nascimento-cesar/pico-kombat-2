@@ -5,6 +5,7 @@ function draw_gameplay()
   draw_round_timer()
   draw_hp()
   draw_players()
+  draw_projectiles()
 end
 
 function draw_players()
@@ -41,10 +42,6 @@ function draw_player(p)
     draw_body(p, body_id, flip_body_x, flip_body_y)
   end
 
-  if p.projectile then
-    draw_projectile(p)
-  end
-
   draw_particles(p)
 end
 
@@ -78,6 +75,16 @@ function draw_body(p, id, flip_x, flip_y)
   pal()
 end
 
+function draw_projectiles()
+  if p1.projectile then
+    draw_projectile(p1)
+  end
+
+  if p2.projectile then
+    draw_projectile(p2)
+  end
+end
+
 function draw_projectile(p)
   local sprites, index = p.character.projectile_sprites, flr(p.projectile.frames / p.character.projectile_fps) + 1
 
@@ -88,6 +95,11 @@ function draw_projectile(p)
   shift_pal(p.character.projectile_pal_map)
   spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.facing == backward)
   pal()
+
+  if p.projectile.has_rope then
+    local y = p.projectile.y + (p.character.projectile_h / 2)
+    line(p.x + sprite_w, y, p.projectile.x, y, 4)
+  end
 end
 
 function draw_particles(p)

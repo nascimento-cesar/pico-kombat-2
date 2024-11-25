@@ -10,6 +10,10 @@ function get_combat_winner()
   end
 end
 
+function get_total_frames(p, cycles)
+  return #p.ca.sprites * p.ca.fps * (cycles or 1)
+end
+
 function get_vs(p)
   return p.id == p1_id and p2 or p1
 end
@@ -68,7 +72,7 @@ function update_frames_counter(p)
     local prev, is_animation_complete = p.caf, false
     p.caf += p.cap.is_reversing and -1 or 1
 
-    is_animation_complete = p.cap.is_reversing and p.caf <= 0 or p.caf > p.ca.fps * #p.ca.sprites
+    is_animation_complete = p.cap.is_reversing and p.caf <= 0 or p.caf > get_total_frames(p)
 
     if is_animation_complete then
       p.caf = prev
