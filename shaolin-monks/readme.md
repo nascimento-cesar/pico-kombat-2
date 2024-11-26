@@ -30,8 +30,7 @@
 - [ ] all special moves
 - [ ] game end screen
 - [ ] sfx
-- [ ] music
-- [ ] victory stance
+- [x] music
 - [ ] sc spear does not work on right side
 - [ ] pressing directionals after landing a hook does not work
 
@@ -39,3 +38,25 @@
 tokens: 5.820/8.192
 chars: 51.550/65.535
 compressed: 80%
+
+# SOUNDS
+14 - light hit
+15 - heavy hit
+16 - blocked blow
+17 - jump
+18 - sweep
+19 - generic projectile launch
+20 - generic projectile hit
+21 - generic flying attack
+22 - lk bicycle kick | bk blade fury | rd electric grab
+23 - kl spin
+24 - generic teleport
+25 - jc nut cracker
+26 - rp invisibility | st morph
+27 - sz freeze
+28 - jx ground pound | rd torpedo hit
+29 - jx gotcha
+30 - jx back broken
+31 - sc spear
+32 - sc spear hit
+33 - rd torpedo

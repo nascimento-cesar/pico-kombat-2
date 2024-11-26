@@ -7,6 +7,10 @@ function attack(p, callback, collision_handler)
 
     if vs.ca == actions.block then
     else
+      if p.ca.hit_sfx then
+        sfx(p.ca.hit_sfx)
+      end
+
       deal_damage(p.ca, p.cap, vs)
 
       if callback then

@@ -2,6 +2,7 @@ function update_gameplay()
   if not stat(57) then
     music(0)
   end
+
   if detect_new_player() then
     return process_new_player()
   end

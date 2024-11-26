@@ -180,4 +180,8 @@ function start_action(p, next_action, params, keep_current_frame)
   if next_action.is_special_attack then
     cleanup_action_stack(p, true)
   end
+
+  if p.ca.action_sfx then
+    sfx(p.ca.action_sfx)
+  end
 end
