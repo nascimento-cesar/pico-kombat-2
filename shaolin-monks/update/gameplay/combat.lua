@@ -17,8 +17,6 @@ function attack(p, callback, collision_handler)
         callback(p, vs)
       end
     end
-  elseif p.ca.is_special_attack and (is_limit_left(p.x) or is_limit_right(p.x)) then
-    finish_action(p)
   end
 end
 

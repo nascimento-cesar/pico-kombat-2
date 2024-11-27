@@ -94,6 +94,7 @@ function update_player(p)
     return
   end
 
+  p.t += 1
   update_frames_counter(p)
   resolve_previous_action(p)
 

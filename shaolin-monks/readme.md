@@ -29,6 +29,7 @@
 - [ ] all finishing moves
 - [ ] all special moves
 - [ ] game end screen
+- [ ] reversible actions that requires forced stop stuck at the last frame
 - [ ] sfx
 - [x] music
 - [ ] sc spear does not work on right side

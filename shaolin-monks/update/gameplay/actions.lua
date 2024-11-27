@@ -131,7 +131,7 @@ function resolve_previous_action(p)
     if p.cap.is_held then
       return set_current_action_animation_lock(p, true)
     elseif p.ca.is_resetable then
-      return start_action(p, p.ca, p.cap)
+      return start_action(p, p.ca, p.cap, false, true)
     elseif p.ca.is_aerial and p.ca.is_special_attack then
       return finish_action(p, actions.jump, { is_landing = true, blocks_special_attacks = true })
     elseif not p.ca.requires_forced_stop then
@@ -170,8 +170,8 @@ function setup_next_action(p, action_name, params, force)
   end
 end
 
-function start_action(p, next_action, params, keep_current_frame)
-  p.ca, p.cap, p.caf = next_action, params or {}, keep_current_frame and p.caf or 1
+function start_action(p, next_action, params, keep_current_frame, is_restarted)
+  p.ca, p.cap, p.caf, p.t = next_action, params or {}, keep_current_frame and p.caf or 1, is_restarted and p.t or 0
   p.cap.is_animation_complete = false
   shift_player_x(p, p.cap.is_x_shiftable or next_action.is_x_shiftable)
   shift_player_y(p, p.cap.is_y_shiftable or next_action.is_y_shiftable)

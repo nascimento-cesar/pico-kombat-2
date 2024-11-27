@@ -32,9 +32,9 @@ function destroy_projectile(p)
   p.projectile = nil
 end
 
-function fire_projectile(p, timer, before_callback, after_callback, collision_callback)
+function fire_projectile(p, max_t, before_callback, after_callback, collision_callback)
   if not p.cap.has_fired_projectile then
-    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,params,sprites,timer,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, p.cap, p.character.projectile_sprites, timer, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,max_t,params,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, max_t, p.cap, p.character.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end
@@ -42,6 +42,8 @@ end
 function update_projectile(p)
   if p.projectile then
     local vs, action, params = get_vs(p), p.projectile.action, p.projectile.params
+
+    p.projectile.t = (p.projectile.t or 0) + 1
 
     if p.projectile.before_callback then
       p.projectile.before_callback(p)
@@ -67,7 +69,7 @@ function update_projectile(p)
       p.projectile.after_callback(p)
     end
 
-    if p.projectile and p.projectile.timer and not is_timer_active(p.projectile, "timer") then
+    if p.projectile and p.projectile.max_t and p.projectile.t > p.projectile.max_t then
       destroy_projectile(p)
     end
 
@@ -78,14 +80,14 @@ function update_projectile(p)
 end
 
 function slide(p, ignore_break)
-  if is_timer_active(p.cap, "action_timer", 15) then
-    if p.cap.action_timer > (ignore_break and 0 or 8) then
+  if p.t > 15 then
+    finish_action(p)
+  else
+    if p.t <= (ignore_break and 15 or 8) then
       move_x(p, offensive_speed)
     end
 
     attack(p)
-  else
-    finish_action(p)
   end
 end
 
@@ -106,24 +108,24 @@ end
 
 function bk_blade_fury(p)
   if not p.cap.has_hit then
-    if is_timer_active(p.cap, "action_timer", 30) then
+    if p.t > 30 then
+      finish_action(p)
+    else
       attack(
         p, function(p)
           local vs = get_vs(p)
           move_x(vs, -1)
           move_y(vs, -1)
           vs.cap.reaction_callback = function(p)
-            if not is_timer_active(p.cap, "reaction_timer", 30) then
+            if p.t > 30 then
               finish_action(get_vs(p))
               finish_action(p, actions.thrown_backward)
-            elseif p.cap.reaction_timer % 5 == 0 then
+            elseif p.t % 5 == 0 then
               spill_blood(p)
             end
           end
         end
       )
-    else
-      finish_action(p)
     end
   end
 end
@@ -142,10 +144,10 @@ function jc_high_green_bolt(p)
 end
 
 function jc_nut_cracker(p)
-  if is_timer_active(p.cap, "action_timer", 15) then
-    attack(p)
-  else
+  if p.t > 15 then
     finish_action(p)
+  else
+    attack(p)
   end
 end
 
@@ -155,7 +157,7 @@ end
 
 function jc_uppercut(p)
   if p.cap.top_height_reached then
-    if not is_timer_active(p.cap, "action_timer", 3) then
+    if not is_timer_active(p.cap, "delay", 3) then
       finish_action(p, actions.jump)
     end
   else
@@ -189,7 +191,7 @@ function jx_gotcha(p)
       p.cap.max_punches = 3
     end
 
-    if not is_timer_active(p.cap, "grab_timer", 10) then
+    if p.t > 10 then
       setup_next_action(
         p, "punch", {
           is_x_shiftable = 0,
@@ -201,7 +203,7 @@ function jx_gotcha(p)
       )
     end
   else
-    if not is_timer_active(p.cap, "action_timer", 15) and vs.ca ~= actions.grabbed then
+    if p.t > 15 and vs.ca ~= actions.grabbed then
       finish_action(p)
     else
       attack(p)
@@ -210,13 +212,15 @@ function jx_gotcha(p)
 end
 
 function jx_ground_pound(p)
-  if is_timer_active(p.cap, "action_timer", 20) then
+  if p.t > 20 then
+    finish_action(p)
+  else
     attack(
       p, function(p)
         local vs = get_vs(p)
         vs.cap.reaction_callback = function(p)
           move_x(p, -1)
-          if not is_timer_active(p.cap, "reaction_timer", 15) then
+          if p.t > 15 then
             finish_action(p)
           end
         end
@@ -225,8 +229,6 @@ function jx_ground_pound(p)
         return get_vs(p).y == y_bottom_limit
       end
     )
-  else
-    finish_action(p)
   end
 end
 
@@ -247,19 +249,19 @@ function kl_hat_toss(p)
 end
 
 function kl_spin(p)
-  if is_timer_active(p.cap, "action_timer", 30) then
+  if p.t > 30 then
+    finish_action(p)
+  else
     attack(p)
 
-    if p.cap.action_timer < 20 then
+    if p.t > 10 then
       p.cap.boosts = p.cap.boosts or 0
 
       if btnp(⬆️, p.id) and p.cap.boosts < 3 then
-        p.cap.action_timer += 10
+        p.t -= 10
         p.cap.boosts += 1
       end
     end
-  else
-    finish_action(p)
   end
 end
 
@@ -280,9 +282,9 @@ function kn_fan_lift(p)
     end, nil, function(p)
       local vs = get_vs(p)
       vs.cap.reaction_callback = function(p)
-        if not is_timer_active(p.cap, "reaction_timer", 60) then
+        if p.t > 60 then
           finish_action(p, actions.fall)
-        elseif p.cap.reaction_timer > 50 then
+        elseif p.t < 10 then
           move_x(vs, -1)
           move_y(vs, -1)
         end
@@ -297,10 +299,12 @@ function kn_flying_punch(p)
   if p.cap.top_height_reached then
     set_current_action_animation_lock(p, false)
 
-    if is_timer_active(p.cap, "action_timer", 15) then
-      move_x(p, offensive_speed * 1.5)
+    if p.t > 15 then
+      if not is_timer_active(p.cap, "delay", 3) then
+        finish_action(p, actions.jump)
+      end
     else
-      finish_action(p, actions.jump)
+      move_x(p, offensive_speed * 1.5)
     end
   else
     set_current_action_animation_lock(p, true)
@@ -311,23 +315,33 @@ end
 
 function lk_bicycle_kick(p)
   if p.cap.has_hit then
-    if is_timer_active(p.cap, "action_timer", 30) then
-      move_x(p, offensive_speed / 2)
-      move_x(get_vs(p), -1)
-    else
+    local vs = get_vs(p)
+
+    if vs.t > 30 then
       finish_action(p)
-      finish_action(get_vs(p))
-      move_x(get_vs(p), -1)
+      finish_action(vs)
+      move_x(vs, -1)
+    else
+      move_x(p, offensive_speed / 2)
+      move_x(vs, -1)
     end
   else
-    move_x(p, offensive_speed)
-    attack(p)
+    if p.t > 20 then
+      finish_action(p)
+    else
+      move_x(p, offensive_speed)
+      attack(p)
+    end
   end
 end
 
 function lk_flying_kick(p)
-  move_x(p, offensive_speed)
-  attack(p, finish_action)
+  if p.t > 20 then
+    finish_action(p)
+  else
+    move_x(p, offensive_speed)
+    attack(p, finish_action)
+  end
 end
 
 function ml_ground_roll(p)
@@ -347,12 +361,12 @@ function rd_electric_grab(p)
   local vs = get_vs(p)
 
   if p.cap.has_hit then
-    if not is_timer_active(p.cap, "grab_timer", 30) then
+    if vs.t > 30 then
       finish_action(p)
       finish_action(vs, actions.thrown_backward)
     end
   else
-    if not is_timer_active(p.cap, "action_timer", 15) then
+    if p.t > 15 then
       finish_action(p)
     else
       attack(
@@ -402,7 +416,7 @@ function rp_force_ball(p)
 end
 
 function rp_invisibility(p)
-  if not is_timer_active(p.cap, "action_timer", 10) then
+  if p.t > 10 then
     p.st_timers.invisible = 300
   end
 end
@@ -424,13 +438,13 @@ function sc_spear(p)
     end,
     function(p)
       if p.projectile.has_hit then
-        if not is_timer_active(p.cap, "grab_timer", 10) then
-          local vs = get_vs(p)
+        local vs = get_vs(p)
+        if vs.t > 10 then
           if has_collision(p.x, p.y, vs.x, vs.y) then
             finish_action(p)
             setup_next_action(vs, "stumble", nil, true)
             vs.cap.reaction_callback = function(p)
-              if not is_timer_active(p.cap, "reaction_timer", get_total_frames(p, 4) - 1) then
+              if vs.t > get_total_frames(p, 4) - 1 then
                 finish_action(p)
               end
             end
@@ -484,30 +498,30 @@ function sk_sledgehammer(p)
     end,
     function(p)
       local total_frames = get_total_frames(p)
-      if is_timer_active(p.projectile, "action_timer", 21) then
-        local action_timer = p.projectile.action_timer
-        if action_timer >= 18 then
+      if p.projectile.t > 21 then
+        destroy_projectile(p)
+        finish_action(p)
+      else
+        local t = p.projectile.t
+        if t <= 3 then
           p.projectile.sprites = { 126 }
           p.projectile.x = p.x - 4
           p.projectile.y = p.y - 5
           p.projectile.flip_x = true
-        elseif action_timer >= 15 then
+        elseif t <= 6 then
           p.projectile.sprites = { 125 }
           p.projectile.x = p.x + 2
           p.projectile.y = p.y - 6
           p.projectile.flip_x = false
-        elseif action_timer >= 12 then
+        elseif t <= 9 then
           p.projectile.sprites = { 126 }
           p.projectile.x = p.x + 8
           p.projectile.y = p.y - 5
-        elseif action_timer >= 9 then
+        else
           p.projectile.sprites = { 127 }
           p.projectile.x = p.x + 8
           p.projectile.y = p.y - 1
         end
-      else
-        destroy_projectile(p)
-        finish_action(p)
       end
     end,
     function(p) end

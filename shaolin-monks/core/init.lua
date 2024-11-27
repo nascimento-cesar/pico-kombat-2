@@ -49,7 +49,7 @@ function define_player(id, p)
   end
 
   local is_p1 = id == p1_id
-  local p = string_to_hash("action_stack,action_stack_timeout,character,ca,caf,cap,facing,has_locked_controls,has_joined,highlighted_char,hp,held_buttons,held_buttons_timer,id,input_detection_delay,is_x_shifted,is_y_shifted,next_combats,particle_sets,previous_buttons,previous_directionals,projectile,released_buttons,st_timers,x,y", { "", action_stack_timeout, p.character, actions.idle, 0, {}, is_p1 and forward or backward, false, p.has_joined, is_p1 and 1 or 4, 100, nil, 0, id, 0, false, false, next_combats, {}, nil, nil, nil, nil, { frozen = 0, invisible = 0, morphed = 0 }, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit })
+  local p = string_to_hash("action_stack,action_stack_timeout,character,ca,caf,cap,facing,has_locked_controls,has_joined,highlighted_char,hp,held_buttons,held_buttons_timer,id,input_detection_delay,is_x_shifted,is_y_shifted,next_combats,particle_sets,previous_buttons,previous_directionals,projectile,released_buttons,st_timers,t,x,y", { "", action_stack_timeout, p.character, actions.idle, 0, {}, is_p1 and forward or backward, false, p.has_joined, is_p1 and 1 or 4, 100, nil, 0, id, 0, false, false, next_combats, {}, nil, nil, nil, nil, { frozen = 0, invisible = 0, morphed = 0 }, 0, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit })
 
   if is_p1 then
     p1 = p
