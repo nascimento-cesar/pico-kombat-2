@@ -133,7 +133,7 @@ function resolve_previous_action(p)
     elseif p.ca.is_resetable then
       return start_action(p, p.ca, p.cap, false, true)
     elseif p.ca.is_aerial and p.ca.is_special_attack then
-      return setup_next_action(p, "jump", { is_landing = true, blocks_special_attacks = true }, true)
+      return setup_next_action(p, "jump", { is_landing = true, blocks_aerial_actions = true }, true)
     elseif not p.ca.requires_forced_stop then
       return finish_action(p)
     end
@@ -164,7 +164,7 @@ function setup_next_action(p, action_name, params, force)
       return start_action(p, actions.idle)
     end
   elseif p.ca == actions.jump and next_action and next_action.is_aerial then
-    if next_action.is_attack or (next_action.is_special_attack and not p.cap.blocks_special_attacks) then
+    if (next_action.is_attack or next_action.is_special_attack) and not p.cap.blocks_aerial_actions then
       return start_action(p, next_action, p.cap)
     end
   end

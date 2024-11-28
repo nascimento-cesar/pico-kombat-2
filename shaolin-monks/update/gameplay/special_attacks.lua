@@ -95,7 +95,7 @@ function update_projectile(p)
   end
 end
 
-function slide(p, _, cycles, delay, ignore_collision)
+function slide(p, _, cycles, delay, ignore_collision, block_callback)
   if (p.cap.has_hit and not ignore_collision) or p.t >= get_total_frames(p, cycles or 3) then
     if not is_timer_active(p.cap, "delay", delay or 0) then
       finish_action(p)
@@ -105,7 +105,7 @@ function slide(p, _, cycles, delay, ignore_collision)
       move_x(p, offensive_speed)
     end
 
-    attack(p)
+    attack(p, nil, nil, block_callback)
   end
 end
 
@@ -237,6 +237,7 @@ function jx_ground_pound(p, vs)
           finish_action(p)
         end
       end,
+      nil,
       function(p, vs)
         return vs.y == y_bottom_limit
       end
@@ -245,7 +246,19 @@ function jx_ground_pound(p, vs)
 end
 
 function kl_diving_kick(p)
-  setup_next_action(p, "jump_kick", { direction = forward, is_landing = true, x_speed = offensive_speed }, true)
+  setup_next_action(
+    p,
+    "jump_kick",
+    {
+      direction = forward,
+      is_landing = true,
+      x_speed = offensive_speed,
+      block_callback = function(p)
+        setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+      end
+    },
+    true
+  )
 end
 
 function kl_hat_toss(p)
@@ -341,6 +354,10 @@ end
 function lk_bicycle_kick(p, vs)
   local total_frames = get_total_frames(p)
 
+  if p.t < 3 then
+    p.y -= 1
+  end
+
   if p.cap.has_hit then
     if vs.t >= total_frames * 3 then
       finish_action(p)
@@ -353,7 +370,14 @@ function lk_bicycle_kick(p, vs)
       finish_action(p)
     else
       move_x(p, offensive_speed)
-      attack(p)
+      attack(
+        p,
+        nil,
+        nil,
+        function(p)
+          setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+        end
+      )
     end
   end
 end
@@ -363,12 +387,25 @@ function lk_flying_kick(p)
 end
 
 function ml_ground_roll(p)
-  slide(p, nil, 3, nil, true)
+  slide(
+    p, nil, 3, nil, true, function(p)
+      setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+    end
+  )
 end
 
 function ml_teleport_kick(p, vs)
   teleport(
-    p, vs, "jump_kick", { is_landing = true }, function(p, vs)
+    p,
+    vs,
+    "jump_kick",
+    {
+      is_landing = true,
+      block_callback = function(p)
+        setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+      end
+    },
+    function(p, vs)
       p.x = vs.x - (sprite_w / 2)
       p.y = y_upper_limit
     end
@@ -410,13 +447,18 @@ function rd_torpedo(p, vs)
   else
     move_x(p, offensive_speed)
     attack(
-      p, nil, function(p, vs)
+      p,
+      nil,
+      function(p, vs)
         if is_limit_left(p.x) or is_limit_right(p.x) then
           setup_next_action(vs, "jump", { direction = backward }, true)
           setup_next_action(p, "fall", nil, true)
         else
           move_x(p, -offensive_speed)
         end
+      end,
+      function(p)
+        setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
       end
     )
   end
@@ -490,7 +532,16 @@ function sc_teleport_punch(p)
       p.y = y_upper_limit
     end
   else
-    setup_next_action(p, "jump_punch", { is_landing = true, direction = forward, x_speed = offensive_speed }, true)
+    setup_next_action(
+      p,
+      "jump_punch",
+      {
+        is_landing = true, direction = forward, x_speed = offensive_speed, block_callback = function(p)
+          setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+        end
+      },
+      true
+    )
   end
 end
 

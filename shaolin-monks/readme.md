@@ -37,6 +37,7 @@
 - [ ] fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to action stack)
 - [ ] should allow just one aerial special attack (projectile) per jump (more than one might stuck player in air)
 - [ ] improve rp invisibility animation and use the same for st morph
+- [ ] test blocked kl diving kick and ml teleport kick and sc teleport punch
 
 # LATEST COUNTS
 tokens: 5.820/8.192
