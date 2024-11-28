@@ -3,7 +3,7 @@
 - [x] attacking a propelled opponent from ground breaks opponent's position
 - [ ] should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] should not detect a hit when flying attack an opponent that is already behind the player
-- [ ] block not implemented
+- [x] block not implemented
 - [ ] time's up not implemented
 - [ ] support draw and more than 3 rounds
 - [x] return to char selection screen after defeat in vs mode
@@ -34,6 +34,7 @@
 - [x] music
 - [ ] sc spear does not work on right side
 - [ ] pressing directionals after landing a hook does not work
+- [ ] fix infinity hat spin after hat toss
 
 # LATEST COUNTS
 tokens: 5.820/8.192

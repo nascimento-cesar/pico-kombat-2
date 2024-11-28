@@ -1,21 +1,25 @@
-function attack(p, callback, collision_handler)
+function attack(p, collision_callback, reaction_callback, collision_handler)
   local vs = get_vs(p)
-  local should_hit = collision_handler and collision_handler(p) or has_collision(p.x, p.y, vs.x, vs.y)
+  local should_hit = collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y)
 
-  if not p.cap.has_hit and should_hit then
-    p.cap.has_hit = true
-
+  if should_hit and not p.cap.has_hit and not p.cap.has_blocked then
     if vs.ca == actions.block then
+      p.cap.has_blocked = true
+      sfx(actions.block.hit_sfx)
+      deal_damage(vs, 1)
     else
       if p.ca.hit_sfx then
         sfx(p.ca.hit_sfx)
       end
 
-      deal_damage(p.ca, p.cap, vs)
+      p.cap.has_hit = true
+      hit(p.ca, p.cap, vs)
 
-      if callback then
-        callback(p, vs)
+      if collision_callback then
+        collision_callback(p, vs)
       end
+
+      vs.cap.reaction_callback = reaction_callback
     end
   end
 end
@@ -30,8 +34,12 @@ function check_defeat(p)
   end
 end
 
-function deal_damage(action, params, p)
-  p.hp -= action.dmg
+function deal_damage(p, dmg)
+  p.hp -= dmg
+  -- check_defeat(p)
+end
+
+function hit(action, params, p)
   local reaction = params.reaction or action.reaction
 
   if reaction and not params.skip_reaction then
@@ -48,7 +56,7 @@ function deal_damage(action, params, p)
     spill_blood(p)
   end
 
-  -- check_defeat(p)
+  deal_damage(p, action.dmg)
 end
 
 function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)

@@ -111,7 +111,7 @@ function update_player(p)
   end
 
   if p.cap.reaction_callback then
-    p.cap.reaction_callback(p)
+    p.cap.reaction_callback(p, get_vs(p))
   end
 
   update_projectile(p)
