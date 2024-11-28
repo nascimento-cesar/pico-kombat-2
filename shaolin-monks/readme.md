@@ -34,7 +34,9 @@
 - [x] music
 - [ ] sc spear does not work on right side
 - [x] pressing directionals after landing a hook does not work, also roundhouse kick and block
-- [ ] fix infinity hat spin after hat toss
+- [ ] fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to action stack)
+- [ ] should allow just one aerial special attack (projectile) per jump (more than one might stuck player in air)
+- [ ] improve rp invisibility animation and use the same for st morph
 
 # LATEST COUNTS
 tokens: 5.820/8.192

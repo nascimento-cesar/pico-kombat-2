@@ -95,13 +95,13 @@ function update_projectile(p)
   end
 end
 
-function slide(p, _, max_t, ignore_break)
-  local max_t = max_t or 15
-
-  if p.t > max_t then
-    finish_action(p)
+function slide(p, _, cycles, delay, ignore_collision)
+  if (p.cap.has_hit and not ignore_collision) or p.t >= get_total_frames(p, cycles or 3) then
+    if not is_timer_active(p.cap, "delay", delay or 0) then
+      finish_action(p)
+    end
   else
-    if p.t <= (ignore_break and max_t or max_t / 2) then
+    if not p.cap.has_hit or ignore_collision then
       move_x(p, offensive_speed)
     end
 
@@ -123,7 +123,7 @@ function teleport(p, vs, next_action_name, next_action_params, teleport_callback
 end
 
 function bk_blade_fury(p, vs)
-  if p.t > 30 then
+  if p.t >= get_total_frames(p, 3) then
     finish_action(p)
   else
     attack(
@@ -133,7 +133,7 @@ function bk_blade_fury(p, vs)
         move_y(vs, -1)
       end,
       function(p, vs)
-        if p.t > 30 then
+        if p.t >= get_total_frames(p, 3) then
           finish_action(vs)
           setup_next_action(p, "thrown_backward", nil, true)
         elseif p.t % 5 == 0 then
@@ -158,7 +158,7 @@ function jc_high_green_bolt(p)
 end
 
 function jc_nut_cracker(p)
-  if p.t > 15 then
+  if p.t >= get_total_frames(p, 4) then
     finish_action(p)
   else
     attack(p)
@@ -166,7 +166,7 @@ function jc_nut_cracker(p)
 end
 
 function jc_shadow_kick(p)
-  slide(p)
+  slide(p, nil, 3, 10)
 end
 
 function jc_uppercut(p)
@@ -204,7 +204,7 @@ function jx_gotcha(p, vs)
       p.cap.max_punches = 3
     end
 
-    if p.t > 10 then
+    if p.t >= get_total_frames(p, 1) then
       setup_next_action(
         p, "punch", {
           is_x_shiftable = 0,
@@ -216,7 +216,7 @@ function jx_gotcha(p, vs)
       )
     end
   else
-    if p.t > 15 and vs.ca ~= actions.grabbed then
+    if p.t >= get_total_frames(p, 2) and vs.ca ~= actions.grabbed then
       finish_action(p)
     else
       attack(p)
@@ -225,7 +225,7 @@ function jx_gotcha(p, vs)
 end
 
 function jx_ground_pound(p, vs)
-  if p.t > 20 then
+  if p.t >= get_total_frames(p, 4) then
     finish_action(p)
   else
     attack(
@@ -233,7 +233,7 @@ function jx_ground_pound(p, vs)
       nil,
       function(p)
         move_x(p, -1)
-        if p.t > 15 then
+        if p.t >= get_total_frames(p, 2) then
           finish_action(p)
         end
       end,
@@ -265,16 +265,18 @@ function kl_hat_toss(p)
 end
 
 function kl_spin(p)
-  if p.t > 30 then
+  local total_frames = get_total_frames(p)
+
+  if p.t >= total_frames * 2 then
     finish_action(p)
   else
     attack(p)
 
-    if p.t > 10 then
+    if p.t >= total_frames then
       p.cap.boosts = p.cap.boosts or 0
 
       if btnp(⬆️, p.id) and p.cap.boosts < 3 then
-        p.t -= 10
+        p.t -= total_frames
         p.cap.boosts += 1
       end
     end
@@ -305,9 +307,10 @@ function kn_fan_lift(p)
     nil,
     function() end,
     function(p)
-      if p.t > 45 then
+      local total_frames = get_total_frames(p)
+      if p.t >= total_frames * 5 then
         setup_next_action(p, "fall", nil, true)
-      elseif p.t < 10 then
+      elseif p.t < total_frames then
         move_x(p, -1)
         move_y(p, -1)
       end
@@ -321,7 +324,7 @@ function kn_flying_punch(p)
   if p.cap.top_height_reached then
     set_current_action_animation_lock(p, false)
 
-    if p.t > 15 then
+    if p.t >= get_total_frames(p, 8) then
       if not is_timer_active(p.cap, "delay", 3) then
         setup_next_action(p, "jump", nil, true)
       end
@@ -336,17 +339,17 @@ function kn_flying_punch(p)
 end
 
 function lk_bicycle_kick(p, vs)
+  local total_frames = get_total_frames(p)
+
   if p.cap.has_hit then
-    if vs.t > 30 then
+    if vs.t >= total_frames * 3 then
       finish_action(p)
       finish_action(vs)
-      move_x(vs, -1)
     else
       move_x(p, offensive_speed / 2)
-      move_x(vs, -1)
     end
   else
-    if p.t > 20 then
+    if p.t >= total_frames * 2 then
       finish_action(p)
     else
       move_x(p, offensive_speed)
@@ -356,11 +359,11 @@ function lk_bicycle_kick(p, vs)
 end
 
 function lk_flying_kick(p)
-  slide(p, nil, 20)
+  slide(p, nil, 5, 10)
 end
 
 function ml_ground_roll(p)
-  slide(p, nil, 20, true)
+  slide(p, nil, 3, nil, true)
 end
 
 function ml_teleport_kick(p, vs)
@@ -373,15 +376,15 @@ function ml_teleport_kick(p, vs)
 end
 
 function rd_electric_grab(p, vs)
-  if not p.cap.has_hit and p.t > 15 then
+  if not p.cap.has_hit and p.t >= get_total_frames(p, 3) then
     finish_action(p)
   else
     attack(
       p, nil, function(p, vs)
-        if p.t > 30 then
+        if p.t >= get_total_frames(p, 4) then
           finish_action(vs)
           setup_next_action(p, "fall", nil, true)
-        elseif p.t < 2 then
+        elseif p.t < 3 then
           move_x(p, -1)
           move_y(p, -1)
         end
@@ -402,20 +405,20 @@ function rd_teleport(p, vs)
 end
 
 function rd_torpedo(p, vs)
-  if p.t < 30 then
+  if not p.cap.has_hit and p.t >= get_total_frames(p, 2) then
+    finish_action(p)
+  else
     move_x(p, offensive_speed)
     attack(
       p, nil, function(p, vs)
         if is_limit_left(p.x) or is_limit_right(p.x) then
-          finish_action(vs, actions.jump, { direction = backward })
+          setup_next_action(vs, "jump", { direction = backward }, true)
           setup_next_action(p, "fall", nil, true)
         else
           move_x(p, -offensive_speed)
         end
       end
     )
-  else
-    finish_action(p)
   end
 end
 
@@ -428,7 +431,7 @@ function rp_force_ball(p)
 end
 
 function rp_invisibility(p)
-  if p.t > 10 then
+  if p.t >= get_total_frames(p) then
     p.st_timers.invisible = 300
   end
 end
@@ -448,27 +451,26 @@ function sc_spear(p)
     function(p)
       p.projectile.has_rope = true
     end,
-    function(p, vs)
-      if p.projectile.has_hit then
-        if vs.t > 10 then
-          if has_collision(p.x, p.y, vs.x, vs.y) then
-            finish_action(p)
-            setup_next_action(vs, "stumble", nil, true)
-            vs.cap.reaction_callback = function(p)
-              if vs.t > get_total_frames(p, 4) - 1 then
-                finish_action(p)
-              end
-            end
-            destroy_projectile(p)
-          else
-            p.projectile.x -= offensive_speed
-            move_x(vs, offensive_speed)
-          end
-        end
-      end
-    end,
+    nil,
     function(p)
       p.projectile.x_speed = 0
+    end,
+    function(p, vs)
+      if p.t >= get_total_frames(p, 10) then
+        if has_collision(p.x, p.y, vs.x, vs.y) then
+          finish_action(vs)
+          setup_next_action(p, "stumble", nil, true)
+          destroy_projectile(vs)
+          p.cap.reaction_callback = function(p)
+            if p.t >= get_total_frames(p, 4) then
+              finish_action(p)
+            end
+          end
+        else
+          vs.projectile.x -= offensive_speed
+          move_x(p, offensive_speed)
+        end
+      end
     end
   )
 end

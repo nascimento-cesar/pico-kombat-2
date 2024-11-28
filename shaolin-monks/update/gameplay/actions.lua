@@ -1,10 +1,6 @@
 function finish_action(p)
   p.cap.has_finished = true
   set_current_action_animation_lock(p, false)
-
-  if not p.ca.is_reversible or p.cap.is_reversed then
-    start_action(p, p.cap.next_action or (actions[p.ca.complementary_action] or actions.idle), p.cap.next_action_params)
-  end
 end
 
 function aerial_action(p)
@@ -127,7 +123,11 @@ function set_current_action_animation_lock(p, lock)
 end
 
 function resolve_previous_action(p)
-  if p.cap.is_animation_complete and not p.cap.has_finished then
+  if p.cap.has_finished then
+    if not p.ca.is_reversible or p.cap.is_reversed then
+      start_action(p, p.cap.next_action or (actions[p.ca.complementary_action] or actions.idle), p.cap.next_action_params)
+    end
+  elseif p.cap.is_animation_complete then
     if p.cap.is_held then
       return set_current_action_animation_lock(p, true)
     elseif p.ca.is_resetable then
@@ -171,7 +171,7 @@ function setup_next_action(p, action_name, params, force)
 end
 
 function start_action(p, next_action, params, keep_current_frame, is_restarted)
-  p.ca, p.cap, p.caf, p.t = next_action, params or {}, keep_current_frame and p.caf or 1, is_restarted and p.t or 0
+  p.ca, p.cap, p.caf, p.t = next_action, params or {}, keep_current_frame and p.caf or 1, is_restarted and p.t or 1
   p.cap.is_animation_complete = false
   shift_player_x(p, p.cap.is_x_shiftable or next_action.is_x_shiftable)
   shift_player_y(p, p.cap.is_y_shiftable or next_action.is_y_shiftable)
