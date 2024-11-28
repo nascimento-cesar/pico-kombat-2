@@ -109,7 +109,7 @@ function slide(p, _, max_t, ignore_break)
   end
 end
 
-function teleport(p, vs, next_action, next_action_params, teleport_callback)
+function teleport(p, vs, next_action_name, next_action_params, teleport_callback)
   if not p.cap.has_teleported then
     if p.y < y_bottom_limit + (sprite_h * 2) + stroke_width then
       move_y(p, jump_speed)
@@ -118,7 +118,7 @@ function teleport(p, vs, next_action, next_action_params, teleport_callback)
       teleport_callback(p, vs)
     end
   else
-    finish_action(p, next_action, next_action_params)
+    setup_next_action(p, next_action_name, next_action_params, true)
   end
 end
 
@@ -135,7 +135,7 @@ function bk_blade_fury(p, vs)
       function(p, vs)
         if p.t > 30 then
           finish_action(vs)
-          finish_action(p, actions.thrown_backward)
+          setup_next_action(p, "thrown_backward", nil, true)
         elseif p.t % 5 == 0 then
           spill_blood(p)
         end
@@ -172,7 +172,7 @@ end
 function jc_uppercut(p)
   if p.cap.top_height_reached then
     if not is_timer_active(p.cap, "delay", 3) then
-      finish_action(p, actions.jump)
+      setup_next_action(p, "jump", nil, true)
     end
   else
     attack(p)
@@ -256,6 +256,10 @@ function kl_hat_toss(p)
       elseif btn(⬇️, p.id) then
         p.projectile.y += 0.75
       end
+    end,
+    nil,
+    function(p)
+      finish_action(p)
     end
   )
 end
@@ -281,7 +285,7 @@ function kl_teleport(p, vs)
   teleport(
     p,
     vs,
-    actions.jump,
+    "jump",
     nil,
     function(p, vs)
       p.x = vs.x - sprite_w * vs.facing
@@ -301,8 +305,8 @@ function kn_fan_lift(p)
     nil,
     function() end,
     function(p)
-      if p.t > 60 then
-        finish_action(p, actions.fall)
+      if p.t > 45 then
+        setup_next_action(p, "fall", nil, true)
       elseif p.t < 10 then
         move_x(p, -1)
         move_y(p, -1)
@@ -319,7 +323,7 @@ function kn_flying_punch(p)
 
     if p.t > 15 then
       if not is_timer_active(p.cap, "delay", 3) then
-        finish_action(p, actions.jump)
+        setup_next_action(p, "jump", nil, true)
       end
     else
       move_x(p, offensive_speed * 1.5)
@@ -361,7 +365,7 @@ end
 
 function ml_teleport_kick(p, vs)
   teleport(
-    p, vs, actions.jump_kick, { is_landing = true }, function(p, vs)
+    p, vs, "jump_kick", { is_landing = true }, function(p, vs)
       p.x = vs.x - (sprite_w / 2)
       p.y = y_upper_limit
     end
@@ -376,7 +380,7 @@ function rd_electric_grab(p, vs)
       p, nil, function(p, vs)
         if p.t > 30 then
           finish_action(vs)
-          finish_action(p, actions.fall)
+          setup_next_action(p, "fall", nil, true)
         elseif p.t < 2 then
           move_x(p, -1)
           move_y(p, -1)
@@ -388,7 +392,7 @@ end
 
 function rd_teleport(p, vs)
   teleport(
-    p, vs, actions.idle, nil, function(p, vs)
+    p, vs, "idle", nil, function(p, vs)
       p.x = vs.x - sprite_w * vs.facing
       p.y = vs.y
       p.facing *= -1
@@ -404,7 +408,7 @@ function rd_torpedo(p, vs)
       p, nil, function(p, vs)
         if is_limit_left(p.x) or is_limit_right(p.x) then
           finish_action(vs, actions.jump, { direction = backward })
-          finish_action(p, actions.prone, nil)
+          setup_next_action(p, "fall", nil, true)
         else
           move_x(p, -offensive_speed)
         end
@@ -477,14 +481,14 @@ function sc_teleport_punch(p)
     end
 
     if not is_limit_left(p.x) and not is_limit_right(p.x) then
-      move_x(p, jump_speed)
+      move_x(p, offensive_speed)
     else
       p.cap.has_teleported = true
       p.x = is_limit_left(p.x) and map_max_x or map_min_x
       p.y = y_upper_limit
     end
   else
-    finish_action(p, actions.jump_punch, { is_landing = true, direction = forward, x_speed = offensive_speed })
+    setup_next_action(p, "jump_punch", { is_landing = true, direction = forward, x_speed = offensive_speed }, true)
   end
 end
 

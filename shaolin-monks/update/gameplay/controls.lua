@@ -6,7 +6,9 @@ function process_inputs(p)
 
   if p.released_buttons then
     action_name = detect_special_attack(p)
-  elseif pressed_combination ~= "" then
+  end
+
+  if not action_name and pressed_combination ~= "" then
     if is_blocking and p.held_buttons then
       input_candidate = p.input_detection_delay <= 0 and pressed_directionals or ""
       action_name = detect_special_attack(p, input_candidate) or "block"
@@ -78,6 +80,10 @@ function get_pressed_inputs(p)
 
   if pressed_directionals == "➡️⬇️" or pressed_directionals == "⬅️⬇️" then
     pressed_directionals = "⬇️"
+  end
+
+  if p.ca == actions.block and pressed_buttons ~= "🅾️❎" then
+    pressed_buttons = ""
   end
 
   return pressed_buttons, pressed_directionals, direction

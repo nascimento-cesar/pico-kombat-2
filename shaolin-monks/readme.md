@@ -33,7 +33,7 @@
 - [ ] sfx
 - [x] music
 - [ ] sc spear does not work on right side
-- [ ] pressing directionals after landing a hook does not work
+- [x] pressing directionals after landing a hook does not work, also roundhouse kick and block
 - [ ] fix infinity hat spin after hat toss
 
 # LATEST COUNTS

@@ -1,9 +1,9 @@
-function finish_action(p, next_action, next_action_params)
+function finish_action(p)
   p.cap.has_finished = true
   set_current_action_animation_lock(p, false)
 
   if not p.ca.is_reversible or p.cap.is_reversed then
-    start_action(p, next_action or p.cap.next_action or (actions[p.ca.complementary_action] or actions.idle), p.cap.next_action_params or next_action_params)
+    start_action(p, p.cap.next_action or (actions[p.ca.complementary_action] or actions.idle), p.cap.next_action_params)
   end
 end
 
@@ -133,7 +133,7 @@ function resolve_previous_action(p)
     elseif p.ca.is_resetable then
       return start_action(p, p.ca, p.cap, false, true)
     elseif p.ca.is_aerial and p.ca.is_special_attack then
-      return finish_action(p, actions.jump, { is_landing = true, blocks_special_attacks = true })
+      return setup_next_action(p, "jump", { is_landing = true, blocks_special_attacks = true }, true)
     elseif not p.ca.requires_forced_stop then
       return finish_action(p)
     end
