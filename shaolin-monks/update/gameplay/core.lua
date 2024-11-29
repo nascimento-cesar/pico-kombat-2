@@ -8,16 +8,27 @@ function update_gameplay()
   end
 
   update_round_timer()
-  function_lookup("countdown,finished,finishing_move,time_up", { process_round_start, process_round_end, process_finishing_move, process_time_up }, combat_round_state)
+  function_lookup("finished,finishing_move,starting,time_up", { process_finished, process_finishing_move, process_starting, process_time_up }, combat_round_state)
+  set_controls_lock()
   update_player(p1)
   update_player(p2)
   fix_players_orientation()
   fix_players_placement()
 end
 
+function set_controls_lock()
+  if combat_round_state == "in_progress" then
+    lock_controls(false, false)
+  elseif combat_round_state == "finishing_move" then
+    lock_controls(p1 == combat_round_loser, p2 == combat_round_loser)
+  else
+    lock_controls(true, true)
+  end
+end
+
 function update_round_timer()
   if combat_round_state == "in_progress" then
-    combat_round_remaining_time = ceil(round_duration - (is_round_state_eq "countdown" and 0 or time() - combat_round_start_time))
+    combat_round_remaining_time = ceil(round_duration - (is_round_state_eq "starting" and 0 or time() - combat_round_start_time))
 
     if combat_round_remaining_time <= 0 then
       combat_round_state = "time_up"
@@ -67,8 +78,6 @@ function process_new_player()
 end
 
 function process_time_up()
-  lock_controls(true, true)
-
   if not is_timer_active(combat_round_timers, "time_up") then
     combat_round_state = "finished"
 
@@ -82,14 +91,12 @@ function process_time_up()
   end
 end
 
-function process_round_end()
-  lock_controls(true, true)
-
+function process_finished()
   if combat_round_loser then
     combat_round_loser.cap.next_action = actions.fainted
   end
 
-  if not is_timer_active(combat_round_timers, "round_end") then
+  if not is_timer_active(combat_round_timers, "finished") then
     local has_combat_ended, winner, loser = get_combat_result()
 
     if has_combat_ended then
@@ -101,20 +108,20 @@ function process_round_end()
       end
     else
       combat_round += 1
-      combat_round_state = "countdown"
+      combat_round_state = "starting"
       setup_new_round()
     end
   end
 end
 
-function process_round_start()
-  if not is_timer_active(combat_round_timers, "round_start") then
+function process_starting()
+  if not is_timer_active(combat_round_timers, "starting") then
     combat_round_remaining_time, combat_round_start_time, combat_round_state = round_duration, time(), "in_progress"
   end
 end
 
-function reset_timers()
-  for k, v in pairs(timers) do
+function reset_round_timers()
+  for k, v in pairs(round_timers) do
     combat_round_timers[k] = v
   end
 end

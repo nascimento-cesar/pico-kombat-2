@@ -41,8 +41,7 @@ function check_defeat(p)
     local has_combat_ended, _, loser = get_combat_result()
 
     if has_combat_ended then
-      combat_round_state = "finishing_move"
-      lock_controls(loser == p1, loser == p2)
+      combat_round_state = is_boss(loser) and "boss_defeated" or "finishing_move"
     else
       combat_round_state = "finished"
     end

@@ -36,6 +36,10 @@ function init_player(p)
   p.has_joined = true
 end
 
+function is_boss(p)
+  return p.character.name == "sk"
+end
+
 function is_st_eq(p, st)
   return p.st_timers[st] > 0
 end
@@ -74,10 +78,12 @@ function increment_rounds_won(winner)
   if winner then
     combat_rounds_won[winner.id] += 1
     combat_round_winner = winner
+    combat_round_loser = get_vs(winner)
   else
     combat_rounds_won[p1.id] += 1
     combat_rounds_won[p2.id] += 1
     combat_round_winner = nil
+    combat_round_loser = nil
   end
 end
 
@@ -89,7 +95,7 @@ function setup_new_round()
   foreach_player(function(p, p_id)
     define_player(p_id, p)
   end)
-  reset_timers()
+  reset_round_timers()
 end
 
 function update_frames_counter(p)

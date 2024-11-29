@@ -1,7 +1,7 @@
 function draw_gameplay()
   cls()
   draw_stage()
-  function_lookup("countdown,finished,finishing_move,new_player,time_up", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player, draw_time_up }, combat_round_state)
+  function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, combat_round_state)
   draw_round_timer()
   draw_hp()
   draw_players()
@@ -127,17 +127,17 @@ function draw_round_timer()
   print(combat_round_remaining_time, get_hcenter(combat_round_remaining_time), 8, 7)
 end
 
-function draw_finish_him_her()
-  if combat_round_timers.finishing_move > timers.finishing_move / 2 then
+function draw_finishing_move()
+  if combat_round_timers.finishing_move > round_timers.finishing_move / 2 then
     draw_blinking_text("finish " .. (combat_round_loser.character.gender == 1 and "him" or "her"))
   end
 end
 
-function draw_round_start()
-  draw_blinking_text(combat_round_timers.round_start > timers.round_start / 2 and "round " .. combat_round or "fight")
+function draw_starting()
+  draw_blinking_text(combat_round_timers.starting > round_timers.starting / 2 and "round " .. combat_round or "fight")
 end
 
-function draw_round_result()
+function draw_finished()
   if not combat_round_winner then
     draw_blinking_text("draw")
   else
