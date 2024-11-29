@@ -1,4 +1,8 @@
 function attack(p, collision_callback, reaction_callback, block_callback, collision_handler)
+  if combat_round_state == "finished" then
+    return
+  end
+
   local vs = get_vs(p)
   local should_hit, block_callback = collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y), p.cap.block_callback or block_callback
 
@@ -32,15 +36,22 @@ function check_defeat(p)
   if is_round_state_eq "finishing_move" then
     combat_round_state = "finished"
   elseif p.hp <= 0 then
-    local vs = get_vs(p)
-    combat_rounds_won[vs.id] += 1
-    combat_round_loser, combat_round_winner, combat_round_state = p, vs, has_combat_ended() and "finishing_move" or "finished"
+    increment_rounds_won(get_vs(p))
+
+    local has_combat_ended, _, loser = get_combat_result()
+
+    if has_combat_ended then
+      combat_round_state = "finishing_move"
+      lock_controls(loser == p1, loser == p2)
+    else
+      combat_round_state = "finished"
+    end
   end
 end
 
 function deal_damage(p, dmg)
   p.hp -= dmg
-  -- check_defeat(p)
+  check_defeat(p)
 end
 
 function hit(action, params, p)

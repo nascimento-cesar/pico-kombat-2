@@ -17,7 +17,7 @@ function draw_character_selection()
 
     foreach_player(function(p)
       if i == p.highlighted_char and p.has_joined then
-        rect(x, y, x + w - 1, y + h - 1, get_blinking_color(6, 7))
+        rect(x, y, x + w - 1, y + h - 1, p.temp_character and 7 or get_blinking_color(6, 7))
       end
     end)
 

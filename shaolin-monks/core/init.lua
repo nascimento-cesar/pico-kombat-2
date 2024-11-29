@@ -9,7 +9,7 @@ end
 
 function define_global_constants()
   action_stack_timeout, backward, debug, forward, frozen_body_pal_map, frozen_head_pal_map, jump_speed, map_min_x, map_max_x, p1_id, p2_id, offensive_speed, projectile_speed, round_duration, sprite_h, sprite_w, stage_offset, stroke_width, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, {}, 1, "p0c1c2c3c4c5c6c7c8c9cacbcdcecfc", "p0c1c2c374c5c6c8c9cacbcdcecfc", 3, 1, 126, 0, 1, 4, 3, 90, 8, 8, 16, 2, 1, 3, 127 - 36, 2, 127 - 36 - 30
-  ground_actions_map, aerial_actions_map, timers = string_to_hash("⬅️,➡️,⬆️,⬇️,➡️⬆️,⬅️⬆️,➡️⬇️,⬅️⬇️,🅾️,⬇️🅾️,❎,⬅️❎,⬇️❎,🅾️❎", "walk,walk,jump,crouch,jump,jump,crouch,crouch,punch,hook,kick,roundhouse_kick,sweep,block"), string_to_hash("🅾️,❎", "jump_punch,jump_kick"), string_to_hash("finishing_move,new_player,round_end,round_start", "90,60,60,60")
+  ground_actions_map, aerial_actions_map, timers = string_to_hash("⬅️,➡️,⬆️,⬇️,➡️⬆️,⬅️⬆️,➡️⬇️,⬅️⬇️,🅾️,⬇️🅾️,❎,⬅️❎,⬇️❎,🅾️❎", "walk,walk,jump,crouch,jump,jump,crouch,crouch,punch,hook,kick,roundhouse_kick,sweep,block"), string_to_hash("🅾️,❎", "jump_punch,jump_kick"), string_to_hash("finishing_move,new_player,round_end,round_start,time_up", "90,60,60,60,60")
 end
 
 function define_global_variables()
@@ -41,11 +41,15 @@ end
 
 function define_player(id, p)
   local p = p or {}
-  local next_combats = p.next_combats or split "1,2,3,4,5,6,7,8,9,10,11,12"
+  local next_combats = p.next_combats
 
-  for i = #next_combats, 2, -1 do
-    local j = flr(rnd(i)) + 1
-    next_combats[i], next_combats[j] = next_combats[j], next_combats[i]
+  if not next_combats then
+    next_combats = split "1,2,3,4,5,6,7,8,9,10,11,12"
+
+    for i = #next_combats, 2, -1 do
+      local j = flr(rnd(i)) + 1
+      next_combats[i], next_combats[j] = next_combats[j], next_combats[i]
+    end
   end
 
   local is_p1 = id == p1_id

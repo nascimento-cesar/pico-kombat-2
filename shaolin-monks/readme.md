@@ -1,39 +1,42 @@
 # TODO LIST
 
 - [x] attacking a propelled opponent from ground breaks opponent's position
-- [ ] should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
-- [ ] should not detect a hit when flying attack an opponent that is already behind the player
 - [x] block not implemented
-- [ ] time's up not implemented
-- [ ] support draw and more than 3 rounds
 - [x] return to char selection screen after defeat in vs mode
-- [ ] particles on projectiles
 - [x] kl projectile sprites
 - [x] hold button support
-- [ ] bug when special attack vs at the edge of the screen
 - [x] sometimes hitting an opponent doesn't make the special action end
-- [ ] finishing the round with a special attack does not end the action
 - [x] support triggering release action in middle of another action like jumping and walking
-- [ ] kr and sk characters
+- [x] create sk character
+- [x] move sz_freeeze_timer to cap
+- [x] fix morph kn bl+bl+bl
+- [x] fix morph ml hold button
+- [x] reversible actions that requires forced stop stuck at the last frame
+- [x] music
+- [x] pressing directionals after landing a hook does not work, also roundhouse kick and block
+- [x] time's up not implemented
+- [x] support draw
+- [x] all special moves
+- [x] do not allow damage after combat end
+- [x] select character animation
+- [ ] loser should stay prone after combat end
+- [ ] should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
+- [ ] should not detect a hit when flying attack an opponent that is already behind the player
+- [ ] particles on projectiles
+- [ ] bug when special attack vs at the edge of the screen
+- [ ] finishing the round with a special attack does not end the action
+- [ ] create kr character
 - [ ] add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
 - [ ] freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
 - [ ] fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] hit an opponent teleporting makes it stops inside the ground
-- [x] move sz_freeeze_timer to cap
-- [x] fix morph kn bl+bl+bl
-- [x] fix morph ml hold button
-- [ ] cannot push a frozen enemy in middle air
+- [ ] should not push a frozen enemy in middle air
 - [ ] pixel art stages
-- [ ] game over screen
 - [ ] next combat screen
 - [ ] all finishing moves
-- [ ] all special moves
 - [ ] game end screen
-- [ ] reversible actions that requires forced stop stuck at the last frame
 - [ ] sfx
-- [x] music
 - [ ] sc spear does not work on right side
-- [x] pressing directionals after landing a hook does not work, also roundhouse kick and block
 - [ ] fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to action stack)
 - [ ] should allow just one aerial special attack (projectile) per jump (more than one might stuck player in air)
 - [ ] improve rp invisibility animation and use the same for st morph

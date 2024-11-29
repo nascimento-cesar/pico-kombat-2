@@ -1,11 +1,25 @@
 function define_combat_variables(v)
-  combat_stage, combat_round, combat_round_loser, combat_round_start_time, combat_round_state, combat_round_winner, combat_rounds_won, combat_round_timers = unpack(v or {})
+  combat_stage, combat_round, combat_round_start_time, combat_round_remaining_time, combat_round_state, combat_round_winner, combat_rounds_won, combat_round_timers = unpack(v or {})
 end
 
-function get_combat_winner()
-  if combat_rounds_won[p1_id] == 2 then
+function get_combat_result()
+  local p1_wins, p2_wins = combat_rounds_won[p1_id], combat_rounds_won[p2_id]
+
+  if p1_wins >= 2 and p1_wins > p2_wins then
+    return true, p1, p2
+  elseif p2_wins >= 2 and p2_wins > p1_wins then
+    return true, p2, p1
+  elseif p2_wins == 2 and p1_wins == 2 then
+    return true
+  end
+
+  return false
+end
+
+function get_main_player()
+  if p1.has_joined and not p2.has_joined then
     return p1
-  elseif combat_rounds_won[p2_id] == 2 then
+  elseif not p1.has_joined and p2.has_joined then
     return p2
   end
 end
@@ -16,10 +30,6 @@ end
 
 function get_vs(p)
   return p.id == p1_id and p2 or p1
-end
-
-function has_combat_ended()
-  return get_combat_winner() and true or false
 end
 
 function init_player(p)
@@ -58,6 +68,21 @@ function is_timer_active(obj, timer, init_with)
   end
 
   return false
+end
+
+function increment_rounds_won(winner)
+  if winner then
+    combat_rounds_won[winner.id] += 1
+    combat_round_winner = winner
+  else
+    combat_rounds_won[p1.id] += 1
+    combat_rounds_won[p2.id] += 1
+    combat_round_winner = nil
+  end
+end
+
+function lock_controls(lock_p1, lock_p2)
+  p1.has_locked_controls, p2.has_locked_controls = lock_p1, lock_p2
 end
 
 function setup_new_round()

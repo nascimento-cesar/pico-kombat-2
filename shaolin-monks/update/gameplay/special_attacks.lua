@@ -44,6 +44,10 @@ function create_projectile(p, max_t, before_callback, after_callback, collision_
 end
 
 function update_projectile(p)
+  if combat_round_state == "finished" then
+    destroy_projectile(p)
+  end
+
   if p.projectile then
     local vs, action, params = get_vs(p), p.projectile.action, p.projectile.params
 

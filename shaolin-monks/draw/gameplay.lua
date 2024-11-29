@@ -1,7 +1,7 @@
 function draw_gameplay()
   cls()
   draw_stage()
-  function_lookup("countdown,finished,finishing_move,new_player", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player }, combat_round_state)
+  function_lookup("countdown,finished,finishing_move,new_player,time_up", { draw_round_start, draw_round_result, draw_finish_him_her, draw_new_player, draw_time_up }, combat_round_state)
   draw_round_timer()
   draw_hp()
   draw_players()
@@ -124,15 +124,14 @@ function draw_particles(p)
 end
 
 function draw_round_timer()
-  local elapsed = is_round_state_eq "countdown" and 0 or time() - combat_round_start_time
-  local remaining = ceil(round_duration - elapsed)
-  local x = get_hcenter(remaining)
-  print(remaining, x, 8, 7)
+  print(combat_round_remaining_time, get_hcenter(combat_round_remaining_time), 8, 7)
 end
 
 function draw_finish_him_her()
+  local _, _, loser = get_combat_result()
+
   if combat_round_timers.finishing_move > timers.finishing_move / 2 then
-    draw_blinking_text("finish " .. (combat_round_loser.character.gender == 1 and "him" or "her"))
+    draw_blinking_text("finish " .. (loser.character.gender == 1 and "him" or "her"))
   end
 end
 
@@ -141,11 +140,19 @@ function draw_round_start()
 end
 
 function draw_round_result()
-  draw_blinking_text((combat_round_winner == p1 and "p1" or "p2") .. " wins")
+  if not combat_round_winner then
+    draw_blinking_text("draw")
+  else
+    draw_blinking_text((combat_round_winner == p1 and "p1" or "p2") .. " wins")
+  end
 end
 
 function draw_new_player()
   draw_blinking_text "a new challenger has emerged"
+end
+
+function draw_time_up()
+  draw_blinking_text "time's up"
 end
 
 function draw_hp()
