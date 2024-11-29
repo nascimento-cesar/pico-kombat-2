@@ -85,6 +85,10 @@ end
 function process_round_end()
   lock_controls(true, true)
 
+  if combat_round_loser then
+    combat_round_loser.cap.next_action = actions.fainted
+  end
+
   if not is_timer_active(combat_round_timers, "round_end") then
     local has_combat_ended, winner, loser = get_combat_result()
 
@@ -116,7 +120,9 @@ function reset_timers()
 end
 
 function update_player(p)
-  update_st_timers(p)
+  if combat_round_state ~= "finished" then
+    update_st_timers(p)
+  end
 
   if is_st_eq(p, "frozen") then
     return

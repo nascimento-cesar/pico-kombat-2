@@ -128,10 +128,8 @@ function draw_round_timer()
 end
 
 function draw_finish_him_her()
-  local _, _, loser = get_combat_result()
-
   if combat_round_timers.finishing_move > timers.finishing_move / 2 then
-    draw_blinking_text("finish " .. (loser.character.gender == 1 and "him" or "her"))
+    draw_blinking_text("finish " .. (combat_round_loser.character.gender == 1 and "him" or "her"))
   end
 end
 

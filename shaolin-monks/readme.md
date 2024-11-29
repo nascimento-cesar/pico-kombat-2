@@ -19,7 +19,7 @@
 - [x] all special moves
 - [x] do not allow damage after combat end
 - [x] select character animation
-- [ ] loser should stay prone after combat end
+- [x] loser should stay prone after combat end
 - [ ] should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] should not detect a hit when flying attack an opponent that is already behind the player
 - [ ] particles on projectiles
@@ -31,6 +31,7 @@
 - [ ] fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] hit an opponent teleporting makes it stops inside the ground
 - [ ] should not push a frozen enemy in middle air
+- [ ] create sound for pressing buttons in character selection screen
 - [ ] pixel art stages
 - [ ] next combat screen
 - [ ] all finishing moves
