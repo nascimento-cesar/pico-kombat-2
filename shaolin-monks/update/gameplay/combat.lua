@@ -91,5 +91,5 @@ function remove_temporary_conditions(p)
 end
 
 function spill_blood(p)
-  add(p.particle_sets, build_particle_set(8, 30, p.facing == forward and p.x + sprite_w or p.x, p.y))
+  build_particle_set(p, 8, 30, p.facing == forward and p.x + sprite_w or p.x, p.y)
 end

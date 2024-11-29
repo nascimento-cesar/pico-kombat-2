@@ -20,6 +20,8 @@
 - [x] do not allow damage after combat end
 - [x] select character animation
 - [x] loser should stay prone after combat end
+- [x] game end screen
+- [x] final boss defeat animation
 - [ ] should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] should not detect a hit when flying attack an opponent that is already behind the player
 - [ ] particles on projectiles
@@ -35,7 +37,6 @@
 - [ ] pixel art stages
 - [ ] next combat screen
 - [ ] all finishing moves
-- [ ] game end screen
 - [ ] sfx
 - [ ] sc spear does not work on right side
 - [ ] fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to action stack)

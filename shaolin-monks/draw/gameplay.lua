@@ -1,11 +1,25 @@
 function draw_gameplay()
   cls()
-  draw_stage()
-  function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, combat_round_state)
-  draw_round_timer()
-  draw_hp()
-  draw_players()
-  draw_projectiles()
+
+  if combat_round_state == "boss_defeated" then
+    if combat_round_loser.defeat_animation_step == 1 then
+      draw_boss_final_blow()
+    else
+      draw_stage()
+      draw_players()
+
+      if combat_round_loser.defeat_animation_step == 3 then
+        draw_blinking_text "evil emperor has fallen!"
+      end
+    end
+  else
+    draw_stage()
+    function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, combat_round_state)
+    draw_round_timer()
+    draw_hp()
+    draw_players()
+    draw_projectiles()
+  end
 end
 
 function draw_players()
@@ -107,9 +121,7 @@ function draw_particles(p)
     for particle in all(particle_set.particles) do
       particle.x += particle.speed_x
       particle.y += particle.speed_y
-
-      pset(particle.x, particle.y, particle_set.color)
-
+      circ(particle.x, particle.y, particle_set.radius or 0, particle_set.color)
       particle.current_lifespan += 1
 
       if particle.current_lifespan > particle.max_lifespan then
@@ -125,6 +137,13 @@ end
 
 function draw_round_timer()
   print(combat_round_remaining_time, get_hcenter(combat_round_remaining_time), 8, 7)
+end
+
+function draw_boss_final_blow()
+  shift_pal "p07172737475767778797a7b7c7d7e7f7"
+  draw_stage()
+  pal()
+  draw_players()
 end
 
 function draw_finishing_move()

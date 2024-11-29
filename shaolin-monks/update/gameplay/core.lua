@@ -3,6 +3,10 @@ function update_gameplay()
     music(0)
   end
 
+  if combat_round_state == "boss_defeated" then
+    return process_boss_defeated()
+  end
+
   if detect_new_player() then
     return process_new_player()
   end
@@ -36,20 +40,20 @@ function update_round_timer()
   end
 end
 
-function build_particle_set(color, count, x, y)
-  local particle_set = string_to_hash("color,particles,x,y", { color, {}, x, y })
+function build_particle_set(p, color, count, x, y, max_lifespan, radius)
+  local max_lifespan, particle_set = max_lifespan or 10, string_to_hash("color,radius,particles,x,y", { color, radius, {}, x, y })
 
   for i = 1, count do
     add(
       particle_set.particles,
       string_to_hash(
         "current_lifespan,max_lifespan,speed_x,speed_y,x,y",
-        { rnd(10), 10, rnd() * 2 - 1, rnd() * 2 - 1, particle_set.x, particle_set.y }
+        { rnd(max_lifespan), max_lifespan, rnd() * 2 - 1, rnd() * 2 - 1, particle_set.x, particle_set.y }
       )
     )
   end
 
-  return particle_set
+  add(p.particle_sets, particle_set)
 end
 
 function detect_new_player()
@@ -63,6 +67,46 @@ function detect_new_player()
   end)
 
   return is_round_state_eq "new_player"
+end
+
+function process_boss_defeated()
+  if is_timer_active(combat_round_timers, "boss_defeated", 240) then
+    local timer, particle_function = combat_round_timers.boss_defeated, function(c, q, d, r)
+      build_particle_set(combat_round_loser, c, q, combat_round_loser.x + rnd(sprite_w), combat_round_loser.y + rnd(sprite_h), d, r)
+    end
+
+    if timer > 180 then
+      combat_round_loser.defeat_animation_step = 1
+    elseif timer > 120 then
+      if combat_round_loser.defeat_animation_step == 1 then
+        setup_next_action(combat_round_loser, "boss_defeated", nil, true)
+        combat_round_loser.defeat_animation_step, combat_round_winner.x, combat_round_winner.y, combat_round_loser.x, combat_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
+      end
+
+      update_player(combat_round_loser)
+
+      if timer % 10 == 0 then
+        particle_function(11, 6, max(20, rnd(30)), rnd(1))
+        particle_function(3, 6, max(20, rnd(30)), rnd(1))
+        particle_function(7, 3, max(20, rnd(30)), rnd(1))
+      end
+    elseif timer > 40 then
+      if timer % 10 == 0 then
+        particle_function(11, 4, max(20, rnd(30)), max(2, rnd(4)))
+        particle_function(3, 4, max(20, rnd(30)), max(2, rnd(4)))
+        particle_function(7, 2, max(20, rnd(30)), rnd(3))
+      end
+    elseif combat_round_loser.defeat_animation_step == 2 then
+      particle_function(11, 8, 40, 6)
+      particle_function(3, 8, 40, 3)
+      particle_function(7, 8, 40, 6)
+      combat_round_loser.defeat_animation_step, combat_round_loser.x, combat_round_loser.y = 3, -20, -20
+    end
+  elseif combat_round_loser.defeat_animation_step == 3 then
+    if not is_timer_active(combat_round_timers, "congratulations", 240) then
+      _init()
+    end
+  end
 end
 
 function process_finishing_move()

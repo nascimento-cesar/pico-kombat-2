@@ -1,10 +1,10 @@
-function shift_pal(pallete)
-  pallete = sub(pallete or "p", 2)
+function shift_pal(palette)
+  local palette = sub(palette or "p", 2)
 
-  for i = 1, #pallete, 2 do
+  for i = 1, #palette, 2 do
     pal(
-      tonum("0x0" .. sub(pallete, i, i)),
-      tonum("0x0" .. sub(pallete, i + 1, i + 1))
+      tonum("0x0" .. sub(palette, i, i)),
+      tonum("0x0" .. sub(palette, i + 1, i + 1))
     )
   end
 end
