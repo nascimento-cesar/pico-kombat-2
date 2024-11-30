@@ -22,6 +22,10 @@ function eval_str(v)
   end
 end
 
+function flr_rnd(n)
+  return flr(rnd(n))
+end
+
 function foreach_player(callback)
   for p in all { p1, p2 } do
     local vs = get_vs(p)

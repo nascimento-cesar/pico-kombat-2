@@ -22,13 +22,13 @@
 - [x] loser should stay prone after combat end
 - [x] game end screen
 - [x] final boss defeat animation
+- [x] add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
 - [ ] should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] should not detect a hit when flying attack an opponent that is already behind the player
 - [ ] particles on projectiles
 - [ ] bug when special attack vs at the edge of the screen
 - [ ] finishing the round with a special attack does not end the action
 - [ ] create kr character
-- [ ] add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
 - [ ] freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
 - [ ] fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] hit an opponent teleporting makes it stops inside the ground

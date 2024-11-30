@@ -121,7 +121,8 @@ function draw_particles(p)
     for particle in all(particle_set.particles) do
       particle.x += particle.speed_x
       particle.y += particle.speed_y
-      circ(particle.x, particle.y, particle_set.radius or 0, particle_set.color)
+      local handler = flr_rnd(2) == 1 and circ or circfill
+      handler(particle.x, particle.y, particle_set.radius or 0, particle_set.color)
       particle.current_lifespan += 1
 
       if particle.current_lifespan > particle.max_lifespan then

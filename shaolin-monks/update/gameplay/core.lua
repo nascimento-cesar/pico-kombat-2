@@ -48,7 +48,7 @@ function build_particle_set(p, color, count, x, y, max_lifespan, radius)
       particle_set.particles,
       string_to_hash(
         "current_lifespan,max_lifespan,speed_x,speed_y,x,y",
-        { rnd(max_lifespan), max_lifespan, rnd() * 2 - 1, rnd() * 2 - 1, particle_set.x, particle_set.y }
+        { flr_rnd(max_lifespan), max_lifespan, rnd() * 2 - 1, rnd() * 2 - 1, particle_set.x, particle_set.y }
       )
     )
   end
@@ -72,7 +72,7 @@ end
 function process_boss_defeated()
   if is_timer_active(combat_round_timers, "boss_defeated", 240) then
     local timer, particle_function = combat_round_timers.boss_defeated, function(c, q, d, r)
-      build_particle_set(combat_round_loser, c, q, combat_round_loser.x + rnd(sprite_w), combat_round_loser.y + rnd(sprite_h), d, r)
+      build_particle_set(combat_round_loser, c, q, combat_round_loser.x + flr_rnd(sprite_w), combat_round_loser.y + flr_rnd(sprite_h), d, r)
     end
 
     if timer > 180 then
@@ -86,15 +86,15 @@ function process_boss_defeated()
       update_player(combat_round_loser)
 
       if timer % 10 == 0 then
-        particle_function(11, 6, max(20, rnd(30)), rnd(1))
-        particle_function(3, 6, max(20, rnd(30)), rnd(1))
-        particle_function(7, 3, max(20, rnd(30)), rnd(1))
+        particle_function(11, 6, max(20, flr_rnd(30)), flr_rnd(1))
+        particle_function(3, 6, max(20, flr_rnd(30)), flr_rnd(1))
+        particle_function(7, 3, max(20, flr_rnd(30)), flr_rnd(1))
       end
     elseif timer > 40 then
       if timer % 10 == 0 then
-        particle_function(11, 4, max(20, rnd(30)), max(2, rnd(4)))
-        particle_function(3, 4, max(20, rnd(30)), max(2, rnd(4)))
-        particle_function(7, 2, max(20, rnd(30)), rnd(3))
+        particle_function(11, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
+        particle_function(3, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
+        particle_function(7, 2, max(20, flr_rnd(30)), flr_rnd(3))
       end
     elseif combat_round_loser.defeat_animation_step == 2 then
       particle_function(11, 8, 40, 6)

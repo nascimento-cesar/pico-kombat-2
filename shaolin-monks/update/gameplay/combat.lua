@@ -4,7 +4,11 @@ function attack(p, collision_callback, reaction_callback, block_callback, collis
   end
 
   local vs = get_vs(p)
-  local should_hit, block_callback = collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y), p.cap.block_callback or block_callback
+  local should_hit, block_callback = false, p.cap.block_callback or block_callback
+
+  if (collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y)) and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
+    should_hit = true
+  end
 
   if should_hit and not p.cap.has_hit and not p.cap.has_blocked then
     if vs.ca == actions.block then
