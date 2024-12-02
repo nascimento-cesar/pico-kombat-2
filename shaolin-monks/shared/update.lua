@@ -90,7 +90,12 @@ function setup_new_round()
   foreach_player(function(p, p_id)
     define_player(p_id, p)
   end)
-  reset_round_timers()
+
+  for k, v in pairs(round_timers) do
+    combat_round_timers[k] = v
+  end
+
+  combat_round_remaining_time = round_duration
 end
 
 function update_frames_counter(p)

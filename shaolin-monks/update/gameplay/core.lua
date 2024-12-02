@@ -8,29 +8,14 @@ function update_gameplay()
   end
 
   if detect_new_player() then
-    return process_new_player()
+    if not is_timer_active(combat_round_timers, "new_player") then
+      current_screen = "character_selection"
+    end
+
+    return
   end
 
-  update_round_timer()
-  function_lookup("finished,finishing_move,starting,time_up", { process_finished, process_finishing_move, process_starting, process_time_up }, combat_round_state)
-  set_controls_lock()
-  update_player(p1)
-  update_player(p2)
-  fix_players_orientation()
-  fix_players_placement()
-end
-
-function set_controls_lock()
-  if combat_round_state == "in_progress" then
-    lock_controls(false, false)
-  elseif combat_round_state == "finishing_move" then
-    lock_controls(p1 == combat_round_loser, p2 == combat_round_loser)
-  else
-    lock_controls(true, true)
-  end
-end
-
-function update_round_timer()
+  -- update_round_timer
   if combat_round_state == "in_progress" then
     combat_round_remaining_time = ceil(round_duration - (is_round_state_eq "starting" and 0 or time() - combat_round_start_time))
 
@@ -38,6 +23,24 @@ function update_round_timer()
       combat_round_state = "time_up"
     end
   end
+  -- update_round_timer
+
+  function_lookup("finished,finishing_move,starting,time_up", { process_finished, process_finishing_move, process_starting, process_time_up }, combat_round_state)
+
+  --set_controls_lock
+  if combat_round_state == "in_progress" then
+    lock_controls(false, false)
+  elseif combat_round_state == "finishing_move" then
+    lock_controls(p1 == combat_round_loser, p2 == combat_round_loser)
+  else
+    lock_controls(true, true)
+  end
+  --set_controls_lock
+
+  update_player(p1)
+  update_player(p2)
+  fix_players_orientation()
+  fix_players_placement()
 end
 
 function build_particle_set(p, color, count, x, y, max_lifespan, radius)
@@ -115,12 +118,6 @@ function process_finishing_move()
   end
 end
 
-function process_new_player()
-  if not is_timer_active(combat_round_timers, "new_player") then
-    current_screen = "character_selection"
-  end
-end
-
 function process_time_up()
   if not is_timer_active(combat_round_timers, "time_up") then
     combat_round_state = "finished"
@@ -164,15 +161,14 @@ function process_starting()
   end
 end
 
-function reset_round_timers()
-  for k, v in pairs(round_timers) do
-    combat_round_timers[k] = v
-  end
-end
-
 function update_player(p)
   if combat_round_state ~= "finished" then
-    update_st_timers(p)
+    is_timer_active(p.st_timers, "frozen")
+    is_timer_active(p.st_timers, "invisible")
+
+    if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
+      p.character, p.is_morphed = characters[6], false
+    end
   end
 
   if is_st_eq(p, "frozen") then
@@ -203,15 +199,5 @@ function update_player(p)
 
   if p.has_joined then
     cleanup_action_stack(p)
-  end
-end
-
-function update_st_timers(p)
-  is_timer_active(p.st_timers, "frozen")
-  is_timer_active(p.st_timers, "invisible")
-
-  if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
-    p.character = characters[6]
-    p.is_morphed = false
   end
 end
