@@ -53,10 +53,7 @@ function is_limit_right(x, tollerance)
 end
 
 function is_p1_ahead_p2()
-  local is_p1_ahead = p1.x > p2.x and p1.facing == forward
-  local is_p1_behind = p1.x + sprite_w < p2.x + sprite_w and p1.facing == backward
-
-  return is_p1_ahead or is_p1_behind
+  return (p1.x > p2.x and p1.facing == forward) or (p1.x + sprite_w < p2.x + sprite_w and p1.facing == backward)
 end
 
 function is_round_state_eq(s)
@@ -77,13 +74,11 @@ end
 function increment_rounds_won(winner)
   if winner then
     combat_rounds_won[winner.id] += 1
-    combat_round_winner = winner
-    combat_round_loser = get_vs(winner)
+    combat_round_winner, combat_round_loser = winner, get_vs(winner)
   else
     combat_rounds_won[p1.id] += 1
     combat_rounds_won[p2.id] += 1
-    combat_round_winner = nil
-    combat_round_loser = nil
+    combat_round_winner, combat_round_loser = nil, nil
   end
 end
 
