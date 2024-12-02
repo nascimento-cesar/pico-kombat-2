@@ -129,11 +129,3 @@ function update_frames_counter(p)
     end
   end
 end
-
-function update_debug()
-  debug.p1_as = p1.action_stack
-
-  if debug.s == nil then
-    debug.s = 0
-  end
-end
