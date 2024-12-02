@@ -15,10 +15,39 @@ function draw_gameplay()
   else
     draw_stage()
     function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, combat_round_state)
-    draw_round_timer()
-    draw_hp()
+
+    -- draw_round_timer
+    print(combat_round_remaining_time, get_hcenter(combat_round_remaining_time), 8, 7)
+    -- draw_round_timer
+
+    -- draw hp
+    local offset = 8
+    local h, w, y = 8, (128 - offset * 3) / 2, offset * 2
+
+    foreach_player(function(p, p_id)
+      local x, hp_w = offset + p_id * w + p_id * offset, max(w * p.hp / 100, 1)
+      rectfill(x, y, x + w - 1, y + h - 1, 8)
+      rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
+      rect(x, y, x + w - 1, y + h - 1, 6)
+      for i = 1, combat_rounds_won[p_id] do
+        shift_pal "p50"
+        spr(192, x + (i - 1) * 8, y + h + 2)
+        pal()
+      end
+    end)
+    -- draw hp
+
     draw_players()
-    draw_projectiles()
+
+    -- draw projectile
+    if p1.projectile then
+      draw_projectile(p1)
+    end
+
+    if p2.projectile then
+      draw_projectile(p2)
+    end
+    -- draw projectile
   end
 end
 
@@ -51,52 +80,25 @@ function draw_player(p)
   end
 
   if not is_st_eq(p, "invisible") then
-    draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
-    draw_head(p, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
-    draw_body(p, body_id, flip_body_x, flip_body_y)
+    local head_x, head_y = p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment
+    shift_pal "p01112131415161718191a1b1c1d1e1f1"
+
+    for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
+      local x, y = unpack_split(axes, "|")
+      spr(body_id, p.x + x, p.y + y, 1, 1, flip_body_x, flip_body_y)
+      spr(p.character.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
+    end
+
+    pal()
+    shift_pal(is_st_eq(p, "frozen") and frozen_head_pal_map or p.character.head_pal_map)
+    spr(p.character.head_sprites[head_id], head_x, head_y, 1, 1, flip_head_x, flip_head_y)
+    pal()
+    shift_pal(is_st_eq(p, "frozen") and frozen_body_pal_map or p.character.body_pal_map)
+    spr(body_id, p.x, p.y, 1, 1, flip_body_x, flip_body_y)
+    pal()
   end
 
   draw_particles(p)
-end
-
-function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x_adjustment, head_y_adjustment, flip_head_x, flip_head_y)
-  local pal_string, body_x, body_y, head_x, head_y = "p", p.x, p.y, p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment
-
-  for i in all(split "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f") do
-    pal_string = pal_string .. i .. "1"
-  end
-
-  shift_pal(pal_string)
-
-  for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
-    local x, y = unpack_split(axes, "|")
-    spr(body_id, body_x + x, body_y + y, 1, 1, flip_body_x, flip_body_y)
-    spr(p.character.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
-  end
-
-  pal()
-end
-
-function draw_head(p, id, x_adjustment, y_adjustment, flip_x, flip_y)
-  shift_pal(is_st_eq(p, "frozen") and frozen_head_pal_map or p.character.head_pal_map)
-  spr(p.character.head_sprites[id], p.x + x_adjustment * p.facing, p.y + y_adjustment, 1, 1, flip_x, flip_y)
-  pal()
-end
-
-function draw_body(p, id, flip_x, flip_y)
-  shift_pal(is_st_eq(p, "frozen") and frozen_body_pal_map or p.character.body_pal_map)
-  spr(id, p.x, p.y, 1, 1, flip_x, flip_y)
-  pal()
-end
-
-function draw_projectiles()
-  if p1.projectile then
-    draw_projectile(p1)
-  end
-
-  if p2.projectile then
-    draw_projectile(p2)
-  end
 end
 
 function draw_projectile(p)
@@ -136,10 +138,6 @@ function draw_particles(p)
   end
 end
 
-function draw_round_timer()
-  print(combat_round_remaining_time, get_hcenter(combat_round_remaining_time), 8, 7)
-end
-
 function draw_boss_final_blow()
   shift_pal "p07172737475767778797a7b7c7d7e7f7"
   draw_stage()
@@ -158,11 +156,7 @@ function draw_starting()
 end
 
 function draw_finished()
-  if not combat_round_winner then
-    draw_blinking_text("draw")
-  else
-    draw_blinking_text((combat_round_winner == p1 and "p1" or "p2") .. " wins")
-  end
+  draw_blinking_text(combat_round_winner and ((combat_round_winner == p1 and "p1" or "p2") .. " wins") or "draw")
 end
 
 function draw_new_player()
@@ -171,21 +165,4 @@ end
 
 function draw_time_up()
   draw_blinking_text "time's up"
-end
-
-function draw_hp()
-  local offset = 8
-  local h, w, y = 8, (128 - offset * 3) / 2, offset * 2
-
-  foreach_player(function(p, p_id)
-    local x, hp_w = offset + p_id * w + p_id * offset, max(w * p.hp / 100, 1)
-    rectfill(x, y, x + w - 1, y + h - 1, 8)
-    rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
-    rect(x, y, x + w - 1, y + h - 1, 6)
-    for i = 1, combat_rounds_won[p_id] do
-      shift_pal "p50"
-      spr(192, x + (i - 1) * 8, y + h + 2)
-      pal()
-    end
-  end)
 end
