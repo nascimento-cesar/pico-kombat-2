@@ -3,8 +3,7 @@ function attack(p, collision_callback, reaction_callback, block_callback, collis
     return
   end
 
-  local vs = get_vs(p)
-  local should_hit, block_callback = false, p.cap.block_callback or block_callback
+  local vs, should_hit, block_callback = get_vs(p), false, p.cap.block_callback or block_callback
 
   if (collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y)) and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
     should_hit = true
@@ -61,7 +60,7 @@ function hit(action, params, p)
   local reaction = params.reaction or action.reaction
 
   if reaction and not params.skip_reaction then
-    if p.ca.is_aerial and any_match("flinch,swept", reaction) then
+    if p.ca.is_aerial and (reaction == "flinch" or reaction == "swept") then
       setup_next_action(p, "thrown_backward", nil, true)
     else
       setup_next_action(p, reaction, nil, true)

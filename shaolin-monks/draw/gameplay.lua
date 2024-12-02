@@ -3,7 +3,10 @@ function draw_gameplay()
 
   if combat_round_state == "boss_defeated" then
     if combat_round_loser.defeat_animation_step == 1 then
-      draw_boss_final_blow()
+      shift_pal "p07172737475767778797a7b7c7d7e7f7"
+      draw_stage()
+      pal()
+      draw_players()
     else
       draw_stage()
       draw_players()
@@ -15,12 +18,7 @@ function draw_gameplay()
   else
     draw_stage()
     function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, combat_round_state)
-
-    -- draw_round_timer
     print(combat_round_remaining_time, get_hcenter(combat_round_remaining_time), 8, 7)
-    -- draw_round_timer
-
-    -- draw hp
     local offset = 8
     local h, w, y = 8, (128 - offset * 3) / 2, offset * 2
 
@@ -35,11 +33,9 @@ function draw_gameplay()
         pal()
       end
     end)
-    -- draw hp
 
     draw_players()
 
-    -- draw projectile
     if p1.projectile then
       draw_projectile(p1)
     end
@@ -47,7 +43,6 @@ function draw_gameplay()
     if p2.projectile then
       draw_projectile(p2)
     end
-    -- draw projectile
   end
 end
 
@@ -136,13 +131,6 @@ function draw_particles(p)
       del(p.particle_sets, particle_set)
     end
   end
-end
-
-function draw_boss_final_blow()
-  shift_pal "p07172737475767778797a7b7c7d7e7f7"
-  draw_stage()
-  pal()
-  draw_players()
 end
 
 function draw_finishing_move()

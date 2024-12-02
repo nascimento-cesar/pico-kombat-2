@@ -1,15 +1,3 @@
-function any_match(arr, val)
-  arr = type(arr) == "string" and split(arr) or arr
-
-  for item in all(arr) do
-    if item == val then
-      return true
-    end
-  end
-
-  return false
-end
-
 function eval_str(v)
   if v == "t" then
     return true
@@ -36,14 +24,6 @@ end
 function function_lookup(keys, values, key)
   local f = string_to_hash(keys, values)[key]
   return f and f()
-end
-
-function merge(obj1, obj2)
-  for k, v in pairs(obj2) do
-    obj1[k] = v
-  end
-
-  return obj1
 end
 
 function split_sprites(s, separator)

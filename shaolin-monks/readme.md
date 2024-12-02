@@ -45,8 +45,8 @@
 - [ ] 🚀 create kr character
 
 # LATEST COUNTS
-tokens: 7.499/8.192
-chars: 62.727/65.535
+tokens: 7.211/8.192
+chars: 60.548/65.535
 compressed: 97%
 
 # SOUNDS

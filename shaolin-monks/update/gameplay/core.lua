@@ -15,7 +15,6 @@ function update_gameplay()
     return
   end
 
-  -- update_round_timer
   if combat_round_state == "in_progress" then
     combat_round_remaining_time = ceil(round_duration - (is_round_state_eq "starting" and 0 or time() - combat_round_start_time))
 
@@ -23,11 +22,9 @@ function update_gameplay()
       combat_round_state = "time_up"
     end
   end
-  -- update_round_timer
 
   function_lookup("finished,finishing_move,starting,time_up", { process_finished, process_finishing_move, process_starting, process_time_up }, combat_round_state)
 
-  --set_controls_lock
   if combat_round_state == "in_progress" then
     lock_controls(false, false)
   elseif combat_round_state == "finishing_move" then
@@ -35,7 +32,6 @@ function update_gameplay()
   else
     lock_controls(true, true)
   end
-  --set_controls_lock
 
   update_player(p1)
   update_player(p2)
