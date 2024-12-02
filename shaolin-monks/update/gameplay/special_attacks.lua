@@ -3,7 +3,7 @@ function handle_special_attack(p)
 
   if handler == "st_morph" then
     if not is_st_eq(p, "morphed") then
-      p.is_morphed, p.st_timers.morphed, p.character = true, 300, characters[tonum(id)]
+      p.is_morphed, p.st_timers.morphed, p.character = true, 300, characters[tonum(params)]
     end
 
     return
@@ -164,6 +164,7 @@ function handle_special_attack(p)
             if btnp(⬆️, p.id) and p.cap.boosts < 3 then
               p.t -= total_frames
               p.cap.boosts += 1
+              play_sfx(p.ca.action_sfx)
             end
           end
         end
@@ -330,7 +331,7 @@ function handle_special_attack(p)
         )
       end,
       function(p)
-        if p.t >= get_total_frames(p) then
+        if p.t >= get_total_frames(p) and p.st_timers.invisible == 0 then
           p.st_timers.invisible = 300
         end
       end,
@@ -496,12 +497,12 @@ function update_projectile(p)
     if not p.projectile.has_hit and not p.projectile.has_blocked and has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
       if vs.ca == actions.block then
         p.projectile.has_blocked = true
-        sfx(actions.block.hit_sfx)
+        play_sfx(actions.block.hit_sfx)
         deal_damage(vs, 1)
         destroy_projectile(p)
       else
         if p.projectile.action.hit_sfx then
-          sfx(p.projectile.action.hit_sfx)
+          play_sfx(p.projectile.action.hit_sfx)
         end
 
         p.projectile.has_hit = true

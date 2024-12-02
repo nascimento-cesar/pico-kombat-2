@@ -23,6 +23,7 @@
 - [x] 🚀 game end screen
 - [x] 🚀 final boss defeat animation
 - [x] 🚀 add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
+- [x] 🐞 finishing the round with a special attack does not end the action
 - [ ] 🚀 next combat screen
 - [ ] 🚀 particles on projectiles
 - [ ] 🚀 all finishing moves
@@ -32,7 +33,6 @@
 - [ ] 🐞 should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] 🐞 should not detect a hit when flying attack an opponent that is already behind the player
 - [ ] 🐞 bug when special attack vs at the edge of the screen
-- [ ] 🐞 finishing the round with a special attack does not end the action
 - [ ] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
 - [ ] 🐞 fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] 🐞 hit an opponent teleporting makes it stops inside the ground
@@ -50,19 +50,19 @@ chars: 60.548/65.535
 compressed: 97%
 
 # SOUNDS
-14 - light hit
-15 - heavy hit
-16 - blocked blow
-17 - jump
-18 - sweep
-19 - generic projectile launch
-20 - generic projectile hit
-21 - generic flying attack
-22 - lk bicycle kick | bk blade fury | rd electric grab
-23 - kl spin
-24 - generic teleport
-25 - jc nut cracker
-26 - rp invisibility | st morph
+✅ 14 - light hit
+✅ 15 - heavy hit
+✅ 16 - blocked blow
+✅ 17 - jump | ml ground roll
+✅ 18 - sweep
+✅ 19 - generic projectile launch
+✅ 20 - generic projectile hit
+✅ 21 - generic flying attack | generic teleport
+✅ 22 - lk bicycle kick | bk blade fury | rd electric grab
+✅ 23 - kl spin
+✅ 24 - rd teleport
+✅ 25 - jc nut cracker
+✅ 26 - rp invisibility | st morph
 27 - sz freeze
 28 - jx ground pound | rd torpedo hit
 29 - jx gotcha

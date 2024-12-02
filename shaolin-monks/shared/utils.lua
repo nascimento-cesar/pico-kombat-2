@@ -49,3 +49,9 @@ end
 function unpack_split(s, separator, convert)
   return unpack(split(s, separator, convert and true))
 end
+
+function play_sfx(id, channel)
+  local channel = channel or 2
+  sfx(-1, 50 + channel)
+  sfx(id, channel)
+end

@@ -181,7 +181,7 @@ function start_action(p, next_action, params, keep_current_frame, is_restarted)
     cleanup_action_stack(p, true)
   end
 
-  if p.ca.action_sfx then
-    sfx(p.ca.action_sfx)
+  if p.ca.action_sfx and not is_restarted then
+    play_sfx(p.ca.action_sfx, 3)
   end
 end
