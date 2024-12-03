@@ -66,6 +66,7 @@ function handle_action(p)
     aerial_action(p)
   elseif handler == "jump_attack" then
     aerial_action(p)
+    attack(p)
   elseif handler == "ouch" then
     if not is_timer_active(p.cap, "reaction_timer", 30) then
       finish_action(p)

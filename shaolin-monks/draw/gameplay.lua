@@ -105,12 +105,12 @@ function draw_projectile(p)
   end
 
   shift_pal(p.character.projectile_pal_map)
-  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.projectile.flip_x or p.facing == backward)
+  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.projectile.flip_x or p.projectile.direction == backward)
   pal()
 
   if p.projectile.has_rope then
     local y = p.projectile.y + (p.character.projectile_h / 2)
-    line(p.x + sprite_w, y, p.projectile.x, y, 4)
+    line(p.x + sprite_w, y, p.projectile.rope_x, y, 4)
   end
 end
 

@@ -20,6 +20,7 @@ function handle_special_attack(p)
           attack(
             p,
             function(p, vs)
+              p.t = 0
               move_x(vs, -1)
               move_y(vs, -1)
             end,
@@ -86,7 +87,10 @@ function handle_special_attack(p)
         end
       end,
       function(p, vs)
-        if p.cap.has_hit then
+        if vs.hp <= 0 then
+          finish_action(p)
+          setup_next_action(vs, "fainted", nil, true)
+        elseif p.cap.has_hit then
           if not is_timer_active(p.cap, "delay", 15) or p.cap.skip_delay then
             p.cap.punches, p.cap.max_punches = p.cap.punches or 1, p.cap.max_punches or 2
             local is_last_punch = p.cap.punches >= p.cap.max_punches
@@ -236,8 +240,10 @@ function handle_special_attack(p)
           if vs.t >= total_frames * 3 then
             finish_action(p)
             finish_action(vs)
+            p.y = y_bottom_limit
           else
             move_x(p, offensive_speed / 2)
+            move_x(vs, -offensive_speed / 2)
           end
         else
           if p.t >= total_frames * 2 then
@@ -303,7 +309,7 @@ function handle_special_attack(p)
         teleport(
           p, vs, "idle", nil, function(p, vs)
             p.x = vs.x - sprite_w * vs.facing
-            p.y = vs.y
+            p.y = y_bottom_limit
             p.facing *= -1
             fix_players_orientation()
           end
@@ -351,6 +357,7 @@ function handle_special_attack(p)
           nil,
           function(p)
             p.projectile.has_rope = true
+            p.projectile.rope_x = p.projectile.direction == forward and p.projectile.x or p.projectile.x + 6
           end,
           nil,
           function(p)
@@ -358,7 +365,7 @@ function handle_special_attack(p)
           end,
           function(p, vs)
             if p.t >= get_total_frames(p, 10) then
-              if has_collision(p.x, p.y, vs.x, vs.y) then
+              if has_collision(p.x, p.y, vs.x, vs.y, nil, 12, 12, 12, 12) then
                 finish_action(vs)
                 setup_next_action(p, "stumble", nil, true)
                 destroy_projectile(vs)
@@ -368,7 +375,7 @@ function handle_special_attack(p)
                   end
                 end
               else
-                vs.projectile.x -= offensive_speed
+                vs.projectile.x += offensive_speed * p.facing
                 move_x(p, offensive_speed)
               end
             end
@@ -482,7 +489,7 @@ end
 
 function create_projectile(p, max_t, before_callback, after_callback, collision_callback, reaction_callback)
   if not p.cap.has_fired_projectile and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
-    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,frames,max_t,params,reaction_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, 0, max_t, p.cap, reaction_callback, p.character.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reaction_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reaction_callback, p.character.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end
@@ -501,7 +508,7 @@ function update_projectile(p)
       p.projectile.before_callback(p, vs)
     end
 
-    p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.facing
+    p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.projectile.direction
     p.projectile.frames += 1
 
     if not p.projectile.has_hit and not p.projectile.has_blocked and has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
@@ -537,7 +544,7 @@ function update_projectile(p)
       destroy_projectile(p)
     end
 
-    if not p.projectile and p.ca.requires_forced_stop then
+    if not p.projectile and p.ca.requires_forced_stop and not p.ca.is_aerial then
       finish_action(p)
     end
   end

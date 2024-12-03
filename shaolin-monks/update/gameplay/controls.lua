@@ -74,7 +74,7 @@ function get_pressed_inputs(p)
     end
   end
 
-  if btnp(⬆️, p.id) and not p.ca.is_aerial then
+  if btnp(⬆️, p.id) and not p.ca.is_aerial and not p.ca.is_special_attack then
     pressed_directionals = pressed_directionals .. "⬆️"
   end
 

@@ -5,7 +5,7 @@ function attack(p, collision_callback, reaction_callback, block_callback, collis
 
   local vs, should_hit, block_callback = get_vs(p), false, p.cap.block_callback or block_callback
 
-  if (collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y)) and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
+  if (collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
     should_hit = true
   end
 
@@ -36,17 +36,19 @@ function attack(p, collision_callback, reaction_callback, block_callback, collis
 end
 
 function check_defeat(p)
-  if is_round_state_eq "finishing_move" then
-    combat_round_state = "finished"
-  elseif p.hp <= 0 then
-    increment_rounds_won(get_vs(p))
-
-    local has_combat_ended, _, loser = get_combat_result()
-
-    if has_combat_ended then
-      combat_round_state = is_boss(loser) and "boss_defeated" or "finishing_move"
-    else
+  if p.hp <= 0 then
+    if is_round_state_eq "finishing_move" then
       combat_round_state = "finished"
+    else
+      increment_rounds_won(get_vs(p))
+
+      local has_combat_ended, _, loser = get_combat_result()
+
+      if has_combat_ended then
+        combat_round_state = is_boss(loser) and "boss_defeated" or "finishing_move"
+      else
+        combat_round_state = "finished"
+      end
     end
   end
 end

@@ -129,7 +129,7 @@ end
 
 function process_finished()
   if combat_round_loser then
-    combat_round_loser.cap.next_action = actions.fainted
+    combat_round_loser.cap.next_action = combat_round_loser.y == y_bottom_limit and actions.fainted
   end
 
   if not is_timer_active(combat_round_timers, "finished") then
