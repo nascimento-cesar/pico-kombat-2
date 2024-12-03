@@ -45,11 +45,6 @@
 - [ ] 🚀 next combat screen
 - [ ] 🚀 create kr character
 
-# LATEST COUNTS
-tokens: 7.133/8.192
-chars: 60.548/65.535
-compressed: 97%
-
 # SOUNDS
 ✅ 14 - light hit
 ✅ 15 - heavy hit
@@ -73,3 +68,8 @@ compressed: 97%
 ✅ 33 - rd torpedo
 ✅ 34 - character selection move
 ✅ 35 - character selection confirm
+
+# LATEST COUNTS
+tokens: 7.231/8.192
+chars: 62.854/65.535
+compressed: 95%
