@@ -2,7 +2,7 @@ function draw_gameplay()
   cls()
 
   if combat_round_state == "boss_defeated" then
-    if temp.defeat_animation_step == 1 then
+    if ccp.defeat_animation_step == 1 then
       shift_pal "p07172737475767778797a7b7c7d7e7f7"
       draw_stage()
       pal()
@@ -11,7 +11,7 @@ function draw_gameplay()
       draw_stage()
       draw_players()
 
-      if temp.defeat_animation_step == 3 then
+      if ccp.defeat_animation_step == 3 then
         draw_blinking_text "evil emperor has fallen!"
       end
     end
@@ -63,6 +63,15 @@ function draw_stage()
 end
 
 function draw_player(p)
+  if ccp.skip_p_rendering == p.id then
+    if ccp.has_finishing_move_hit then
+      draw_player(ccp.p_fmr1)
+      draw_player(ccp.p_fmr2)
+    end
+
+    return
+  end
+
   local flip_body_x, flip_body_y, flip_head_x, flip_head_y, head_x_adjustment, head_y_adjustment, sprite, body_id, head_id, index = false, false, false, false, 0, 0, p.ca.sprites[flr((p.caf - 1) / p.ca.fps) + 1]
 
   if type(sprite) == "table" then
@@ -77,15 +86,8 @@ function draw_player(p)
 
   if not is_st_eq(p, "invisible") then
     local head_x, head_y = p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment
-    shift_pal "p01112131415161718191a1b1c1d1e1f1"
 
-    for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
-      local x, y = unpack_split(axes, "|")
-      spr(body_id, p.x + x, p.y + y, 1, 1, flip_body_x, flip_body_y)
-      spr(p.character.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
-    end
-
-    pal()
+    draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x, head_y, flip_head_x, flip_head_y)
     shift_pal(is_st_eq(p, "frozen") and frozen_head_pal_map or p.character.head_pal_map)
     spr(p.character.head_sprites[head_id], head_x, head_y, 1, 1, flip_head_x, flip_head_y)
     pal()
@@ -95,6 +97,24 @@ function draw_player(p)
   end
 
   draw_particles(p)
+end
+
+function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x, head_y, flip_head_x, flip_head_y)
+  shift_pal "p01112131415161718191a1b1c1d1e1f1"
+
+  for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
+    local x, y = unpack_split(axes, "|")
+
+    if body_id then
+      spr(body_id, p.x + x, p.y + y, 1, 1, flip_body_x, flip_body_y)
+    end
+
+    if head_id then
+      spr(p.character.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
+    end
+  end
+
+  pal()
 end
 
 function draw_projectile(p)

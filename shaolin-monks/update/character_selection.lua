@@ -1,15 +1,15 @@
 function update_character_selection()
   music(-1, 200)
 
-  if temp.characters_selected and not is_timer_active(temp, "round_beginning_timer", 30) then
-    p1.temp_character, p2.temp_character, temp.characters_selected, current_screen = nil, nil, false, "next_combat"
+  if ccp.characters_selected and not is_timer_active(ccp, "round_beginning_timer", 30) then
+    p1.temp_character, p2.temp_character, ccp.characters_selected, current_screen = nil, nil, false, "next_combat"
   else
     foreach_player(handle_cursor_movement)
   end
 end
 
 function handle_cursor_movement(p, p_id, vs)
-  if temp.characters_selected then
+  if ccp.characters_selected then
     return
   end
 
@@ -33,7 +33,7 @@ function handle_cursor_movement(p, p_id, vs)
 
       if is_vs_selected or not vs.has_joined then
         sfx(35)
-        temp.characters_selected = true
+        ccp.characters_selected = true
         p.character = p.temp_character
 
         if is_vs_selected then

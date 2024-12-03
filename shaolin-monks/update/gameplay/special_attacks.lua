@@ -459,26 +459,6 @@ function handle_special_attack(p)
   )
 end
 
-function detect_special_attack(p, next_input)
-  for _, special_attack in pairs(p.character.special_attacks) do
-    local sequence, should_trigger = special_attack.sequence, false
-
-    if (p.ca.is_aerial and special_attack.is_aerial) or (not p.ca.is_aerial and not special_attack.is_aerial) then
-      if sub(sequence, 1, 1) == "h" and p.released_buttons then
-        local released_buttons, released_buttons_timer = unpack_split(p.released_buttons)
-        p.released_buttons, should_trigger = nil, released_buttons == sub(sequence, 3) and released_buttons_timer >= sub(sequence, 2)
-      else
-        local command = p.action_stack .. (p.action_stack ~= "" and "+" or "") .. (next_input or "")
-        should_trigger = sub(command, #command - #sequence + 1, #command) == sequence
-      end
-    end
-
-    if should_trigger then
-      return special_attack.name
-    end
-  end
-end
-
 function destroy_projectile(p)
   p.projectile = nil
 end

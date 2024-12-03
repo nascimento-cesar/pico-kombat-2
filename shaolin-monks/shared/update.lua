@@ -1,5 +1,5 @@
 function define_combat_variables(v)
-  combat_round, combat_round_start_time, combat_round_remaining_time, combat_round_state, combat_round_winner, combat_rounds_won, combat_round_timers = unpack(v or {})
+  ccp, combat_round, combat_round_start_time, combat_round_remaining_time, combat_round_state, combat_round_winner, combat_rounds_won, combat_round_timers = {}, unpack(v or {})
 end
 
 function get_combat_result()

@@ -27,7 +27,7 @@ function update_gameplay()
 
   if combat_round_state == "in_progress" then
     lock_controls(false, false)
-  elseif combat_round_state == "finishing_move" then
+  elseif combat_round_state == "finishing_move" and not ccp.finishing_move then
     lock_controls(p1 == combat_round_loser, p2 == combat_round_loser)
   else
     lock_controls(true, true)
@@ -74,11 +74,11 @@ function process_boss_defeated()
     end
 
     if timer > 180 then
-      temp.defeat_animation_step = 1
+      ccp.defeat_animation_step = 1
     elseif timer > 120 then
-      if temp.defeat_animation_step == 1 then
+      if ccp.defeat_animation_step == 1 then
         setup_next_action(combat_round_loser, "boss_defeated", nil, true)
-        temp.defeat_animation_step, combat_round_winner.x, combat_round_winner.y, combat_round_loser.x, combat_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
+        ccp.defeat_animation_step, combat_round_winner.x, combat_round_winner.y, combat_round_loser.x, combat_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
       end
 
       update_player(combat_round_loser)
@@ -94,21 +94,23 @@ function process_boss_defeated()
         particle_function(3, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
         particle_function(7, 2, max(20, flr_rnd(30)), flr_rnd(3))
       end
-    elseif temp.defeat_animation_step == 2 then
+    elseif ccp.defeat_animation_step == 2 then
       particle_function(11, 8, 40, 6)
       particle_function(3, 8, 40, 3)
       particle_function(7, 8, 40, 6)
-      temp.defeat_animation_step, combat_round_loser.x, combat_round_loser.y = 3, -20, -20
+      ccp.defeat_animation_step, combat_round_loser.x, combat_round_loser.y = 3, -20, -20
     end
-  elseif temp.defeat_animation_step == 3 then
-    if not is_timer_active(temp, "congratulations", 240) then
+  elseif ccp.defeat_animation_step == 3 then
+    if not is_timer_active(ccp, "congratulations_timer", 240) then
       _init()
     end
   end
 end
 
 function process_finishing_move()
-  if not is_timer_active(combat_round_timers, "finishing_move") then
+  if ccp.finishing_move then
+    handle_finishing_move(combat_round_winner, combat_round_loser)
+  elseif not is_timer_active(combat_round_timers, "finishing_move") then
     combat_round_state = "finished"
   end
 end
