@@ -75,11 +75,11 @@ function process_boss_defeated()
     end
 
     if timer > 180 then
-      combat_round_loser.defeat_animation_step = 1
+      temp.defeat_animation_step = 1
     elseif timer > 120 then
-      if combat_round_loser.defeat_animation_step == 1 then
+      if temp.defeat_animation_step == 1 then
         setup_next_action(combat_round_loser, "boss_defeated", nil, true)
-        combat_round_loser.defeat_animation_step, combat_round_winner.x, combat_round_winner.y, combat_round_loser.x, combat_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
+        temp.defeat_animation_step, combat_round_winner.x, combat_round_winner.y, combat_round_loser.x, combat_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
       end
 
       update_player(combat_round_loser)
@@ -95,14 +95,14 @@ function process_boss_defeated()
         particle_function(3, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
         particle_function(7, 2, max(20, flr_rnd(30)), flr_rnd(3))
       end
-    elseif combat_round_loser.defeat_animation_step == 2 then
+    elseif temp.defeat_animation_step == 2 then
       particle_function(11, 8, 40, 6)
       particle_function(3, 8, 40, 3)
       particle_function(7, 8, 40, 6)
-      combat_round_loser.defeat_animation_step, combat_round_loser.x, combat_round_loser.y = 3, -20, -20
+      temp.defeat_animation_step, combat_round_loser.x, combat_round_loser.y = 3, -20, -20
     end
-  elseif combat_round_loser.defeat_animation_step == 3 then
-    if not is_timer_active(combat_round_timers, "congratulations", 240) then
+  elseif temp.defeat_animation_step == 3 then
+    if not is_timer_active(temp, "congratulations", 240) then
       _init()
     end
   end

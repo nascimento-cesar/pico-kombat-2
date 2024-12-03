@@ -1,4 +1,5 @@
 function update_next_combat()
+  music(-1, 200)
   local main_player = get_main_player()
 
   if main_player then

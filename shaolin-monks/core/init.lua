@@ -13,7 +13,7 @@ function define_global_constants()
 end
 
 function define_global_variables()
-  current_screen, p1, p2 = "start", {}, {}
+  current_screen, p1, p2, temp = "start", {}, {}, {}
   define_combat_variables()
 end
 

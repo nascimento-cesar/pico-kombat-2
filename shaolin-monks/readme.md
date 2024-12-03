@@ -24,11 +24,11 @@
 - [x] 🚀 final boss defeat animation
 - [x] 🚀 add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
 - [x] 🐞 finishing the round with a special attack does not end the action
+- [x] 🚀 sfx
 - [ ] 🚀 next combat screen
 - [ ] 🚀 particles on projectiles
 - [ ] 🚀 all finishing moves
 - [ ] 🚀 pixel art stages
-- [ ] 🚀 sfx
 - [ ] 🚀 create sound for pressing buttons in character selection screen
 - [ ] 🐞 should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] 🐞 finish the opponent with jx back breaker makes it stuck in the air 
@@ -68,6 +68,8 @@ compressed: 97%
 ✅ 28 - jx ground pound | rd torpedo hit
 ✅ 29 - jx gotcha
 ✅ 30 - jx back broken
-31 - sc spear
-32 - sc spear hit
-33 - rd torpedo
+✅ 31 - sc spear
+✅ 32 - sc spear hit
+✅ 33 - rd torpedo
+✅ 34 - character selection move
+✅ 35 - character selection confirm

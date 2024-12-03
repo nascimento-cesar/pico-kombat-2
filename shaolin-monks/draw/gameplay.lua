@@ -2,7 +2,7 @@ function draw_gameplay()
   cls()
 
   if combat_round_state == "boss_defeated" then
-    if combat_round_loser.defeat_animation_step == 1 then
+    if temp.defeat_animation_step == 1 then
       shift_pal "p07172737475767778797a7b7c7d7e7f7"
       draw_stage()
       pal()
@@ -11,7 +11,7 @@ function draw_gameplay()
       draw_stage()
       draw_players()
 
-      if combat_round_loser.defeat_animation_step == 3 then
+      if temp.defeat_animation_step == 3 then
         draw_blinking_text "evil emperor has fallen!"
       end
     end
