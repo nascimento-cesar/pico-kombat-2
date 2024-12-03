@@ -57,8 +57,9 @@ function draw_players()
 end
 
 function draw_stage()
-  local x, y = (combat_stage - 1) % 8 * stage_offset, flr(combat_stage / 9) * 16
-  map(x, y, 0, 0, 16, 16)
+  palt(0, false)
+  map(0, 0, 0, 0, 16, 16)
+  pal()
 end
 
 function draw_player(p)
