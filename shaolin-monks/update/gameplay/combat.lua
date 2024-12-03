@@ -78,7 +78,7 @@ end
 
 function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)
   local a_w, a_h, t_w, t_h = a_w or sprite_w, a_h or sprite_h, t_w or sprite_w, t_h or sprite_h
-  local has_r_col, has_l_col, has_u_col, has_d_col = a_x + a_w > t_x and a_x < t_x, a_x < t_x + t_w and a_x > t_x, t_y + t_h > a_y and t_y <= a_y, a_y + a_h > t_y and t_y >= a_y
+  local has_r_col, has_l_col, has_u_col, has_d_col = a_x + a_w > t_x and a_x <= t_x, a_x < t_x + t_w and a_x >= t_x, t_y + t_h > a_y and t_y <= a_y, a_y + a_h > t_y and t_y >= a_y
 
   if type == "left" then
     return has_l_col and (has_u_col or has_d_col)

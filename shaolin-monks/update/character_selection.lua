@@ -9,6 +9,10 @@ function update_character_selection()
 end
 
 function handle_cursor_movement(p, p_id, vs)
+  if temp.characters_selected then
+    return
+  end
+
   local new_char, is_vs_selected = p.highlighted_char, vs.has_joined and vs.temp_character
   local move_cursor = function(i)
     new_char += i

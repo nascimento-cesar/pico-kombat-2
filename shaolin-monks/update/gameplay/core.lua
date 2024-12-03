@@ -36,7 +36,6 @@ function update_gameplay()
   update_player(p1)
   update_player(p2)
   fix_players_orientation()
-  fix_players_placement()
 end
 
 function build_particle_set(p, color, count, x, y, max_lifespan, radius)

@@ -52,7 +52,7 @@ function cleanup_action_stack(p, force)
 end
 
 function handle_action(p)
-  local handler = p.ca.handler
+  local handler, vs = p.ca.handler, get_vs(p)
 
   if handler == "attack" then
     attack(p)
@@ -74,6 +74,10 @@ function handle_action(p)
     p.cap.direction = backward
     p.cap.is_thrown_lower = true
     aerial_action(p)
+  elseif handler == "sweep" then
+    if not vs.ca.is_aerial then
+      attack(p)
+    end
   elseif handler == "swept" then
     if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
       move_x(p, -walk_speed)

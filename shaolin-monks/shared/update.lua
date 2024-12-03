@@ -44,12 +44,12 @@ function is_st_eq(p, st)
   return p.st_timers[st] > 0
 end
 
-function is_limit_left(x, tollerance)
-  return x <= map_min_x - (tollerance or 0)
+function is_limit_left(x, tolerance)
+  return x <= map_min_x - (tolerance or 0)
 end
 
-function is_limit_right(x, tollerance)
-  return x + sprite_w > map_max_x + (tollerance or 0)
+function is_limit_right(x, tolerance)
+  return x + sprite_w > map_max_x + (tolerance or 0)
 end
 
 function is_p1_ahead_p2()

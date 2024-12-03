@@ -25,24 +25,24 @@
 - [x] 🚀 add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
 - [x] 🐞 finishing the round with a special attack does not end the action
 - [x] 🚀 sfx
-- [ ] 🚀 next combat screen
-- [ ] 🚀 particles on projectiles
+- [x] 🐞 should not push a frozen enemy in middle air
+- [x] 🐞 bug when special attack vs at the edge of the screen
+- [x] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
+- [x] 🐞 should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [ ] 🚀 all finishing moves
 - [ ] 🚀 pixel art stages
 - [ ] 🚀 create sound for pressing buttons in character selection screen
-- [ ] 🐞 should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
-- [ ] 🐞 finish the opponent with jx back breaker makes it stuck in the air 
 - [ ] 🐞 should not detect a hit when flying attack an opponent that is already behind the player
-- [ ] 🐞 bug when special attack vs at the edge of the screen
-- [ ] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
 - [ ] 🐞 fire a projectile at a teleported opponent makes the projectile change direction
 - [ ] 🐞 hit an opponent teleporting makes it stops inside the ground
-- [ ] 🐞 should not push a frozen enemy in middle air
 - [ ] 🐞 sc spear does not work on right side
 - [ ] 🐞 fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to action stack)
 - [ ] 🐞 should allow just one aerial special attack (projectile) per jump (more than one might stuck player in air)
+- [ ] 🐞 finishing the opponent with jx special attacks doesn't trigger finishing animation
 - [ ] 🚀 create rp invisibility animation and use the same for st morph
 - [ ] 🚀 test blocked kl diving kick and ml teleport kick and sc teleport punch
+- [ ] 🚀 particles on projectiles
+- [ ] 🚀 next combat screen
 - [ ] 🚀 create kr character
 
 # LATEST COUNTS

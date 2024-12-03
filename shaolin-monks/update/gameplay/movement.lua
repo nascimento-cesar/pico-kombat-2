@@ -5,60 +5,35 @@ function fix_players_orientation()
   end
 end
 
-function fix_players_placement()
-  if not p1.ca.is_aerial and not p2.ca.is_aerial then
-    if p1.x < sprite_w and p2.x < sprite_w then
-      if p1.facing == forward then
-        p1.x = map_min_x
-        p2.x = sprite_w
-      else
-        p1.x = sprite_w
-        p2.x = map_min_x
-      end
-    end
-
-    if p1.x + sprite_w > map_max_x - sprite_w + 2 and p2.x + sprite_w > map_max_x - sprite_w + 2 then
-      if p1.facing == forward then
-        p1.x = map_max_x - (sprite_w - 1) * 2
-        p2.x = map_max_x - (sprite_w - 1)
-      else
-        p1.x = map_max_x - (sprite_w - 1)
-        p2.x = map_max_x - (sprite_w - 1) * 2
-      end
-    end
-  end
-end
-
 function move_x(p, x_increment, direction)
-  local vs = get_vs(p)
-  local direction = direction or p.facing
+  local vs, direction = get_vs(p), direction or p.facing
   local new_p_x = p.x + x_increment * direction
   local has_l_col, has_r_col = has_collision(new_p_x, p.y, vs.x, vs.y, "left"), has_collision(new_p_x, p.y, vs.x, vs.y, "right")
 
   if is_limit_left(new_p_x) then
-    p.x = map_min_x
+    if is_limit_left(vs.x) then
+      p.x = vs.x + sprite_w
+    else
+      p.x = map_min_x
+
+      if has_r_col then
+        vs.x = p.x + sprite_w
+      end
+    end
   elseif is_limit_right(new_p_x) then
-    p.x = map_max_x - sprite_w + 1
-  elseif has_l_col then
-    local vs_x_increment = new_p_x - vs.x - sprite_w + 1
+    if is_limit_right(vs.x) then
+      p.x = vs.x - sprite_w
+    else
+      p.x = map_max_x - sprite_w + 1
 
-    if not is_limit_left(vs.x + vs_x_increment + 1) then
-      if not vs.ca.is_aerial then
-        move_x(vs, vs_x_increment)
+      if has_l_col then
+        vs.x = p.x - sprite_w
       end
-
-      p.x = new_p_x
     end
-  elseif has_r_col then
-    local vs_x_increment = vs.x - new_p_x - sprite_w + 1
-
-    if not is_limit_right(vs.x - vs_x_increment - 1) then
-      if not vs.ca.is_aerial then
-        move_x(vs, vs_x_increment)
-      end
-
-      p.x = new_p_x
-    end
+  elseif has_l_col and not p.is_x_shifted then
+    p.x = vs.x + sprite_w
+  elseif has_r_col and not p.is_x_shifted then
+    p.x = vs.x - sprite_w
   else
     p.x = new_p_x
   end
@@ -76,8 +51,8 @@ end
 
 function shift_player_x(p, shift_direction)
   if shift_direction and not p.is_x_shifted then
-    move_x(p, x_shift * shift_direction)
     p.is_x_shifted = shift_direction
+    move_x(p, x_shift * shift_direction)
   elseif not shift_direction and p.is_x_shifted then
     move_x(p, x_shift * -p.is_x_shifted)
     p.is_x_shifted = false
