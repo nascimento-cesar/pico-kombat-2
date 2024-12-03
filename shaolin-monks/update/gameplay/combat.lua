@@ -19,7 +19,7 @@ function attack(p, collision_callback, reaction_callback, block_callback, collis
         block_callback(p, vs)
       end
     else
-      if p.ca.hit_sfx then
+      if p.ca.hit_sfx and not p.cap.skip_sfx then
         play_sfx(p.ca.hit_sfx)
       end
 

@@ -69,10 +69,16 @@ function handle_special_attack(p)
         end
       end,
       function(p, vs)
+        p.cap.skip_sfx = true
         attack(
           p, function(p, vs)
             vs.y = p.y - (vs.caf > 8 and 5 or 6)
             vs.x = p.x
+          end,
+          function(p, vs)
+            if p.caf == 12 then
+              play_sfx(vs.ca.hit_sfx)
+            end
           end
         )
         if not p.cap.has_hit then
@@ -81,21 +87,23 @@ function handle_special_attack(p)
       end,
       function(p, vs)
         if p.cap.has_hit then
-          p.cap.punches, p.cap.max_punches = p.cap.punches or 1, p.cap.max_punches or 2
-          local is_last_punch = p.cap.punches >= p.cap.max_punches
-          if btnp(🅾️, p.id) and p.held_buttons ~= "🅾️" then
-            p.cap.max_punches = 3
-          end
-          if p.t >= get_total_frames(p, 1) then
-            setup_next_action(
-              p, "punch", {
-                is_x_shiftable = 0,
-                skip_reaction = not is_last_punch,
-                next_action = is_last_punch and actions.idle or p.character.special_attacks["gotcha"],
-                next_action_params = is_last_punch and {} or { punches = p.cap.punches + 1 },
-                reaction = is_last_punch and "thrown_backward"
-              }, true
-            )
+          if not is_timer_active(p.cap, "delay", 15) or p.cap.skip_delay then
+            p.cap.punches, p.cap.max_punches = p.cap.punches or 1, p.cap.max_punches or 2
+            local is_last_punch = p.cap.punches >= p.cap.max_punches
+            if btnp(🅾️, p.id) and p.held_buttons ~= "🅾️" then
+              p.cap.max_punches = 3
+            end
+            if p.t >= get_total_frames(p, 1) then
+              setup_next_action(
+                p, "punch", {
+                  is_x_shiftable = 0,
+                  skip_reaction = not is_last_punch,
+                  next_action = is_last_punch and actions.idle or p.character.special_attacks["gotcha"],
+                  next_action_params = is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true },
+                  reaction = is_last_punch and "thrown_backward"
+                }, true
+              )
+            end
           end
         else
           if p.t >= get_total_frames(p, 2) and vs.ca ~= actions.grabbed then
@@ -305,12 +313,14 @@ function handle_special_attack(p)
         if not p.cap.has_hit and p.t >= get_total_frames(p, 2) then
           finish_action(p)
         else
+          p.cap.skip_sfx = true
           move_x(p, offensive_speed)
           attack(
             p,
             nil,
             function(p, vs)
               if is_limit_left(p.x) or is_limit_right(p.x) then
+                play_sfx(vs.ca.hit_sfx)
                 setup_next_action(vs, "jump", { direction = backward }, true)
                 setup_next_action(p, "fall", nil, true)
               else

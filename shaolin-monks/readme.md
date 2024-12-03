@@ -31,6 +31,7 @@
 - [ ] 🚀 sfx
 - [ ] 🚀 create sound for pressing buttons in character selection screen
 - [ ] 🐞 should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
+- [ ] 🐞 finish the opponent with jx back breaker makes it stuck in the air 
 - [ ] 🐞 should not detect a hit when flying attack an opponent that is already behind the player
 - [ ] 🐞 bug when special attack vs at the edge of the screen
 - [ ] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
@@ -63,10 +64,10 @@ compressed: 97%
 ✅ 24 - rd teleport
 ✅ 25 - jc nut cracker
 ✅ 26 - rp invisibility | st morph
-27 - sz freeze
-28 - jx ground pound | rd torpedo hit
-29 - jx gotcha
-30 - jx back broken
+✅ 27 - sz freeze
+✅ 28 - jx ground pound | rd torpedo hit
+✅ 29 - jx gotcha
+✅ 30 - jx back broken
 31 - sc spear
 32 - sc spear hit
 33 - rd torpedo
