@@ -102,7 +102,7 @@ function handle_special_attack(p)
                 p, "punch", {
                   is_x_shiftable = 0,
                   skip_reaction = not is_last_punch,
-                  next_action = is_last_punch and actions.idle or p.char.special_attacks["gotcha"],
+                  next_action = is_last_punch and acs.idle or p.char.special_attacks["gotcha"],
                   next_action_params = is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true },
                   reaction = is_last_punch and "thrown_backward"
                 }, true
@@ -110,7 +110,7 @@ function handle_special_attack(p)
             end
           end
         else
-          if p.t >= get_total_frames(p, 2) and vs.ca ~= actions.grabbed then
+          if p.t >= get_total_frames(p, 2) and vs.ca ~= acs.grabbed then
             finish_action(p)
           else
             attack(p)
@@ -146,7 +146,7 @@ function handle_special_attack(p)
             is_landing = true,
             x_speed = offensive_speed,
             block_callback = function(p)
-              setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+              setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
             end
           },
           true
@@ -255,7 +255,7 @@ function handle_special_attack(p)
               nil,
               nil,
               function(p)
-                setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+                setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
               end
             )
           end
@@ -267,7 +267,7 @@ function handle_special_attack(p)
       function(p)
         slide(
           p, nil, 3, nil, true, function(p)
-            setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+            setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
           end
         )
       end,
@@ -279,7 +279,7 @@ function handle_special_attack(p)
           {
             is_landing = true,
             block_callback = function(p)
-              setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+              setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
             end
           },
           function(p, vs)
@@ -334,7 +334,7 @@ function handle_special_attack(p)
               end
             end,
             function(p)
-              setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+              setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
             end
           )
         end
@@ -401,7 +401,7 @@ function handle_special_attack(p)
             "jump_punch",
             {
               is_landing = true, direction = forward, x_speed = offensive_speed, block_callback = function(p)
-                setup_next_action(p, "jump", { blocks_aerial_actions = true }, true)
+                setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
               end
             },
             true
@@ -492,9 +492,9 @@ function update_projectile(p)
     p.projectile.frames += 1
 
     if not p.projectile.has_hit and not p.projectile.has_blocked and has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
-      if vs.ca == actions.block then
+      if vs.ca == acs.block then
         p.projectile.has_blocked = true
-        play_sfx(actions.block.hit_sfx)
+        play_sfx(acs.block.hit_sfx)
         deal_damage(vs, 1)
         destroy_projectile(p)
       else

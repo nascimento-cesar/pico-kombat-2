@@ -11,7 +11,7 @@
 - [x] 🐞 move sz_freeeze_timer to cap
 - [x] 🐞 fix morph kn bl+bl+bl
 - [x] 🐞 fix morph ml hold button
-- [x] 🐞 reversible actions that requires forced stop stuck at the last frame
+- [x] 🐞 reversible acs that requires forced stop stuck at the last frame
 - [x] 🚀 music
 - [x] 🐞 pressing directionals after landing a hook does not work, also roundhouse kick and block
 - [x] 🚀 time's up not implemented

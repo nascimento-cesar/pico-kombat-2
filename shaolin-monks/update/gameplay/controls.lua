@@ -11,7 +11,7 @@ function process_inputs(p)
   if not action and pressed_combination ~= "" then
     if is_blocking and p.held_buttons then
       input_candidate = p.input_detection_delay <= 0 and pressed_directionals or ""
-      action = get_action_from_sequence(p, input_candidate) or actions.block
+      action = get_action_from_sequence(p, input_candidate) or acs.block
     end
 
     if not action then
@@ -30,7 +30,7 @@ function process_inputs(p)
           input_candidate = pressed_directionals
           action = get_action_from_input(p, input_candidate)
 
-          if not action and p.ca == actions.jump then
+          if not action and p.ca == acs.jump then
             record_action(p, pressed_directionals)
           end
         end
@@ -46,8 +46,8 @@ function process_inputs(p)
 end
 
 function get_action_from_sequence(p, next_input)
-  local action, handler = nil, function(p, next_input, actions_list)
-    for _, action in pairs(actions_list) do
+  local action, handler = nil, function(p, next_input, acs_list)
+    for _, action in pairs(acs_list) do
       local sequence, should_trigger = action.sequence, false
 
       if (p.ca.is_aerial and action.is_aerial) or (not p.ca.is_aerial and not action.is_aerial) then
@@ -71,7 +71,7 @@ function get_action_from_sequence(p, next_input)
 
     if action then
       ccp.finishing_move = action
-      action = actions.idle
+      action = acs.idle
     end
   end
 
@@ -83,7 +83,7 @@ function get_action_from_sequence(p, next_input)
 end
 
 function get_action_from_input(p, input_candidate)
-  return get_action_from_sequence(p, input_candidate) or actions[(p.ca.is_aerial and aerial_actions_map or ground_actions_map)[input_candidate]]
+  return get_action_from_sequence(p, input_candidate) or acs[(p.ca.is_aerial and aerial_acs_map or ground_acs_map)[input_candidate]]
 end
 
 function get_pressed_inputs(p)
@@ -119,7 +119,7 @@ function get_pressed_inputs(p)
     pressed_directionals = "⬇️"
   end
 
-  if p.ca == actions.block and pressed_buttons ~= "🅾️❎" then
+  if p.ca == acs.block and pressed_buttons ~= "🅾️❎" then
     pressed_buttons = ""
   end
 

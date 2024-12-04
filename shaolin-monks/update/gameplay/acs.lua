@@ -7,11 +7,11 @@ function aerial_action(p)
   local direction, vs, is_thrown_lower = p.cap.direction, get_vs(p), p.cap.is_thrown_lower
   local x_speed, is_turn_around_jump = p.cap.x_speed or ((is_thrown_lower and offensive_speed or jump_speed) * (direction or 0) / 2), p.cap.is_turn_around_jump
 
-  if p.ca == actions.propelled then
+  if p.ca == acs.propelled then
     x_speed *= 3
   end
 
-  if p.cap.is_landing or p.ca == actions.fall then
+  if p.cap.is_landing or p.ca == acs.fall then
     if not is_thrown_lower or (is_thrown_lower and not is_timer_active(p.cap, "air_hold_frames", 4)) then
       move_y(p, jump_speed)
     end
@@ -130,7 +130,7 @@ end
 function resolve_previous_action(p)
   if p.cap.has_finished then
     if not p.ca.is_reversible or p.cap.is_reversed then
-      start_action(p, p.cap.next_action or (actions[p.ca.complementary_action] or actions.idle), p.cap.next_action_params)
+      start_action(p, p.cap.next_action or (acs[p.ca.complementary_action] or acs.idle), p.cap.next_action_params)
     end
   elseif p.cap.is_animation_complete then
     if p.cap.is_held then
@@ -138,7 +138,7 @@ function resolve_previous_action(p)
     elseif p.ca.is_resetable then
       return start_action(p, p.ca, p.cap, false, true)
     elseif p.ca.is_aerial and p.ca.is_special_attack then
-      return setup_next_action(p, "jump", { is_landing = true, blocks_aerial_actions = true }, true)
+      return setup_next_action(p, "jump", { is_landing = true, blocks_aerial_acs = true }, true)
     elseif not p.ca.requires_forced_stop then
       return finish_action(p)
     end
@@ -150,7 +150,7 @@ function resolve_previous_action(p)
 end
 
 function setup_next_action(p, action_name, params, force)
-  local params, next_action = params or {}, actions[action_name] or p.char.special_attacks[action_name]
+  local params, next_action = params or {}, acs[action_name] or p.char.special_attacks[action_name]
 
   if p.ca == next_action and p.ca.is_holdable and not p.cap.is_held then
     hold_current_action(p)
@@ -162,14 +162,14 @@ function setup_next_action(p, action_name, params, force)
     if next_action then
       if p.ca ~= next_action then
         return start_action(p, next_action, params)
-      elseif next_action == actions.walk then
+      elseif next_action == acs.walk then
         return start_action(p, next_action, params, not p.cap.has_finished and p.cap.direction == params.direction)
       end
-    elseif p.ca == actions.walk then
-      return start_action(p, actions.idle)
+    elseif p.ca == acs.walk then
+      return start_action(p, acs.idle)
     end
-  elseif p.ca == actions.jump and next_action and next_action.is_aerial then
-    if (next_action.is_attack or next_action.is_special_attack) and not p.cap.blocks_aerial_actions then
+  elseif p.ca == acs.jump and next_action and next_action.is_aerial then
+    if (next_action.is_attack or next_action.is_special_attack) and not p.cap.blocks_aerial_acs then
       return start_action(p, next_action, p.cap)
     end
   end

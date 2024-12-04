@@ -10,9 +10,9 @@ function attack(p, collision_callback, reaction_callback, block_callback, collis
   end
 
   if should_hit and not p.cap.has_hit and not p.cap.has_blocked then
-    if vs.ca == actions.block then
+    if vs.ca == acs.block then
       p.cap.has_blocked = true
-      play_sfx(actions.block.hit_sfx)
+      play_sfx(acs.block.hit_sfx)
       deal_damage(vs, 1)
 
       if block_callback then
