@@ -44,7 +44,7 @@ function move_y(p, y)
 end
 
 function shift_player_orientation(p, facing)
-  if not p.ca.is_special_attack and not is_st_eq(p, "frozen") then
+  if not p.ca.is_special_atk and not is_st_eq(p, "frozen") then
     p.facing = facing or p.facing * -1
   end
 end

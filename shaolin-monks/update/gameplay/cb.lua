@@ -1,4 +1,4 @@
-function attack(p, collision_callback, reac_callback, block_callback, collision_handler)
+function atk(p, collision_callback, reac_callback, block_callback, collision_handler)
   if cb_round_state == "finished" then
     return
   end

@@ -1,4 +1,4 @@
-function handle_special_attack(p)
+function handle_special_atk(p)
   local vs, handler, params = get_vs(p), unpack_split(p.ca.handler, "#")
 
   if handler == "st_morph" then
@@ -17,7 +17,7 @@ function handle_special_attack(p)
         if p.t >= get_total_frames(p, 3) then
           finish_ac(p)
         else
-          attack(
+          atk(
             p,
             function(p, vs)
               p.t = 0
@@ -51,7 +51,7 @@ function handle_special_attack(p)
         if p.t >= get_total_frames(p, 4) then
           finish_ac(p)
         else
-          attack(p)
+          atk(p)
         end
       end,
       function(p)
@@ -63,7 +63,7 @@ function handle_special_attack(p)
             setup_next_ac(p, "jump", nil, true)
           end
         else
-          attack(p)
+          atk(p)
           move_x(p, offensive_speed)
           move_y(p, -offensive_speed)
           p.cap.top_height_reached = p.y <= y_upper_limit
@@ -71,7 +71,7 @@ function handle_special_attack(p)
       end,
       function(p, vs)
         p.cap.skip_sfx = true
-        attack(
+        atk(
           p, function(p, vs)
             vs.y = p.y - (vs.caf > 8 and 5 or 6)
             vs.x = p.x
@@ -102,7 +102,7 @@ function handle_special_attack(p)
                 p, "punch", {
                   is_x_shiftable = 0,
                   skip_reac = not is_last_punch,
-                  next_ac = is_last_punch and acs.idle or p.char.special_attacks["gotcha"],
+                  next_ac = is_last_punch and acs.idle or p.char.special_atks["gotcha"],
                   next_ac_params = is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true },
                   reac = is_last_punch and "thrown_backward"
                 }, true
@@ -113,7 +113,7 @@ function handle_special_attack(p)
           if p.t >= get_total_frames(p, 2) and vs.ca ~= acs.grabbed then
             finish_ac(p)
           else
-            attack(p)
+            atk(p)
           end
         end
       end,
@@ -121,7 +121,7 @@ function handle_special_attack(p)
         if p.t >= get_total_frames(p, 4) then
           finish_ac(p)
         else
-          attack(
+          atk(
             p,
             nil,
             function(p)
@@ -170,7 +170,7 @@ function handle_special_attack(p)
         if p.t >= total_frames * 2 then
           finish_ac(p)
         else
-          attack(p)
+          atk(p)
           if p.t >= total_frames then
             p.cap.boosts = p.cap.boosts or 0
             if btnp(⬆️, p.id) and p.cap.boosts < 3 then
@@ -215,7 +215,7 @@ function handle_special_attack(p)
         )
       end,
       function(p)
-        attack(p, finish_ac)
+        atk(p, finish_ac)
         if p.cap.top_height_reached then
           set_current_ac_animation_lock(p, false)
           if p.t >= get_total_frames(p, 8) then
@@ -250,7 +250,7 @@ function handle_special_attack(p)
             finish_ac(p)
           else
             move_x(p, offensive_speed)
-            attack(
+            atk(
               p,
               nil,
               nil,
@@ -292,7 +292,7 @@ function handle_special_attack(p)
         if not p.cap.has_hit and p.t >= get_total_frames(p, 3) then
           finish_ac(p)
         else
-          attack(
+          atk(
             p, nil, function(p, vs)
               if p.t >= get_total_frames(p, 4) then
                 finish_ac(vs)
@@ -321,7 +321,7 @@ function handle_special_attack(p)
         else
           p.cap.skip_sfx = true
           move_x(p, offensive_speed)
-          attack(
+          atk(
             p,
             nil,
             function(p, vs)
@@ -540,7 +540,7 @@ function slide(p, _, cycles, delay, ignore_collision, block_callback)
       move_x(p, offensive_speed)
     end
 
-    attack(p, nil, nil, block_callback)
+    atk(p, nil, nil, block_callback)
   end
 end
 

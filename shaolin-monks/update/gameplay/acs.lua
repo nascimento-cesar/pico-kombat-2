@@ -19,7 +19,7 @@ function aerial_ac(p)
     move_x(p, x_speed, is_turn_around_jump and p.facing * -1 or p.facing)
 
     if is_p1_ahead_p2() and not is_turn_around_jump then
-      if not p.ca.is_attack then
+      if not p.ca.is_atk then
         p.cap.is_turn_around_jump = true
         shift_player_orientation(p)
       end
@@ -54,8 +54,8 @@ end
 function handle_ac(p)
   local handler, vs = p.ca.handler, get_vs(p)
 
-  if handler == "attack" then
-    attack(p)
+  if handler == "atk" then
+    atk(p)
   elseif handler == "fall" then
     aerial_ac(p)
   elseif handler == "flinch" then
@@ -64,9 +64,9 @@ function handle_ac(p)
     end
   elseif handler == "jump" then
     aerial_ac(p)
-  elseif handler == "jump_attack" then
+  elseif handler == "jump_atk" then
     aerial_ac(p)
-    attack(p)
+    atk(p)
   elseif handler == "ouch" then
     if not is_timer_active(p.cap, "reac_timer", 30) then
       finish_ac(p)
@@ -77,7 +77,7 @@ function handle_ac(p)
     aerial_ac(p)
   elseif handler == "sweep" then
     if not vs.ca.is_aerial then
-      attack(p)
+      atk(p)
     end
   elseif handler == "swept" then
     if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
@@ -137,7 +137,7 @@ function resolve_previous_ac(p)
       return set_current_ac_animation_lock(p, true)
     elseif p.ca.is_resetable then
       return start_ac(p, p.ca, p.cap, false, true)
-    elseif p.ca.is_aerial and p.ca.is_special_attack then
+    elseif p.ca.is_aerial and p.ca.is_special_atk then
       return setup_next_ac(p, "jump", { is_landing = true, blocks_aerial_acs = true }, true)
     elseif not p.ca.requires_forced_stop then
       return finish_ac(p)
@@ -150,7 +150,7 @@ function resolve_previous_ac(p)
 end
 
 function setup_next_ac(p, ac_name, params, force)
-  local params, next_ac = params or {}, acs[ac_name] or p.char.special_attacks[ac_name]
+  local params, next_ac = params or {}, acs[ac_name] or p.char.special_atks[ac_name]
 
   if p.ca == next_ac and p.ca.is_holdable and not p.cap.is_held then
     hold_current_ac(p)
@@ -169,7 +169,7 @@ function setup_next_ac(p, ac_name, params, force)
       return start_ac(p, acs.idle)
     end
   elseif p.ca == acs.jump and next_ac and next_ac.is_aerial then
-    if (next_ac.is_attack or next_ac.is_special_attack) and not p.cap.blocks_aerial_acs then
+    if (next_ac.is_atk or next_ac.is_special_atk) and not p.cap.blocks_aerial_acs then
       return start_ac(p, next_ac, p.cap)
     end
   end
@@ -182,7 +182,7 @@ function start_ac(p, next_ac, params, keep_current_frame, is_restarted)
   shift_player_y(p, p.cap.is_y_shiftable or next_ac.is_y_shiftable)
   set_current_ac_animation_lock(p, false)
 
-  if next_ac.is_special_attack then
+  if next_ac.is_special_atk then
     cleanup_ac_stack(p, true)
   end
 

@@ -1,6 +1,6 @@
 # TODO LIST
 
-- [x] 🐞 attacking a propelled opponent from ground breaks opponent's position
+- [x] 🐞 atking a propelled opponent from ground breaks opponent's position
 - [x] 🚀 block not implemented
 - [x] 🚀 return to char selection screen after defeat in vs mode
 - [x] 🚀 kl projectile sprites
@@ -22,22 +22,22 @@
 - [x] 🐞 loser should stay prone after cb end
 - [x] 🚀 game end screen
 - [x] 🚀 final boss defeat animation
-- [x] 🚀 add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
-- [x] 🐞 finishing the round with a special attack does not end the ac
+- [x] 🚀 add a delay to some atks like roundhouse kick and projectile firing so initial animation can run before damage
+- [x] 🐞 finishing the round with a special atk does not end the ac
 - [x] 🚀 sfx
 - [x] 🚀 create sound for pressing buttons in char selection screen
 - [x] 🐞 should not push a frozen enemy in middle air
-- [x] 🐞 bug when special attack vs at the edge of the screen
+- [x] 🐞 bug when special atk vs at the edge of the screen
 - [x] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
 - [x] 🐞 should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [x] 🐞 hit an opponent teleporting makes it stops inside the ground
 - [x] 🐞 fire a projectile at a teleported opponent makes the projectile change direction
-- [x] 🐞 should not detect a hit when flying attack an opponent that is already behind the player
-- [x] 🐞 should allow just one aerial special attack (projectile) per jump (more than one might stuck player in air)
+- [x] 🐞 should not detect a hit when flying atk an opponent that is already behind the player
+- [x] 🐞 should allow just one aerial special atk (projectile) per jump (more than one might stuck player in air)
 - [x] 🐞 sc spear does not work on right side
 - [x] 🚀 test blocked kl diving kick and ml teleport kick and sc teleport punch
 - [x] 🐞 fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to ac stack)
-- [x] 🐞 finishing the opponent with jx special attacks doesn't trigger finishing animation
+- [x] 🐞 finishing the opponent with jx special atks doesn't trigger finishing animation
 - [ ] 🚀 all finishing moves
 - [ ] 🚀 pixel art stages
 - [ ] 🚀 create rp invisibility animation and use the same for st morph
@@ -53,7 +53,7 @@
 ✅ 18 - sweep
 ✅ 19 - generic projectile launch
 ✅ 20 - generic projectile hit
-✅ 21 - generic flying attack | generic teleport
+✅ 21 - generic flying atk | generic teleport
 ✅ 22 - lk bicycle kick | bk blade fury | rd electric grab
 ✅ 23 - kl spin
 ✅ 24 - rd teleport

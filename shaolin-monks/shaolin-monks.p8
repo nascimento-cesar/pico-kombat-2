@@ -18,7 +18,7 @@ __lua__
 #include update/gameplay/core.lua
 #include update/gameplay/finishing_moves.lua
 #include update/gameplay/movement.lua
-#include update/gameplay/special_attacks.lua
+#include update/gameplay/special_atks.lua
 #include update/next_cb.lua
 #include update/start.lua
 

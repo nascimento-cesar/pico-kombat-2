@@ -76,7 +76,7 @@ function get_ac_from_sequence(p, next_input)
   end
 
   if not ac then
-    ac = handler(p, next_input, p.char.special_attacks)
+    ac = handler(p, next_input, p.char.special_atks)
   end
 
   return ac
@@ -111,7 +111,7 @@ function get_pressed_inputs(p)
     end
   end
 
-  if btnp(⬆️, p.id) and not p.ca.is_aerial and not p.ca.is_special_attack then
+  if btnp(⬆️, p.id) and not p.ca.is_aerial and not p.ca.is_special_atk then
     pressed_directionals = pressed_directionals .. "⬆️"
   end
 

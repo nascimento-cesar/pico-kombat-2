@@ -182,8 +182,8 @@ function update_player(p)
     process_inputs(p)
   end
 
-  if p.ca.is_special_attack then
-    handle_special_attack(p)
+  if p.ca.is_special_atk then
+    handle_special_atk(p)
   else
     handle_ac(p)
   end
