@@ -10,8 +10,8 @@ function handle_special_atk(p)
   end
 
   string_to_hash(
-    "projectile,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sk_projectile,sk_sledgehammer,sz_freeze", {
-      projectile,
+    "pj,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sk_pj,sk_sledgehammer,sz_freeze", {
+      pj,
       slide,
       function(p, vs)
         if p.t >= get_total_frames(p, 3) then
@@ -36,13 +36,13 @@ function handle_special_atk(p)
         end
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p, nil, function(p)
-            if p.projectile.top_height_reached then
-              p.projectile.y *= 1.05
+            if p.pj.top_height_reached then
+              p.pj.y *= 1.05
             else
-              p.projectile.y /= 1.05
-              p.projectile.top_height_reached = p.projectile.y <= y_upper_limit
+              p.pj.y /= 1.05
+              p.pj.top_height_reached = p.pj.y <= y_upper_limit
             end
           end
         )
@@ -153,14 +153,14 @@ function handle_special_atk(p)
         )
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p,
           nil,
           function(p)
             if btn(⬆️, p.id) then
-              p.projectile.y -= 0.75
+              p.pj.y -= 0.75
             elseif btn(⬇️, p.id) then
-              p.projectile.y += 0.75
+              p.pj.y += 0.75
             end
           end
         )
@@ -195,11 +195,11 @@ function handle_special_atk(p)
         )
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p,
           30,
           function(p)
-            p.projectile.x_speed = 0
+            p.pj.x_speed = 0
           end,
           nil,
           function() end,
@@ -340,9 +340,9 @@ function handle_special_atk(p)
         end
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p, 90, function(p)
-            p.projectile.x_speed = 0.5
+            p.pj.x_speed = 0.5
           end
         )
       end,
@@ -352,30 +352,30 @@ function handle_special_atk(p)
         end
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p,
           nil,
           function(p)
-            p.projectile.has_rope = true
-            p.projectile.rope_x = p.projectile.direction == forward and p.projectile.x or p.projectile.x + 6
+            p.pj.has_rope = true
+            p.pj.rope_x = p.pj.direction == forward and p.pj.x or p.pj.x + 6
           end,
           nil,
           function(p)
-            p.projectile.x_speed = 0
+            p.pj.x_speed = 0
           end,
           function(p, vs)
             if p.t >= get_total_frames(p, 10) then
               if has_collision(p.x, p.y, vs.x, vs.y, nil, 12, 12, 12, 12) then
                 finish_ac(vs)
                 setup_next_ac(p, "stumble", nil, true)
-                destroy_projectile(vs)
+                destroy_pj(vs)
                 p.cap.reac_callback = function(p)
                   if p.t >= get_total_frames(p, 4) then
                     finish_ac(p)
                   end
                 end
               else
-                vs.projectile.x += offensive_speed * p.facing
+                vs.pj.x += offensive_speed * p.facing
                 mv_x(p, offensive_speed)
               end
             end
@@ -409,32 +409,32 @@ function handle_special_atk(p)
         end
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p, nil, function(p)
-            p.projectile.x_speed = projectile_speed * 1.5
+            p.pj.x_speed = pj_speed * 1.5
           end
         )
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p, nil, function(p)
-            p.projectile.x_speed = 0
+            p.pj.x_speed = 0
           end,
           function(p)
             local total_frames = get_total_frames(p)
-            if p.projectile.t > 21 then
-              destroy_projectile(p)
+            if p.pj.t > 21 then
+              destroy_pj(p)
               finish_ac(p)
             else
-              local t = p.projectile.t
+              local t = p.pj.t
               if t <= 3 then
-                p.projectile.sprites, p.projectile.x, p.projectile.y, p.projectile.flip_x = { 126 }, p.x - 4, p.y - 5, true
+                p.pj.sprites, p.pj.x, p.pj.y, p.pj.flip_x = { 126 }, p.x - 4, p.y - 5, true
               elseif t <= 6 then
-                p.projectile.sprites, p.projectile.x, p.projectile.y, p.projectile.flip_x = { 125 }, p.x + 2, p.y - 6, false
+                p.pj.sprites, p.pj.x, p.pj.y, p.pj.flip_x = { 125 }, p.x + 2, p.y - 6, false
               elseif t <= 9 then
-                p.projectile.sprites, p.projectile.x, p.projectile.y = { 126 }, p.x + 8, p.y - 5
+                p.pj.sprites, p.pj.x, p.pj.y = { 126 }, p.x + 8, p.y - 5
               else
-                p.projectile.sprites, p.projectile.x, p.projectile.y = { 127 }, p.x + 8, p.y - 1
+                p.pj.sprites, p.pj.x, p.pj.y = { 127 }, p.x + 8, p.y - 1
               end
             end
           end,
@@ -442,14 +442,14 @@ function handle_special_atk(p)
         )
       end,
       function(p)
-        create_projectile(
+        create_pj(
           p, nil, nil, nil, function(p, vs)
             if not is_st_eq(vs, "frozen") then
               vs.st_timers.frozen = 60
             else
               vs.st_timers.frozen, p.st_timers.frozen = 0, 60
             end
-            destroy_projectile(p)
+            destroy_pj(p)
           end
         )
       end
@@ -459,72 +459,72 @@ function handle_special_atk(p)
   )
 end
 
-function destroy_projectile(p)
-  p.projectile = nil
+function destroy_pj(p)
+  p.pj = nil
 end
 
-function projectile(p)
-  create_projectile(p)
+function pj(p)
+  create_pj(p)
 end
 
-function create_projectile(p, max_t, before_callback, after_callback, collision_callback, reac_callback)
-  if not p.cap.has_fired_projectile and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
-    p.projectile = p.projectile or string_to_hash("ac,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reac_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reac_callback, p.char.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.char.projectile_h / 2) })
-    p.cap.has_fired_projectile = true
+function create_pj(p, max_t, before_callback, after_callback, collision_callback, reac_callback)
+  if not p.cap.has_fired_pj and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
+    p.pj = p.pj or string_to_hash("ac,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reac_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reac_callback, p.char.pj_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.char.pj_h / 2) })
+    p.cap.has_fired_pj = true
   end
 end
 
-function update_projectile(p)
+function update_pj(p)
   if cb_round_state == "finished" then
-    destroy_projectile(p)
+    destroy_pj(p)
   end
 
-  if p.projectile then
-    local vs, ac, params = get_vs(p), p.projectile.ac, p.projectile.params
+  if p.pj then
+    local vs, ac, params = get_vs(p), p.pj.ac, p.pj.params
 
-    p.projectile.t = (p.projectile.t or 0) + 1
+    p.pj.t = (p.pj.t or 0) + 1
 
-    if p.projectile.before_callback then
-      p.projectile.before_callback(p, vs)
+    if p.pj.before_callback then
+      p.pj.before_callback(p, vs)
     end
 
-    p.projectile.x += (p.projectile.x_speed or projectile_speed) * p.projectile.direction
-    p.projectile.frames += 1
+    p.pj.x += (p.pj.x_speed or pj_speed) * p.pj.direction
+    p.pj.frames += 1
 
-    if not p.projectile.has_hit and not p.projectile.has_blocked and has_collision(p.projectile.x, p.projectile.y, vs.x, vs.y, nil, 6) then
+    if not p.pj.has_hit and not p.pj.has_blocked and has_collision(p.pj.x, p.pj.y, vs.x, vs.y, nil, 6) then
       if vs.ca == acs.block then
-        p.projectile.has_blocked = true
+        p.pj.has_blocked = true
         play_sfx(acs.block.hit_sfx)
         deal_damage(vs, 1)
-        destroy_projectile(p)
+        destroy_pj(p)
       else
-        if p.projectile.ac.hit_sfx then
-          play_sfx(p.projectile.ac.hit_sfx)
+        if p.pj.ac.hit_sfx then
+          play_sfx(p.pj.ac.hit_sfx)
         end
 
-        p.projectile.has_hit = true
+        p.pj.has_hit = true
         hit(ac, params, vs)
-        vs.cap.reac_callback = p.projectile.reac_callback
+        vs.cap.reac_callback = p.pj.reac_callback
 
-        if p.projectile.collision_callback then
-          p.projectile.collision_callback(p, vs)
+        if p.pj.collision_callback then
+          p.pj.collision_callback(p, vs)
         else
-          destroy_projectile(p)
+          destroy_pj(p)
         end
       end
-    elseif is_limit_right(p.projectile.x) or is_limit_left(p.projectile.x) or (p.projectile.y > y_bottom_limit + sprite_h * 2) then
-      destroy_projectile(p)
+    elseif is_limit_right(p.pj.x) or is_limit_left(p.pj.x) or (p.pj.y > y_bottom_limit + sprite_h * 2) then
+      destroy_pj(p)
     end
 
-    if p.projectile and p.projectile.after_callback then
-      p.projectile.after_callback(p, vs)
+    if p.pj and p.pj.after_callback then
+      p.pj.after_callback(p, vs)
     end
 
-    if p.projectile and p.projectile.max_t and p.projectile.t > p.projectile.max_t then
-      destroy_projectile(p)
+    if p.pj and p.pj.max_t and p.pj.t > p.pj.max_t then
+      destroy_pj(p)
     end
 
-    if not p.projectile and p.ca.requires_forced_stop and not p.ca.is_aerial then
+    if not p.pj and p.ca.requires_forced_stop and not p.ca.is_aerial then
       finish_ac(p)
     end
   end

@@ -36,12 +36,12 @@ function draw_gameplay()
 
     draw_players()
 
-    if p1.projectile then
-      draw_projectile(p1)
+    if p1.pj then
+      draw_pj(p1)
     end
 
-    if p2.projectile then
-      draw_projectile(p2)
+    if p2.pj then
+      draw_pj(p2)
     end
   end
 end
@@ -117,20 +117,20 @@ function draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_
   pal()
 end
 
-function draw_projectile(p)
-  local sprites, index = p.projectile.sprites, flr(p.projectile.frames / p.char.projectile_fps) + 1
+function draw_pj(p)
+  local sprites, index = p.pj.sprites, flr(p.pj.frames / p.char.pj_fps) + 1
 
   if index > #sprites then
-    index, p.projectile.frames = 1, 0
+    index, p.pj.frames = 1, 0
   end
 
-  shift_pal(p.char.projectile_pal_map)
-  spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.projectile.flip_x or p.projectile.direction == backward)
+  shift_pal(p.char.pj_pal_map)
+  spr(sprites[index], p.pj.x, p.pj.y, 1, 1, p.pj.flip_x or p.pj.direction == backward)
   pal()
 
-  if p.projectile.has_rope then
-    local y = p.projectile.y + (p.char.projectile_h / 2)
-    line(p.x + sprite_w, y, p.projectile.rope_x, y, 4)
+  if p.pj.has_rope then
+    local y = p.pj.y + (p.char.pj_h / 2)
+    line(p.x + sprite_w, y, p.pj.rope_x, y, 4)
   end
 end
 

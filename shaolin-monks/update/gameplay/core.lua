@@ -192,7 +192,7 @@ function update_player(p)
     p.cap.reac_callback(p, get_vs(p))
   end
 
-  update_projectile(p)
+  update_pj(p)
 
   if p.has_joined then
     cleanup_ac_stack(p)
