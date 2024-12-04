@@ -41,11 +41,12 @@
 - [ ] 🚀 all finishing mvs
 - [ ] 🚀 pixel art stages
 - [ ] 🚀 create rp invisibility animation and use the same for st morph
-- [ ] 🚀 particles on pjs
+- [ ] 🚀 prts on pjs
 - [ ] 🚀 next cb screen
 - [ ] 🚀 create kr char
 
 # SOUNDS
+
 ✅ 14 - light hit
 ✅ 15 - heavy hit
 ✅ 16 - blocked blow
@@ -70,6 +71,7 @@
 ✅ 35 - char selection confirm
 
 # LATEST COUNTS
+
 tokens: 7.231/8.192
 chars: 62.854/65.535
 compressed: 95%

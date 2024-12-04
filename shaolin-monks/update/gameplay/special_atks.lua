@@ -145,7 +145,7 @@ function handle_special_atk(p)
             direction = forward,
             is_landing = true,
             x_speed = offensive_speed,
-            block_callback = function(p)
+            block_clb = function(p)
               setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
             end
           },
@@ -278,7 +278,7 @@ function handle_special_atk(p)
           "jump_kick",
           {
             is_landing = true,
-            block_callback = function(p)
+            block_clb = function(p)
               setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
             end
           },
@@ -369,7 +369,7 @@ function handle_special_atk(p)
                 finish_ac(vs)
                 setup_next_ac(p, "stumble", nil, true)
                 destroy_pj(vs)
-                p.cap.reac_callback = function(p)
+                p.cap.reac_clb = function(p)
                   if p.t >= get_total_frames(p, 4) then
                     finish_ac(p)
                   end
@@ -400,7 +400,7 @@ function handle_special_atk(p)
             p,
             "jump_punch",
             {
-              is_landing = true, direction = forward, x_speed = offensive_speed, block_callback = function(p)
+              is_landing = true, direction = forward, x_speed = offensive_speed, block_clb = function(p)
                 setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
               end
             },
@@ -467,9 +467,9 @@ function pj(p)
   create_pj(p)
 end
 
-function create_pj(p, max_t, before_callback, after_callback, collision_callback, reac_callback)
+function create_pj(p, max_t, before_clb, after_clb, collision_clb, reac_clb)
   if not p.cap.has_fired_pj and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) then
-    p.pj = p.pj or string_to_hash("ac,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reac_callback,sps,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reac_callback, p.char.pj_sps, p.x + sp_w * p.facing, p.y + 5 - ceil(p.char.pj_h / 2) })
+    p.pj = p.pj or string_to_hash("ac,after_clb,before_clb,collision_clb,direction,frames,max_t,params,reac_clb,sps,x,y", { p.ca, after_clb, before_clb, collision_clb, p.facing, 0, max_t, p.cap, reac_clb, p.char.pj_sps, p.x + sp_w * p.facing, p.y + 5 - ceil(p.char.pj_h / 2) })
     p.cap.has_fired_pj = true
   end
 end
@@ -484,8 +484,8 @@ function update_pj(p)
 
     p.pj.t = (p.pj.t or 0) + 1
 
-    if p.pj.before_callback then
-      p.pj.before_callback(p, vs)
+    if p.pj.before_clb then
+      p.pj.before_clb(p, vs)
     end
 
     p.pj.x += (p.pj.x_speed or pj_speed) * p.pj.direction
@@ -504,10 +504,10 @@ function update_pj(p)
 
         p.pj.has_hit = true
         hit(ac, params, vs)
-        vs.cap.reac_callback = p.pj.reac_callback
+        vs.cap.reac_clb = p.pj.reac_clb
 
-        if p.pj.collision_callback then
-          p.pj.collision_callback(p, vs)
+        if p.pj.collision_clb then
+          p.pj.collision_clb(p, vs)
         else
           destroy_pj(p)
         end
@@ -516,8 +516,8 @@ function update_pj(p)
       destroy_pj(p)
     end
 
-    if p.pj and p.pj.after_callback then
-      p.pj.after_callback(p, vs)
+    if p.pj and p.pj.after_clb then
+      p.pj.after_clb(p, vs)
     end
 
     if p.pj and p.pj.max_t and p.pj.t > p.pj.max_t then
@@ -530,7 +530,7 @@ function update_pj(p)
   end
 end
 
-function slide(p, _, cycles, delay, ignore_collision, block_callback)
+function slide(p, _, cycles, delay, ignore_collision, block_clb)
   if (p.cap.has_hit and not ignore_collision) or p.t >= get_total_frames(p, cycles or 3) then
     if not is_timer_active(p.cap, "delay", delay or 0) then
       finish_ac(p)
@@ -540,17 +540,17 @@ function slide(p, _, cycles, delay, ignore_collision, block_callback)
       mv_x(p, offensive_speed)
     end
 
-    atk(p, nil, nil, block_callback)
+    atk(p, nil, nil, block_clb)
   end
 end
 
-function teleport(p, vs, next_ac_name, next_ac_params, teleport_callback)
+function teleport(p, vs, next_ac_name, next_ac_params, teleport_clb)
   if not p.cap.has_teleported then
     if p.y < y_bottom_limit + (sp_h * 2) + stroke_width then
       mv_y(p, jump_speed)
     else
       p.cap.has_teleported = true
-      teleport_callback(p, vs)
+      teleport_clb(p, vs)
     end
   else
     setup_next_ac(p, next_ac_name, next_ac_params, true)

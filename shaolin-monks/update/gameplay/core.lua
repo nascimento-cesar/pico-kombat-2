@@ -38,20 +38,20 @@ function update_gameplay()
   fix_pls_orientation()
 end
 
-function build_particle_set(p, color, count, x, y, max_lifespan, radius)
-  local max_lifespan, particle_set = max_lifespan or 10, string_to_hash("color,radius,particles,x,y", { color, radius, {}, x, y })
+function build_prt_set(p, color, count, x, y, max_lifespan, radius)
+  local max_lifespan, prt_set = max_lifespan or 10, string_to_hash("color,radius,prts,x,y", { color, radius, {}, x, y })
 
   for i = 1, count do
     add(
-      particle_set.particles,
+      prt_set.prts,
       string_to_hash(
         "current_lifespan,max_lifespan,speed_x,speed_y,x,y",
-        { flr_rnd(max_lifespan), max_lifespan, rnd() * 2 - 1, rnd() * 2 - 1, particle_set.x, particle_set.y }
+        { flr_rnd(max_lifespan), max_lifespan, rnd() * 2 - 1, rnd() * 2 - 1, prt_set.x, prt_set.y }
       )
     )
   end
 
-  add(p.particle_sets, particle_set)
+  add(p.prt_sets, prt_set)
 end
 
 function detect_new_pl()
@@ -69,8 +69,8 @@ end
 
 function process_boss_defeated()
   if is_timer_active(cb_round_timers, "boss_defeated", 240) then
-    local timer, particle_function = cb_round_timers.boss_defeated, function(c, q, d, r)
-      build_particle_set(cb_round_loser, c, q, cb_round_loser.x + flr_rnd(sp_w), cb_round_loser.y + flr_rnd(sp_h), d, r)
+    local timer, prt_function = cb_round_timers.boss_defeated, function(c, q, d, r)
+      build_prt_set(cb_round_loser, c, q, cb_round_loser.x + flr_rnd(sp_w), cb_round_loser.y + flr_rnd(sp_h), d, r)
     end
 
     if timer > 180 then
@@ -84,20 +84,20 @@ function process_boss_defeated()
       update_pl(cb_round_loser)
 
       if timer % 10 == 0 then
-        particle_function(11, 6, max(20, flr_rnd(30)), flr_rnd(1))
-        particle_function(3, 6, max(20, flr_rnd(30)), flr_rnd(1))
-        particle_function(7, 3, max(20, flr_rnd(30)), flr_rnd(1))
+        prt_function(11, 6, max(20, flr_rnd(30)), flr_rnd(1))
+        prt_function(3, 6, max(20, flr_rnd(30)), flr_rnd(1))
+        prt_function(7, 3, max(20, flr_rnd(30)), flr_rnd(1))
       end
     elseif timer > 40 then
       if timer % 10 == 0 then
-        particle_function(11, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
-        particle_function(3, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
-        particle_function(7, 2, max(20, flr_rnd(30)), flr_rnd(3))
+        prt_function(11, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
+        prt_function(3, 4, max(20, flr_rnd(30)), max(2, flr_rnd(4)))
+        prt_function(7, 2, max(20, flr_rnd(30)), flr_rnd(3))
       end
     elseif ccp.defeat_animation_step == 2 then
-      particle_function(11, 8, 40, 6)
-      particle_function(3, 8, 40, 3)
-      particle_function(7, 8, 40, 6)
+      prt_function(11, 8, 40, 6)
+      prt_function(3, 8, 40, 3)
+      prt_function(7, 8, 40, 6)
       ccp.defeat_animation_step, cb_round_loser.x, cb_round_loser.y = 3, -20, -20
     end
   elseif ccp.defeat_animation_step == 3 then
@@ -188,8 +188,8 @@ function update_pl(p)
     handle_ac(p)
   end
 
-  if p.cap.reac_callback then
-    p.cap.reac_callback(p, get_vs(p))
+  if p.cap.reac_clb then
+    p.cap.reac_clb(p, get_vs(p))
   end
 
   update_pj(p)

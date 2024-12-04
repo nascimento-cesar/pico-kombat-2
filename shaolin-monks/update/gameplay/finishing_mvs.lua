@@ -35,7 +35,7 @@ function create_temp_p(p, fps, sps)
     },
     char = p.char,
     facing = p.facing,
-    particle_sets = {},
+    prt_sets = {},
     st_timers = p.st_timers,
     t = 0,
     x = p.x,

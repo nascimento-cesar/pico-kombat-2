@@ -1,9 +1,9 @@
-function atk(p, collision_callback, reac_callback, block_callback, collision_handler)
+function atk(p, collision_clb, reac_clb, block_clb, collision_handler)
   if cb_round_state == "finished" then
     return
   end
 
-  local vs, should_hit, block_callback = get_vs(p), false, p.cap.block_callback or block_callback
+  local vs, should_hit, block_clb = get_vs(p), false, p.cap.block_clb or block_clb
 
   if (collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) then
     should_hit = true
@@ -15,8 +15,8 @@ function atk(p, collision_callback, reac_callback, block_callback, collision_han
       play_sfx(acs.block.hit_sfx)
       deal_damage(vs, 1)
 
-      if block_callback then
-        block_callback(p, vs)
+      if block_clb then
+        block_clb(p, vs)
       end
     else
       if p.ca.hit_sfx and not p.cap.skip_sfx then
@@ -26,11 +26,11 @@ function atk(p, collision_callback, reac_callback, block_callback, collision_han
       p.cap.has_hit = true
       hit(p.ca, p.cap, vs)
 
-      if collision_callback then
-        collision_callback(p, vs)
+      if collision_clb then
+        collision_clb(p, vs)
       end
 
-      vs.cap.reac_callback = reac_callback
+      vs.cap.reac_clb = reac_clb
     end
   end
 end
@@ -68,7 +68,7 @@ function hit(ac, params, p)
       setup_next_ac(p, reac, nil, true)
     end
 
-    remv_temporary_conditions(p)
+    remove_temporary_conditions(p)
   end
 
   if ac.spills_blood then
@@ -91,10 +91,10 @@ function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)
   end
 end
 
-function remv_temporary_conditions(p)
+function remove_temporary_conditions(p)
   p.st_timers.frozen = 0
 end
 
 function spill_blood(p)
-  build_particle_set(p, 8, 30, p.facing == forward and p.x + sp_w or p.x, p.y)
+  build_prt_set(p, 8, 30, p.facing == forward and p.x + sp_w or p.x, p.y)
 end

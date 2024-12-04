@@ -96,7 +96,7 @@ function draw_pl(p)
     pal()
   end
 
-  draw_particles(p)
+  draw_prts(p)
 end
 
 function draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
@@ -134,22 +134,22 @@ function draw_pj(p)
   end
 end
 
-function draw_particles(p)
-  for particle_set in all(p.particle_sets) do
-    for particle in all(particle_set.particles) do
-      particle.x += particle.speed_x
-      particle.y += particle.speed_y
+function draw_prts(p)
+  for prt_set in all(p.prt_sets) do
+    for prt in all(prt_set.prts) do
+      prt.x += prt.speed_x
+      prt.y += prt.speed_y
       local handler = flr_rnd(2) == 1 and circ or circfill
-      handler(particle.x, particle.y, particle_set.radius or 0, particle_set.color)
-      particle.current_lifespan += 1
+      handler(prt.x, prt.y, prt_set.radius or 0, prt_set.color)
+      prt.current_lifespan += 1
 
-      if particle.current_lifespan > particle.max_lifespan then
-        del(particle_set.particles, particle)
+      if prt.current_lifespan > prt.max_lifespan then
+        del(prt_set.prts, prt)
       end
     end
 
-    if #particle_set.particles == 0 then
-      del(p.particle_sets, particle_set)
+    if #prt_set.prts == 0 then
+      del(p.prt_sets, prt_set)
     end
   end
 end
