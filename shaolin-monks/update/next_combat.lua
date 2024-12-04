@@ -4,7 +4,7 @@ function update_next_combat()
 
   if main_player then
     local next_challenger = get_next_challenger(main_player)
-    get_vs(main_player).character = next_challenger
+    get_vs(main_player).char = next_challenger
   end
 
   current_screen = "gameplay"
@@ -14,9 +14,9 @@ end
 
 function get_next_challenger(p)
   local char_id = p.next_combats[1] or 13
-  local challenger = characters[char_id]
+  local challenger = chars[char_id]
 
-  if p.character == challenger and #p.next_combats == 12 then
+  if p.char == challenger and #p.next_combats == 12 then
     deli(p.next_combats, 1)
     add(p.next_combats, char_id)
 

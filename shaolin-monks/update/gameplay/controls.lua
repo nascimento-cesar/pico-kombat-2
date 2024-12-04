@@ -67,7 +67,7 @@ function get_action_from_sequence(p, next_input)
   end
 
   if combat_round_state == "finishing_move" then
-    action = handler(p, next_input, p.character.finishing_moves)
+    action = handler(p, next_input, p.char.finishing_moves)
 
     if action then
       ccp.finishing_move = action
@@ -76,7 +76,7 @@ function get_action_from_sequence(p, next_input)
   end
 
   if not action then
-    action = handler(p, next_input, p.character.special_attacks)
+    action = handler(p, next_input, p.char.special_attacks)
   end
 
   return action

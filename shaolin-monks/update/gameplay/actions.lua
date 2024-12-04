@@ -150,7 +150,7 @@ function resolve_previous_action(p)
 end
 
 function setup_next_action(p, action_name, params, force)
-  local params, next_action = params or {}, actions[action_name] or p.character.special_attacks[action_name]
+  local params, next_action = params or {}, actions[action_name] or p.char.special_attacks[action_name]
 
   if p.ca == next_action and p.ca.is_holdable and not p.cap.is_held then
     hold_current_action(p)

@@ -37,7 +37,7 @@ function init_player(p)
 end
 
 function is_boss(p)
-  return p.character.name == "sk"
+  return p.char.name == "sk"
 end
 
 function is_st_eq(p, st)

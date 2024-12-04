@@ -3,7 +3,7 @@ function handle_special_attack(p)
 
   if handler == "st_morph" then
     if not is_st_eq(p, "morphed") then
-      p.is_morphed, p.st_timers.morphed, p.character = true, 300, characters[tonum(params)]
+      p.is_morphed, p.st_timers.morphed, p.char = true, 300, chars[tonum(params)]
     end
 
     return
@@ -102,7 +102,7 @@ function handle_special_attack(p)
                 p, "punch", {
                   is_x_shiftable = 0,
                   skip_reaction = not is_last_punch,
-                  next_action = is_last_punch and actions.idle or p.character.special_attacks["gotcha"],
+                  next_action = is_last_punch and actions.idle or p.char.special_attacks["gotcha"],
                   next_action_params = is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true },
                   reaction = is_last_punch and "thrown_backward"
                 }, true
@@ -469,7 +469,7 @@ end
 
 function create_projectile(p, max_t, before_callback, after_callback, collision_callback, reaction_callback)
   if not p.cap.has_fired_projectile and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
-    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reaction_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reaction_callback, p.character.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.character.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reaction_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reaction_callback, p.char.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.char.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end

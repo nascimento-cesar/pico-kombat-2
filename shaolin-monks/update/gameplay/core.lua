@@ -9,7 +9,7 @@ function update_gameplay()
 
   if detect_new_player() then
     if not is_timer_active(combat_round_timers, "new_player") then
-      current_screen = "character_selection"
+      current_screen = "char_selection"
     end
 
     return
@@ -139,7 +139,7 @@ function process_finished()
 
     if has_combat_ended then
       local main_player = get_main_player()
-      current_screen = (not winner or loser.has_joined) and "character_selection" or "next_combat"
+      current_screen = (not winner or loser.has_joined) and "char_selection" or "next_combat"
 
       if winner and main_player == winner then
         deli(main_player.next_combats, 1)
@@ -164,7 +164,7 @@ function update_player(p)
     is_timer_active(p.st_timers, "invisible")
 
     if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
-      p.character, p.is_morphed = characters[6], false
+      p.char, p.is_morphed = chars[6], false
     end
   end
 

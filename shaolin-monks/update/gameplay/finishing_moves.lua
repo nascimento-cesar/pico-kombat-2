@@ -33,7 +33,7 @@ function create_temp_p(p, fps, sprites)
       fps = fps,
       sprites = sprites
     },
-    character = p.character,
+    char = p.char,
     facing = p.facing,
     particle_sets = {},
     st_timers = p.st_timers,

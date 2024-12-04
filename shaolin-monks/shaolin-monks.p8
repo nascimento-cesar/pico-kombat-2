@@ -7,11 +7,11 @@ __lua__
 #include core/draw.lua
 #include core/init.lua
 #include core/update.lua
-#include draw/character_selection.lua
+#include draw/char_selection.lua
 #include draw/gameplay.lua
 #include draw/next_combat.lua
 #include draw/start.lua
-#include update/character_selection.lua
+#include update/char_selection.lua
 #include update/gameplay/actions.lua
 #include update/gameplay/combat.lua
 #include update/gameplay/controls.lua

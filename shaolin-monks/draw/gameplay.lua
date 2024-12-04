@@ -88,10 +88,10 @@ function draw_player(p)
     local head_x, head_y = p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment
 
     draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x, head_y, flip_head_x, flip_head_y)
-    shift_pal(is_st_eq(p, "frozen") and frozen_head_pal_map or p.character.head_pal_map)
-    spr(p.character.head_sprites[head_id], head_x, head_y, 1, 1, flip_head_x, flip_head_y)
+    shift_pal(is_st_eq(p, "frozen") and frozen_head_pal_map or p.char.head_pal_map)
+    spr(p.char.head_sprites[head_id], head_x, head_y, 1, 1, flip_head_x, flip_head_y)
     pal()
-    shift_pal(is_st_eq(p, "frozen") and frozen_body_pal_map or p.character.body_pal_map)
+    shift_pal(is_st_eq(p, "frozen") and frozen_body_pal_map or p.char.body_pal_map)
     spr(body_id, p.x, p.y, 1, 1, flip_body_x, flip_body_y)
     pal()
   end
@@ -110,7 +110,7 @@ function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x, head
     end
 
     if head_id then
-      spr(p.character.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
+      spr(p.char.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
     end
   end
 
@@ -118,18 +118,18 @@ function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x, head
 end
 
 function draw_projectile(p)
-  local sprites, index = p.projectile.sprites, flr(p.projectile.frames / p.character.projectile_fps) + 1
+  local sprites, index = p.projectile.sprites, flr(p.projectile.frames / p.char.projectile_fps) + 1
 
   if index > #sprites then
     index, p.projectile.frames = 1, 0
   end
 
-  shift_pal(p.character.projectile_pal_map)
+  shift_pal(p.char.projectile_pal_map)
   spr(sprites[index], p.projectile.x, p.projectile.y, 1, 1, p.projectile.flip_x or p.projectile.direction == backward)
   pal()
 
   if p.projectile.has_rope then
-    local y = p.projectile.y + (p.character.projectile_h / 2)
+    local y = p.projectile.y + (p.char.projectile_h / 2)
     line(p.x + sprite_w, y, p.projectile.rope_x, y, 4)
   end
 end
@@ -156,7 +156,7 @@ end
 
 function draw_finishing_move()
   if combat_round_timers.finishing_move > round_timers.finishing_move / 2 then
-    draw_blinking_text("finish " .. (combat_round_loser.character.gender == 1 and "him" or "her"))
+    draw_blinking_text("finish " .. (combat_round_loser.char.gender == 1 and "him" or "her"))
   end
 end
 

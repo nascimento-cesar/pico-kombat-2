@@ -7,7 +7,7 @@
 - [x] 🚀 hold button support
 - [x] 🐞 sometimes hitting an opponent doesn't make the special action end
 - [x] 🚀 support triggering release action in middle of another action like jumping and walking
-- [x] 🚀 create sk character
+- [x] 🚀 create sk char
 - [x] 🐞 move sz_freeeze_timer to cap
 - [x] 🐞 fix morph kn bl+bl+bl
 - [x] 🐞 fix morph ml hold button
@@ -18,14 +18,14 @@
 - [x] 🚀 support draw
 - [x] 🚀 all special moves
 - [x] 🐞 do not allow damage after combat end
-- [x] 🚀 select character animation
+- [x] 🚀 select char animation
 - [x] 🐞 loser should stay prone after combat end
 - [x] 🚀 game end screen
 - [x] 🚀 final boss defeat animation
 - [x] 🚀 add a delay to some attacks like roundhouse kick and projectile firing so initial animation can run before damage
 - [x] 🐞 finishing the round with a special attack does not end the action
 - [x] 🚀 sfx
-- [x] 🚀 create sound for pressing buttons in character selection screen
+- [x] 🚀 create sound for pressing buttons in char selection screen
 - [x] 🐞 should not push a frozen enemy in middle air
 - [x] 🐞 bug when special attack vs at the edge of the screen
 - [x] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
@@ -43,7 +43,7 @@
 - [ ] 🚀 create rp invisibility animation and use the same for st morph
 - [ ] 🚀 particles on projectiles
 - [ ] 🚀 next combat screen
-- [ ] 🚀 create kr character
+- [ ] 🚀 create kr char
 
 # SOUNDS
 ✅ 14 - light hit
@@ -66,8 +66,8 @@
 ✅ 31 - sc spear
 ✅ 32 - sc spear hit
 ✅ 33 - rd torpedo
-✅ 34 - character selection move
-✅ 35 - character selection confirm
+✅ 34 - char selection move
+✅ 35 - char selection confirm
 
 # LATEST COUNTS
 tokens: 7.231/8.192
