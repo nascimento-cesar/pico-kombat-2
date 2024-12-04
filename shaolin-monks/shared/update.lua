@@ -25,7 +25,7 @@ function get_main_player()
 end
 
 function get_total_frames(p, cycles)
-  return #p.ca.sprites * p.ca.fps * (cycles or 1)
+  return #p.ca.sps * p.ca.fps * (cycles or 1)
 end
 
 function get_vs(p)
@@ -49,11 +49,11 @@ function is_limit_left(x, tolerance)
 end
 
 function is_limit_right(x, tolerance)
-  return x + sprite_w > map_max_x + (tolerance or 0)
+  return x + sp_w > map_max_x + (tolerance or 0)
 end
 
 function is_p1_ahd_p2()
-  return (p1.x > p2.x and p1.facing == forward) or (p1.x + sprite_w < p2.x + sprite_w and p1.facing == backward)
+  return (p1.x > p2.x and p1.facing == forward) or (p1.x + sp_w < p2.x + sp_w and p1.facing == backward)
 end
 
 function is_round_state_eq(s)
@@ -100,9 +100,9 @@ end
 
 function update_frames_counter(p)
   if not p.cap.is_animation_locked then
-    local prev, is_animation_complete, dmg_sprite_handler = p.caf, false, function(p)
-      if p.ca.dmg_sprite then
-        p.cap.is_dmg_sprite = not p.cap.is_reversing and p.caf > (p.ca.dmg_sprite - 1) * p.ca.fps and p.caf <= p.ca.dmg_sprite * p.ca.fps
+    local prev, is_animation_complete, dmg_sp_handler = p.caf, false, function(p)
+      if p.ca.dmg_sp then
+        p.cap.is_dmg_sp = not p.cap.is_reversing and p.caf > (p.ca.dmg_sp - 1) * p.ca.fps and p.caf <= p.ca.dmg_sp * p.ca.fps
       end
     end
 
@@ -110,12 +110,12 @@ function update_frames_counter(p)
 
     is_animation_complete = p.cap.is_reversing and p.caf <= 0 or p.caf > get_total_frames(p)
 
-    dmg_sprite_handler(p)
+    dmg_sp_handler(p)
 
     if is_animation_complete then
       p.caf = prev
 
-      dmg_sprite_handler(p)
+      dmg_sp_handler(p)
 
       if p.ca.requires_forced_stop and not p.cap.is_reversing then
         set_current_ac_animation_lock(p, true)

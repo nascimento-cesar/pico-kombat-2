@@ -70,7 +70,7 @@ end
 function process_boss_defeated()
   if is_timer_active(cb_round_timers, "boss_defeated", 240) then
     local timer, particle_function = cb_round_timers.boss_defeated, function(c, q, d, r)
-      build_particle_set(cb_round_loser, c, q, cb_round_loser.x + flr_rnd(sprite_w), cb_round_loser.y + flr_rnd(sprite_h), d, r)
+      build_particle_set(cb_round_loser, c, q, cb_round_loser.x + flr_rnd(sp_w), cb_round_loser.y + flr_rnd(sp_h), d, r)
     end
 
     if timer > 180 then

@@ -14,7 +14,7 @@ function draw_char_selection()
     spr(0, x + offset, y + offset)
     pal()
     shift_pal(c.hd_pal_map)
-    spr(c.hd_sprites[1], x + offset, y + offset)
+    spr(c.hd_sps[1], x + offset, y + offset)
     pal()
 
     foreach_player(function(p)

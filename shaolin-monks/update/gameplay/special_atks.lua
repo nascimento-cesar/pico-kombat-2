@@ -188,7 +188,7 @@ function handle_special_atk(p)
           "jump",
           nil,
           function(p, vs)
-            p.x = vs.x - sprite_w * vs.facing
+            p.x = vs.x - sp_w * vs.facing
             p.facing *= -1
             fix_players_orientation()
           end
@@ -228,7 +228,7 @@ function handle_special_atk(p)
         else
           set_current_ac_animation_lock(p, true)
           mv_y(p, -offensive_speed * 1.5)
-          p.cap.top_height_reached = p.y <= y_upper_limit + sprite_h
+          p.cap.top_height_reached = p.y <= y_upper_limit + sp_h
         end
       end,
       function(p, vs)
@@ -283,7 +283,7 @@ function handle_special_atk(p)
             end
           },
           function(p, vs)
-            p.x = vs.x - (sprite_w / 2)
+            p.x = vs.x - (sp_w / 2)
             p.y = y_upper_limit
           end
         )
@@ -308,7 +308,7 @@ function handle_special_atk(p)
       function(p, vs)
         teleport(
           p, vs, "idle", nil, function(p, vs)
-            p.x = vs.x - sprite_w * vs.facing
+            p.x = vs.x - sp_w * vs.facing
             p.y = y_bottom_limit
             p.facing *= -1
             fix_players_orientation()
@@ -428,13 +428,13 @@ function handle_special_atk(p)
             else
               local t = p.pj.t
               if t <= 3 then
-                p.pj.sprites, p.pj.x, p.pj.y, p.pj.flip_x = { 126 }, p.x - 4, p.y - 5, true
+                p.pj.sps, p.pj.x, p.pj.y, p.pj.flip_x = { 126 }, p.x - 4, p.y - 5, true
               elseif t <= 6 then
-                p.pj.sprites, p.pj.x, p.pj.y, p.pj.flip_x = { 125 }, p.x + 2, p.y - 6, false
+                p.pj.sps, p.pj.x, p.pj.y, p.pj.flip_x = { 125 }, p.x + 2, p.y - 6, false
               elseif t <= 9 then
-                p.pj.sprites, p.pj.x, p.pj.y = { 126 }, p.x + 8, p.y - 5
+                p.pj.sps, p.pj.x, p.pj.y = { 126 }, p.x + 8, p.y - 5
               else
-                p.pj.sprites, p.pj.x, p.pj.y = { 127 }, p.x + 8, p.y - 1
+                p.pj.sps, p.pj.x, p.pj.y = { 127 }, p.x + 8, p.y - 1
               end
             end
           end,
@@ -468,8 +468,8 @@ function pj(p)
 end
 
 function create_pj(p, max_t, before_callback, after_callback, collision_callback, reac_callback)
-  if not p.cap.has_fired_pj and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
-    p.pj = p.pj or string_to_hash("ac,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reac_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reac_callback, p.char.pj_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.char.pj_h / 2) })
+  if not p.cap.has_fired_pj and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) then
+    p.pj = p.pj or string_to_hash("ac,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reac_callback,sps,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reac_callback, p.char.pj_sps, p.x + sp_w * p.facing, p.y + 5 - ceil(p.char.pj_h / 2) })
     p.cap.has_fired_pj = true
   end
 end
@@ -512,7 +512,7 @@ function update_pj(p)
           destroy_pj(p)
         end
       end
-    elseif is_limit_right(p.pj.x) or is_limit_left(p.pj.x) or (p.pj.y > y_bottom_limit + sprite_h * 2) then
+    elseif is_limit_right(p.pj.x) or is_limit_left(p.pj.x) or (p.pj.y > y_bottom_limit + sp_h * 2) then
       destroy_pj(p)
     end
 
@@ -546,7 +546,7 @@ end
 
 function teleport(p, vs, next_ac_name, next_ac_params, teleport_callback)
   if not p.cap.has_teleported then
-    if p.y < y_bottom_limit + (sprite_h * 2) + stroke_width then
+    if p.y < y_bottom_limit + (sp_h * 2) + stroke_width then
       mv_y(p, jump_speed)
     else
       p.cap.has_teleported = true

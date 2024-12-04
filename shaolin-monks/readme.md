@@ -3,7 +3,7 @@
 - [x] 🐞 atking a propelled opponent from ground breaks opponent's position
 - [x] 🚀 block not implemented
 - [x] 🚀 return to char selection screen after defeat in vs mode
-- [x] 🚀 kl pj sprites
+- [x] 🚀 kl pj sps
 - [x] 🚀 hold button support
 - [x] 🐞 sometimes hitting an opponent doesn't make the special ac end
 - [x] 🚀 support triggering release ac in middle of another ac like jumping and walking

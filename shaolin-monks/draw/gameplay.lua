@@ -72,12 +72,12 @@ function draw_player(p)
     return
   end
 
-  local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sprite, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sprites[flr((p.caf - 1) / p.ca.fps) + 1]
+  local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sp, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sps[flr((p.caf - 1) / p.ca.fps) + 1]
 
-  if type(sprite) == "table" then
-    bd_id, hd_id, hd_x_adjustment, hd_y_adjustment, flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y = sprite[1], sprite[2], sprite[3] or 0, sprite[4] or 0, sprite[5], sprite[6], sprite[7], sprite[8]
+  if type(sp) == "table" then
+    bd_id, hd_id, hd_x_adjustment, hd_y_adjustment, flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y = sp[1], sp[2], sp[3] or 0, sp[4] or 0, sp[5], sp[6], sp[7], sp[8]
   else
-    bd_id, hd_id = sprite, 1
+    bd_id, hd_id = sp, 1
   end
 
   if p.facing == backward then
@@ -89,7 +89,7 @@ function draw_player(p)
 
     draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
     shift_pal(is_st_eq(p, "frozen") and frozen_hd_pal_map or p.char.hd_pal_map)
-    spr(p.char.hd_sprites[hd_id], hd_x, hd_y, 1, 1, flip_hd_x, flip_hd_y)
+    spr(p.char.hd_sps[hd_id], hd_x, hd_y, 1, 1, flip_hd_x, flip_hd_y)
     pal()
     shift_pal(is_st_eq(p, "frozen") and frozen_bd_pal_map or p.char.bd_pal_map)
     spr(bd_id, p.x, p.y, 1, 1, flip_bd_x, flip_bd_y)
@@ -110,7 +110,7 @@ function draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_
     end
 
     if hd_id then
-      spr(p.char.hd_sprites[hd_id], hd_x + x, hd_y + y, 1, 1, flip_hd_x, flip_hd_y)
+      spr(p.char.hd_sps[hd_id], hd_x + x, hd_y + y, 1, 1, flip_hd_x, flip_hd_y)
     end
   end
 
@@ -118,19 +118,19 @@ function draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_
 end
 
 function draw_pj(p)
-  local sprites, index = p.pj.sprites, flr(p.pj.frames / p.char.pj_fps) + 1
+  local sps, index = p.pj.sps, flr(p.pj.frames / p.char.pj_fps) + 1
 
-  if index > #sprites then
+  if index > #sps then
     index, p.pj.frames = 1, 0
   end
 
   shift_pal(p.char.pj_pal_map)
-  spr(sprites[index], p.pj.x, p.pj.y, 1, 1, p.pj.flip_x or p.pj.direction == backward)
+  spr(sps[index], p.pj.x, p.pj.y, 1, 1, p.pj.flip_x or p.pj.direction == backward)
   pal()
 
   if p.pj.has_rope then
     local y = p.pj.y + (p.char.pj_h / 2)
-    line(p.x + sprite_w, y, p.pj.rope_x, y, 4)
+    line(p.x + sp_w, y, p.pj.rope_x, y, 4)
   end
 end
 

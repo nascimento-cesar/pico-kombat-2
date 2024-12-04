@@ -4,7 +4,7 @@ function eval_str(v)
   elseif v == "f" then
     return false
   elseif sub(v, 1, 1) == "#" then
-    return split_sprites(sub(v, 2))
+    return split_sps(sub(v, 2))
   elseif v ~= "n" then
     return v
   end
@@ -26,11 +26,11 @@ function function_lookup(keys, values, key)
   return f and f()
 end
 
-function split_sprites(s, separator)
+function split_sps(s, separator)
   local s = split(s, separator or "|")
 
   for i, v in ipairs(s) do
-    s[i] = sub(v, 1, 1) == "$" and split_sprites(sub(v, 2), "/") or eval_str(v)
+    s[i] = sub(v, 1, 1) == "$" and split_sps(sub(v, 2), "/") or eval_str(v)
   end
 
   return s

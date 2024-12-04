@@ -12,28 +12,28 @@ function mv_x(p, x_increment, direction)
 
   if is_limit_left(new_p_x) then
     if is_limit_left(vs.x) then
-      p.x = vs.x + sprite_w
+      p.x = vs.x + sp_w
     else
       p.x = map_min_x
 
       if has_r_col then
-        vs.x = p.x + sprite_w
+        vs.x = p.x + sp_w
       end
     end
   elseif is_limit_right(new_p_x) then
     if is_limit_right(vs.x) then
-      p.x = vs.x - sprite_w
+      p.x = vs.x - sp_w
     else
-      p.x = map_max_x - sprite_w + 1
+      p.x = map_max_x - sp_w + 1
 
       if has_l_col then
-        vs.x = p.x - sprite_w
+        vs.x = p.x - sp_w
       end
     end
   elseif has_l_col and not p.is_x_shifted then
-    p.x = vs.x + sprite_w
+    p.x = vs.x + sp_w
   elseif has_r_col and not p.is_x_shifted then
-    p.x = vs.x - sprite_w
+    p.x = vs.x - sp_w
   else
     p.x = new_p_x
   end
