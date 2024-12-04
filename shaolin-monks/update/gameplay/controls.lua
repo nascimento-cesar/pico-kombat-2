@@ -1,28 +1,28 @@
 function process_inputs(p)
-  local pressed_buttons, pressed_directionals, direction = get_pressed_inputs(p)
-  local pressed_combination, is_blocking, ac, input_candidate = pressed_directionals .. pressed_buttons, pressed_buttons == "🅾️❎"
+  local pressed_btns, pressed_directionals, direction = get_pressed_inputs(p)
+  local pressed_combination, is_blocking, ac, input_candidate = pressed_directionals .. pressed_btns, pressed_btns == "🅾️❎"
 
-  hold_or_release_inputs(p, pressed_buttons, pressed_directionals)
+  hold_or_release_inputs(p, pressed_btns, pressed_directionals)
 
-  if not ac and p.released_buttons then
+  if not ac and p.released_btns then
     ac = get_ac_from_sequence(p)
   end
 
   if not ac and pressed_combination ~= "" then
-    if is_blocking and p.held_buttons then
+    if is_blocking and p.held_btns then
       input_candidate = p.input_detection_delay <= 0 and pressed_directionals or ""
       ac = get_ac_from_sequence(p, input_candidate) or acs.block
     end
 
     if not ac then
-      if not p.held_buttons then
+      if not p.held_btns then
         input_candidate = pressed_combination
         ac = get_ac_from_input(p, input_candidate)
       end
 
       if not ac then
-        if not p.held_buttons then
-          input_candidate = pressed_buttons
+        if not p.held_btns then
+          input_candidate = pressed_btns
           ac = get_ac_from_input(p, input_candidate)
         end
 
@@ -51,9 +51,9 @@ function get_ac_from_sequence(p, next_input)
       local sequence, should_trigger = ac.sequence, false
 
       if (p.ca.is_aerial and ac.is_aerial) or (not p.ca.is_aerial and not ac.is_aerial) then
-        if sub(sequence, 1, 1) == "h" and p.released_buttons then
-          local released_buttons, released_buttons_timer = unpack_split(p.released_buttons)
-          p.released_buttons, should_trigger = nil, released_buttons == sub(sequence, 3) and released_buttons_timer >= sub(sequence, 2)
+        if sub(sequence, 1, 1) == "h" and p.released_btns then
+          local released_btns, released_btns_timer = unpack_split(p.released_btns)
+          p.released_btns, should_trigger = nil, released_btns == sub(sequence, 3) and released_btns_timer >= sub(sequence, 2)
         else
           local command = p.ac_stack .. (p.ac_stack ~= "" and "+" or "") .. (next_input or "")
           should_trigger = sub(command, #command - #sequence + 1, #command) == sequence
@@ -87,7 +87,7 @@ function get_ac_from_input(p, input_candidate)
 end
 
 function get_pressed_inputs(p)
-  local pressed_buttons, pressed_directionals, direction = "", "", nil
+  local pressed_btns, pressed_directionals, direction = "", "", nil
 
   for i, k in ipairs(split "⬅️,➡️,⬆️,⬇️,🅾️,❎") do
     if btn(i - 1, p.id) then
@@ -106,7 +106,7 @@ function get_pressed_inputs(p)
           pressed_directionals = pressed_directionals .. k
         end
       else
-        pressed_buttons = pressed_buttons .. k
+        pressed_btns = pressed_btns .. k
       end
     end
   end
@@ -119,29 +119,29 @@ function get_pressed_inputs(p)
     pressed_directionals = "⬇️"
   end
 
-  if p.ca == acs.block and pressed_buttons ~= "🅾️❎" then
-    pressed_buttons = ""
+  if p.ca == acs.block and pressed_btns ~= "🅾️❎" then
+    pressed_btns = ""
   end
 
-  return pressed_buttons, pressed_directionals, direction
+  return pressed_btns, pressed_directionals, direction
 end
 
-function hold_or_release_inputs(p, pressed_buttons, pressed_directionals)
-  if p.held_buttons then
-    if p.held_buttons == pressed_buttons then
-      p.held_buttons_timer += 1
+function hold_or_release_inputs(p, pressed_btns, pressed_directionals)
+  if p.held_btns then
+    if p.held_btns == pressed_btns then
+      p.held_btns_timer += 1
     else
-      release_held_buttons(p)
+      release_held_btns(p)
     end
-  elseif pressed_buttons ~= "" then
-    if p.held_buttons_timer == 0 then
-      if pressed_buttons == p.previous_buttons or not p.previous_buttons then
-        p.held_buttons_timer += 1
+  elseif pressed_btns ~= "" then
+    if p.held_btns_timer == 0 then
+      if pressed_btns == p.previous_btns or not p.previous_btns then
+        p.held_btns_timer += 1
       else
-        p.held_buttons_timer, p.previous_buttons = 0, pressed_buttons
+        p.held_btns_timer, p.previous_btns = 0, pressed_btns
       end
     else
-      p.held_buttons = pressed_buttons
+      p.held_btns = pressed_btns
     end
   end
 
@@ -150,8 +150,8 @@ function hold_or_release_inputs(p, pressed_buttons, pressed_directionals)
   end
 end
 
-function release_held_buttons(p)
-  p.released_buttons = (p.held_buttons and p.held_buttons_timer > 10)
-      and p.held_buttons .. "," .. flr(p.held_buttons_timer / 10) or nil
-  p.held_buttons, p.held_buttons_timer = nil, 0
+function release_held_btns(p)
+  p.released_btns = (p.held_btns and p.held_btns_timer > 10)
+      and p.held_btns .. "," .. flr(p.held_btns_timer / 10) or nil
+  p.held_btns, p.held_btns_timer = nil, 0
 end

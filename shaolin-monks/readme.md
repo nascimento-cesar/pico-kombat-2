@@ -4,13 +4,13 @@
 - [x] 🚀 block not implemented
 - [x] 🚀 return to char selection screen after defeat in vs mode
 - [x] 🚀 kl pj sps
-- [x] 🚀 hold button support
+- [x] 🚀 hold btn support
 - [x] 🐞 sometimes hitting an opponent doesn't make the special ac end
 - [x] 🚀 support triggering release ac in middle of another ac like jumping and walking
 - [x] 🚀 create sk char
 - [x] 🐞 mv sz_freeeze_timer to cap
 - [x] 🐞 fix morph kn bl+bl+bl
-- [x] 🐞 fix morph ml hold button
+- [x] 🐞 fix morph ml hold btn
 - [x] 🐞 reversible acs that requires forced stop stuck at the last frame
 - [x] 🚀 music
 - [x] 🐞 pressing directionals after landing a hook does not work, also roundhouse kick and block
@@ -25,7 +25,7 @@
 - [x] 🚀 add a delay to some atks like roundhouse kick and pj firing so initial animation can run before damage
 - [x] 🐞 finishing the round with a special atk does not end the ac
 - [x] 🚀 sfx
-- [x] 🚀 create sound for pressing buttons in char selection screen
+- [x] 🚀 create sound for pressing btns in char selection screen
 - [x] 🐞 should not push a frozen enemy in middle air
 - [x] 🐞 bug when special atk vs at the edge of the screen
 - [x] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)

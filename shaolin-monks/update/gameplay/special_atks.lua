@@ -94,7 +94,7 @@ function handle_special_atk(p)
           if not is_timer_active(p.cap, "delay", 15) or p.cap.skip_delay then
             p.cap.punches, p.cap.max_punches = p.cap.punches or 1, p.cap.max_punches or 2
             local is_last_punch = p.cap.punches >= p.cap.max_punches
-            if btnp(🅾️, p.id) and p.held_buttons ~= "🅾️" then
+            if btnp(🅾️, p.id) and p.held_btns ~= "🅾️" then
               p.cap.max_punches = 3
             end
             if p.t >= get_total_frames(p, 1) then
