@@ -46,7 +46,7 @@ function process_inputs(p)
 end
 
 function get_ac_from_sequence(p, next_input)
-  local ac, handler = nil, function(p, next_input, acs_list)
+  local ac, hdlr = nil, function(p, next_input, acs_list)
     for _, ac in pairs(acs_list) do
       local sequence, should_trigger = ac.sequence, false
 
@@ -67,7 +67,7 @@ function get_ac_from_sequence(p, next_input)
   end
 
   if cb_round_state == "finishing_mv" then
-    ac = handler(p, next_input, p.char.finishing_mvs)
+    ac = hdlr(p, next_input, p.char.finishing_mvs)
 
     if ac then
       ccp.finishing_mv = ac
@@ -76,7 +76,7 @@ function get_ac_from_sequence(p, next_input)
   end
 
   if not ac then
-    ac = handler(p, next_input, p.char.special_atks)
+    ac = hdlr(p, next_input, p.char.special_atks)
   end
 
   return ac

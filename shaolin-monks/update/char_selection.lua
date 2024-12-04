@@ -4,11 +4,11 @@ function update_char_selection()
   if ccp.chars_selected and not is_timer_active(ccp, "round_beginning_timer", 30) then
     p1.temp_char, p2.temp_char, ccp.chars_selected, current_screen = nil, nil, false, "next_cb"
   else
-    foreach_pl(handle_cursor_movement)
+    foreach_pl(hdl_cursor_movement)
   end
 end
 
-function handle_cursor_movement(p, p_id, vs)
+function hdl_cursor_movement(p, p_id, vs)
   if ccp.chars_selected then
     return
   end

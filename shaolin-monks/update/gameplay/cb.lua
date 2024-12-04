@@ -1,11 +1,11 @@
-function atk(p, collision_clb, reac_clb, block_clb, collision_handler)
+function atk(p, collision_clb, reac_clb, block_clb, collision_hdlr)
   if cb_round_state == "finished" then
     return
   end
 
   local vs, should_hit, block_clb = get_vs(p), false, p.cap.block_clb or block_clb
 
-  if (collision_handler and collision_handler(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) then
+  if (collision_hdlr and collision_hdlr(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) then
     should_hit = true
   end
 

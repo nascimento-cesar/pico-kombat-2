@@ -109,7 +109,7 @@ end
 
 function process_finishing_mv()
   if ccp.finishing_mv then
-    handle_finishing_mv(cb_round_winner, cb_round_loser)
+    hdl_finishing_mv(cb_round_winner, cb_round_loser)
   elseif not is_timer_active(cb_round_timers, "finishing_mv") then
     cb_round_state = "finished"
   end
@@ -183,9 +183,9 @@ function update_pl(p)
   end
 
   if p.ca.is_special_atk then
-    handle_special_atk(p)
+    hdl_special_atk(p)
   else
-    handle_ac(p)
+    hdl_ac(p)
   end
 
   if p.cap.reac_clb then

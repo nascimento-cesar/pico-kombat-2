@@ -1,7 +1,7 @@
-function handle_special_atk(p)
-  local vs, handler, params = get_vs(p), unpack_split(p.ca.handler, "#")
+function hdl_special_atk(p)
+  local vs, hdlr, params = get_vs(p), unpack_split(p.ca.hdlr, "#")
 
-  if handler == "st_morph" then
+  if hdlr == "st_morph" then
     if not is_st_eq(p, "morphed") then
       p.is_morphed, p.st_timers.morphed, p.char = true, 300, chars[tonum(params)]
     end
@@ -454,7 +454,7 @@ function handle_special_atk(p)
         )
       end
     }
-  )[handler](
+  )[hdlr](
     p, vs
   )
 end

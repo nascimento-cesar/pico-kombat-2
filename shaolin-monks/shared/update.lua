@@ -100,7 +100,7 @@ end
 
 function update_frames_counter(p)
   if not p.cap.is_animation_locked then
-    local prev, is_animation_complete, dmg_sp_handler = p.caf, false, function(p)
+    local prev, is_animation_complete, dmg_sp_hdlr = p.caf, false, function(p)
       if p.ca.dmg_sp then
         p.cap.is_dmg_sp = not p.cap.is_reversing and p.caf > (p.ca.dmg_sp - 1) * p.ca.fps and p.caf <= p.ca.dmg_sp * p.ca.fps
       end
@@ -110,12 +110,12 @@ function update_frames_counter(p)
 
     is_animation_complete = p.cap.is_reversing and p.caf <= 0 or p.caf > get_total_frames(p)
 
-    dmg_sp_handler(p)
+    dmg_sp_hdlr(p)
 
     if is_animation_complete then
       p.caf = prev
 
-      dmg_sp_handler(p)
+      dmg_sp_hdlr(p)
 
       if p.ca.requires_forced_stop and not p.cap.is_reversing then
         set_current_ac_animation_lock(p, true)

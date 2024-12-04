@@ -1,4 +1,4 @@
-function handle_finishing_mv(p, vs)
+function hdl_finishing_mv(p, vs)
   local finishing_mv = ccp.finishing_mv
 
   if ccp.has_finishing_mv_started then

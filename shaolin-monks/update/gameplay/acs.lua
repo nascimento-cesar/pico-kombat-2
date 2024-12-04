@@ -51,50 +51,50 @@ function cleanup_ac_stack(p, force)
   end
 end
 
-function handle_ac(p)
-  local handler, vs = p.ca.handler, get_vs(p)
+function hdl_ac(p)
+  local hdlr, vs = p.ca.hdlr, get_vs(p)
 
-  if handler == "atk" then
+  if hdlr == "atk" then
     atk(p)
-  elseif handler == "fall" then
+  elseif hdlr == "fall" then
     aerial_ac(p)
-  elseif handler == "flinch" then
+  elseif hdlr == "flinch" then
     if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
       mv_x(p, -walk_speed)
     end
-  elseif handler == "jump" then
+  elseif hdlr == "jump" then
     aerial_ac(p)
-  elseif handler == "jump_atk" then
+  elseif hdlr == "jump_atk" then
     aerial_ac(p)
     atk(p)
-  elseif handler == "ouch" then
+  elseif hdlr == "ouch" then
     if not is_timer_active(p.cap, "reac_timer", 30) then
       finish_ac(p)
     end
-  elseif handler == "propelled" then
+  elseif hdlr == "propelled" then
     p.cap.direction = backward
     p.cap.is_thrown_lower = true
     aerial_ac(p)
-  elseif handler == "sweep" then
+  elseif hdlr == "sweep" then
     if not vs.ca.is_aerial then
       atk(p)
     end
-  elseif handler == "swept" then
+  elseif hdlr == "swept" then
     if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
       mv_x(p, -walk_speed)
     end
-  elseif handler == "thrown_backward" then
+  elseif hdlr == "thrown_backward" then
     p.cap.direction = backward
     p.cap.is_thrown_lower = true
     aerial_ac(p)
-  elseif handler == "thrown_forward" then
+  elseif hdlr == "thrown_forward" then
     p.cap.direction = forward
     p.cap.is_thrown_lower = true
     aerial_ac(p)
-  elseif handler == "thrown_up" then
+  elseif hdlr == "thrown_up" then
     p.cap.direction = backward
     aerial_ac(p)
-  elseif handler == "walk" then
+  elseif hdlr == "walk" then
     mv_x(p, walk_speed * p.cap.direction)
   end
 end

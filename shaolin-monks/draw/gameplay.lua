@@ -139,8 +139,8 @@ function draw_prts(p)
     for prt in all(prt_set.prts) do
       prt.x += prt.speed_x
       prt.y += prt.speed_y
-      local handler = flr_rnd(2) == 1 and circ or circfill
-      handler(prt.x, prt.y, prt_set.radius or 0, prt_set.color)
+      local hdlr = flr_rnd(2) == 1 and circ or circfill
+      hdlr(prt.x, prt.y, prt_set.radius or 0, prt_set.color)
       prt.current_lifespan += 1
 
       if prt.current_lifespan > prt.max_lifespan then
