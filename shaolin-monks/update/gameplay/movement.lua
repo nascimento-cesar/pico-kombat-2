@@ -1,5 +1,5 @@
 function fix_players_orientation()
-  if (p1.facing == p2.facing or is_p1_ahead_p2()) and not p1.ca.is_aerial and not p2.ca.is_aerial then
+  if (p1.facing == p2.facing or is_p1_ahd_p2()) and not p1.ca.is_aerial and not p2.ca.is_aerial then
     shift_player_orientation(p1, p1.x < p2.x and forward or backward)
     shift_player_orientation(p2, p1.x < p2.x and backward or forward)
   end

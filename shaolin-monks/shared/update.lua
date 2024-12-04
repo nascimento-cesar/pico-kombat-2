@@ -52,7 +52,7 @@ function is_limit_right(x, tolerance)
   return x + sprite_w > map_max_x + (tolerance or 0)
 end
 
-function is_p1_ahead_p2()
+function is_p1_ahd_p2()
   return (p1.x > p2.x and p1.facing == forward) or (p1.x + sprite_w < p2.x + sprite_w and p1.facing == backward)
 end
 

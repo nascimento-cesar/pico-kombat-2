@@ -18,7 +18,7 @@ function aerial_ac(p)
 
     move_x(p, x_speed, is_turn_around_jump and p.facing * -1 or p.facing)
 
-    if is_p1_ahead_p2() and not is_turn_around_jump then
+    if is_p1_ahd_p2() and not is_turn_around_jump then
       if not p.ca.is_atk then
         p.cap.is_turn_around_jump = true
         shift_player_orientation(p)

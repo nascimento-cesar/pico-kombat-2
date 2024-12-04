@@ -72,45 +72,45 @@ function draw_player(p)
     return
   end
 
-  local flip_body_x, flip_body_y, flip_head_x, flip_head_y, head_x_adjustment, head_y_adjustment, sprite, body_id, head_id, index = false, false, false, false, 0, 0, p.ca.sprites[flr((p.caf - 1) / p.ca.fps) + 1]
+  local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sprite, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sprites[flr((p.caf - 1) / p.ca.fps) + 1]
 
   if type(sprite) == "table" then
-    body_id, head_id, head_x_adjustment, head_y_adjustment, flip_body_x, flip_body_y, flip_head_x, flip_head_y = sprite[1], sprite[2], sprite[3] or 0, sprite[4] or 0, sprite[5], sprite[6], sprite[7], sprite[8]
+    bd_id, hd_id, hd_x_adjustment, hd_y_adjustment, flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y = sprite[1], sprite[2], sprite[3] or 0, sprite[4] or 0, sprite[5], sprite[6], sprite[7], sprite[8]
   else
-    body_id, head_id = sprite, 1
+    bd_id, hd_id = sprite, 1
   end
 
   if p.facing == backward then
-    flip_body_x, flip_head_x = not flip_body_x, not flip_head_x
+    flip_bd_x, flip_hd_x = not flip_bd_x, not flip_hd_x
   end
 
   if not is_st_eq(p, "invisible") then
-    local head_x, head_y = p.x + head_x_adjustment * p.facing, p.y + head_y_adjustment
+    local hd_x, hd_y = p.x + hd_x_adjustment * p.facing, p.y + hd_y_adjustment
 
-    draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x, head_y, flip_head_x, flip_head_y)
-    shift_pal(is_st_eq(p, "frozen") and frozen_head_pal_map or p.char.head_pal_map)
-    spr(p.char.head_sprites[head_id], head_x, head_y, 1, 1, flip_head_x, flip_head_y)
+    draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
+    shift_pal(is_st_eq(p, "frozen") and frozen_hd_pal_map or p.char.hd_pal_map)
+    spr(p.char.hd_sprites[hd_id], hd_x, hd_y, 1, 1, flip_hd_x, flip_hd_y)
     pal()
-    shift_pal(is_st_eq(p, "frozen") and frozen_body_pal_map or p.char.body_pal_map)
-    spr(body_id, p.x, p.y, 1, 1, flip_body_x, flip_body_y)
+    shift_pal(is_st_eq(p, "frozen") and frozen_bd_pal_map or p.char.bd_pal_map)
+    spr(bd_id, p.x, p.y, 1, 1, flip_bd_x, flip_bd_y)
     pal()
   end
 
   draw_particles(p)
 end
 
-function draw_stroke(p, body_id, flip_body_x, flip_body_y, head_id, head_x, head_y, flip_head_x, flip_head_y)
+function draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
   shift_pal "p01112131415161718191a1b1c1d1e1f1"
 
   for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
     local x, y = unpack_split(axes, "|")
 
-    if body_id then
-      spr(body_id, p.x + x, p.y + y, 1, 1, flip_body_x, flip_body_y)
+    if bd_id then
+      spr(bd_id, p.x + x, p.y + y, 1, 1, flip_bd_x, flip_bd_y)
     end
 
-    if head_id then
-      spr(p.char.head_sprites[head_id], head_x + x, head_y + y, 1, 1, flip_head_x, flip_head_y)
+    if hd_id then
+      spr(p.char.hd_sprites[hd_id], hd_x + x, hd_y + y, 1, 1, flip_hd_x, flip_hd_y)
     end
   end
 
