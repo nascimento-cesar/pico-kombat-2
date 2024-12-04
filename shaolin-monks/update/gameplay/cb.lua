@@ -1,5 +1,5 @@
-function attack(p, collision_callback, reaction_callback, block_callback, collision_handler)
-  if combat_round_state == "finished" then
+function attack(p, collision_callback, reac_callback, block_callback, collision_handler)
+  if cb_round_state == "finished" then
     return
   end
 
@@ -30,7 +30,7 @@ function attack(p, collision_callback, reaction_callback, block_callback, collis
         collision_callback(p, vs)
       end
 
-      vs.cap.reaction_callback = reaction_callback
+      vs.cap.reac_callback = reac_callback
     end
   end
 end
@@ -38,16 +38,16 @@ end
 function check_defeat(p)
   if p.hp <= 0 then
     if is_round_state_eq "finishing_move" then
-      combat_round_state = "finished"
+      cb_round_state = "finished"
     else
       increment_rounds_won(get_vs(p))
 
-      local has_combat_ended, _, loser = get_combat_result()
+      local has_cb_ended, _, loser = get_cb_result()
 
-      if has_combat_ended then
-        combat_round_state = is_boss(loser) and "boss_defeated" or "finishing_move"
+      if has_cb_ended then
+        cb_round_state = is_boss(loser) and "boss_defeated" or "finishing_move"
       else
-        combat_round_state = "finished"
+        cb_round_state = "finished"
       end
     end
   end
@@ -58,24 +58,24 @@ function deal_damage(p, dmg)
   check_defeat(p)
 end
 
-function hit(action, params, p)
-  local reaction = params.reaction or action.reaction
+function hit(ac, params, p)
+  local reac = params.reac or ac.reac
 
-  if reaction and not params.skip_reaction then
-    if p.ca.is_aerial and (reaction == "flinch" or reaction == "swept") then
-      setup_next_action(p, "thrown_backward", nil, true)
+  if reac and not params.skip_reac then
+    if p.ca.is_aerial and (reac == "flinch" or reac == "swept") then
+      setup_next_ac(p, "thrown_backward", nil, true)
     else
-      setup_next_action(p, reaction, nil, true)
+      setup_next_ac(p, reac, nil, true)
     end
 
     remove_temporary_conditions(p)
   end
 
-  if action.spills_blood then
+  if ac.spills_blood then
     spill_blood(p)
   end
 
-  deal_damage(p, action.dmg)
+  deal_damage(p, ac.dmg)
 end
 
 function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)

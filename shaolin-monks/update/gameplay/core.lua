@@ -3,32 +3,32 @@ function update_gameplay()
     music(0)
   end
 
-  if combat_round_state == "boss_defeated" then
+  if cb_round_state == "boss_defeated" then
     return process_boss_defeated()
   end
 
   if detect_new_player() then
-    if not is_timer_active(combat_round_timers, "new_player") then
+    if not is_timer_active(cb_round_timers, "new_player") then
       current_screen = "char_selection"
     end
 
     return
   end
 
-  if combat_round_state == "in_progress" then
-    combat_round_remaining_time = ceil(round_duration - (is_round_state_eq "starting" and 0 or time() - combat_round_start_time))
+  if cb_round_state == "in_progress" then
+    cb_round_remaining_time = ceil(round_duration - (is_round_state_eq "starting" and 0 or time() - cb_round_start_time))
 
-    if combat_round_remaining_time <= 0 then
-      combat_round_state = "time_up"
+    if cb_round_remaining_time <= 0 then
+      cb_round_state = "time_up"
     end
   end
 
-  function_lookup("finished,finishing_move,starting,time_up", { process_finished, process_finishing_move, process_starting, process_time_up }, combat_round_state)
+  function_lookup("finished,finishing_move,starting,time_up", { process_finished, process_finishing_move, process_starting, process_time_up }, cb_round_state)
 
-  if combat_round_state == "in_progress" then
+  if cb_round_state == "in_progress" then
     lock_controls(false, false)
-  elseif combat_round_state == "finishing_move" and not ccp.finishing_move then
-    lock_controls(p1 == combat_round_loser, p2 == combat_round_loser)
+  elseif cb_round_state == "finishing_move" and not ccp.finishing_move then
+    lock_controls(p1 == cb_round_loser, p2 == cb_round_loser)
   else
     lock_controls(true, true)
   end
@@ -59,7 +59,7 @@ function detect_new_player()
     if not p.has_joined and not is_round_state_eq "new_player" then
       if btnp(🅾️, p_id) or btnp(❎, p_id) then
         init_player(p)
-        combat_round_state = "new_player"
+        cb_round_state = "new_player"
       end
     end
   end)
@@ -68,20 +68,20 @@ function detect_new_player()
 end
 
 function process_boss_defeated()
-  if is_timer_active(combat_round_timers, "boss_defeated", 240) then
-    local timer, particle_function = combat_round_timers.boss_defeated, function(c, q, d, r)
-      build_particle_set(combat_round_loser, c, q, combat_round_loser.x + flr_rnd(sprite_w), combat_round_loser.y + flr_rnd(sprite_h), d, r)
+  if is_timer_active(cb_round_timers, "boss_defeated", 240) then
+    local timer, particle_function = cb_round_timers.boss_defeated, function(c, q, d, r)
+      build_particle_set(cb_round_loser, c, q, cb_round_loser.x + flr_rnd(sprite_w), cb_round_loser.y + flr_rnd(sprite_h), d, r)
     end
 
     if timer > 180 then
       ccp.defeat_animation_step = 1
     elseif timer > 120 then
       if ccp.defeat_animation_step == 1 then
-        setup_next_action(combat_round_loser, "boss_defeated", nil, true)
-        ccp.defeat_animation_step, combat_round_winner.x, combat_round_winner.y, combat_round_loser.x, combat_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
+        setup_next_ac(cb_round_loser, "boss_defeated", nil, true)
+        ccp.defeat_animation_step, cb_round_winner.x, cb_round_winner.y, cb_round_loser.x, cb_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
       end
 
-      update_player(combat_round_loser)
+      update_player(cb_round_loser)
 
       if timer % 10 == 0 then
         particle_function(11, 6, max(20, flr_rnd(30)), flr_rnd(1))
@@ -98,7 +98,7 @@ function process_boss_defeated()
       particle_function(11, 8, 40, 6)
       particle_function(3, 8, 40, 3)
       particle_function(7, 8, 40, 6)
-      ccp.defeat_animation_step, combat_round_loser.x, combat_round_loser.y = 3, -20, -20
+      ccp.defeat_animation_step, cb_round_loser.x, cb_round_loser.y = 3, -20, -20
     end
   elseif ccp.defeat_animation_step == 3 then
     if not is_timer_active(ccp, "congratulations_timer", 240) then
@@ -109,15 +109,15 @@ end
 
 function process_finishing_move()
   if ccp.finishing_move then
-    handle_finishing_move(combat_round_winner, combat_round_loser)
-  elseif not is_timer_active(combat_round_timers, "finishing_move") then
-    combat_round_state = "finished"
+    handle_finishing_move(cb_round_winner, cb_round_loser)
+  elseif not is_timer_active(cb_round_timers, "finishing_move") then
+    cb_round_state = "finished"
   end
 end
 
 function process_time_up()
-  if not is_timer_active(combat_round_timers, "time_up") then
-    combat_round_state = "finished"
+  if not is_timer_active(cb_round_timers, "time_up") then
+    cb_round_state = "finished"
 
     if p1.hp > p2.hp then
       increment_rounds_won(p1)
@@ -130,36 +130,36 @@ function process_time_up()
 end
 
 function process_finished()
-  if combat_round_loser then
-    combat_round_loser.cap.next_action = combat_round_loser.y == y_bottom_limit and acs.fainted
+  if cb_round_loser then
+    cb_round_loser.cap.next_ac = cb_round_loser.y == y_bottom_limit and acs.fainted
   end
 
-  if not is_timer_active(combat_round_timers, "finished") then
-    local has_combat_ended, winner, loser = get_combat_result()
+  if not is_timer_active(cb_round_timers, "finished") then
+    local has_cb_ended, winner, loser = get_cb_result()
 
-    if has_combat_ended then
+    if has_cb_ended then
       local main_player = get_main_player()
-      current_screen = (not winner or loser.has_joined) and "char_selection" or "next_combat"
+      current_screen = (not winner or loser.has_joined) and "char_selection" or "next_cb"
 
       if winner and main_player == winner then
-        deli(main_player.next_combats, 1)
+        deli(main_player.next_cbs, 1)
       end
     else
-      combat_round += 1
-      combat_round_state = "starting"
+      cb_round += 1
+      cb_round_state = "starting"
       setup_new_round()
     end
   end
 end
 
 function process_starting()
-  if not is_timer_active(combat_round_timers, "starting") then
-    combat_round_remaining_time, combat_round_start_time, combat_round_state = round_duration, time(), "in_progress"
+  if not is_timer_active(cb_round_timers, "starting") then
+    cb_round_remaining_time, cb_round_start_time, cb_round_state = round_duration, time(), "in_progress"
   end
 end
 
 function update_player(p)
-  if combat_round_state ~= "finished" then
+  if cb_round_state ~= "finished" then
     is_timer_active(p.st_timers, "frozen")
     is_timer_active(p.st_timers, "invisible")
 
@@ -174,10 +174,10 @@ function update_player(p)
 
   p.t += 1
   update_frames_counter(p)
-  resolve_previous_action(p)
+  resolve_previous_ac(p)
 
   if not p.has_joined then
-    next_cpu_action(p)
+    next_cpu_ac(p)
   elseif not p.has_locked_controls then
     process_inputs(p)
   end
@@ -185,16 +185,16 @@ function update_player(p)
   if p.ca.is_special_attack then
     handle_special_attack(p)
   else
-    handle_action(p)
+    handle_ac(p)
   end
 
-  if p.cap.reaction_callback then
-    p.cap.reaction_callback(p, get_vs(p))
+  if p.cap.reac_callback then
+    p.cap.reac_callback(p, get_vs(p))
   end
 
   update_projectile(p)
 
   if p.has_joined then
-    cleanup_action_stack(p)
+    cleanup_ac_stack(p)
   end
 end

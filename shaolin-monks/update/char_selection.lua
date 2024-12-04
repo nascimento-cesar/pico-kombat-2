@@ -2,7 +2,7 @@ function update_char_selection()
   music(-1, 200)
 
   if ccp.chars_selected and not is_timer_active(ccp, "round_beginning_timer", 30) then
-    p1.temp_char, p2.temp_char, ccp.chars_selected, current_screen = nil, nil, false, "next_combat"
+    p1.temp_char, p2.temp_char, ccp.chars_selected, current_screen = nil, nil, false, "next_cb"
   else
     foreach_player(handle_cursor_movement)
   end

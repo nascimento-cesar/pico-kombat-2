@@ -1,9 +1,9 @@
-function finish_action(p)
+function finish_ac(p)
   p.cap.has_finished = true
-  set_current_action_animation_lock(p, false)
+  set_current_ac_animation_lock(p, false)
 end
 
-function aerial_action(p)
+function aerial_ac(p)
   local direction, vs, is_thrown_lower = p.cap.direction, get_vs(p), p.cap.is_thrown_lower
   local x_speed, is_turn_around_jump = p.cap.x_speed or ((is_thrown_lower and offensive_speed or jump_speed) * (direction or 0) / 2), p.cap.is_turn_around_jump
 
@@ -32,7 +32,7 @@ function aerial_action(p)
 
     if p.y >= y_bottom_limit then
       p.y = y_bottom_limit
-      finish_action(p)
+      finish_ac(p)
     end
   else
     move_y(p, -jump_speed)
@@ -44,149 +44,149 @@ function aerial_action(p)
   end
 end
 
-function cleanup_action_stack(p, force)
-  if force or not is_timer_active(p, "action_stack_timeout") then
-    p.action_stack_timeout = action_stack_timeout
-    p.action_stack = ""
+function cleanup_ac_stack(p, force)
+  if force or not is_timer_active(p, "ac_stack_timeout") then
+    p.ac_stack_timeout = ac_stack_timeout
+    p.ac_stack = ""
   end
 end
 
-function handle_action(p)
+function handle_ac(p)
   local handler, vs = p.ca.handler, get_vs(p)
 
   if handler == "attack" then
     attack(p)
   elseif handler == "fall" then
-    aerial_action(p)
+    aerial_ac(p)
   elseif handler == "flinch" then
-    if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
+    if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
       move_x(p, -walk_speed)
     end
   elseif handler == "jump" then
-    aerial_action(p)
+    aerial_ac(p)
   elseif handler == "jump_attack" then
-    aerial_action(p)
+    aerial_ac(p)
     attack(p)
   elseif handler == "ouch" then
-    if not is_timer_active(p.cap, "reaction_timer", 30) then
-      finish_action(p)
+    if not is_timer_active(p.cap, "reac_timer", 30) then
+      finish_ac(p)
     end
   elseif handler == "propelled" then
     p.cap.direction = backward
     p.cap.is_thrown_lower = true
-    aerial_action(p)
+    aerial_ac(p)
   elseif handler == "sweep" then
     if not vs.ca.is_aerial then
       attack(p)
     end
   elseif handler == "swept" then
-    if is_timer_active(p.cap, "reaction_timer", p.ca.fps) then
+    if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
       move_x(p, -walk_speed)
     end
   elseif handler == "thrown_backward" then
     p.cap.direction = backward
     p.cap.is_thrown_lower = true
-    aerial_action(p)
+    aerial_ac(p)
   elseif handler == "thrown_forward" then
     p.cap.direction = forward
     p.cap.is_thrown_lower = true
-    aerial_action(p)
+    aerial_ac(p)
   elseif handler == "thrown_up" then
     p.cap.direction = backward
-    aerial_action(p)
+    aerial_ac(p)
   elseif handler == "walk" then
     move_x(p, walk_speed * p.cap.direction)
   end
 end
 
-function hold_current_action(p)
+function hold_current_ac(p)
   p.cap.is_held = true
 end
 
-function next_cpu_action(p)
+function next_cpu_ac(p)
 end
 
-function record_action(p, input)
+function record_ac(p, input)
   if p.input_detection_delay <= 0 and input ~= "" then
-    p.action_stack = p.action_stack .. (p.action_stack ~= "" and "+" or "") .. input
-    p.action_stack_timeout = action_stack_timeout
+    p.ac_stack = p.ac_stack .. (p.ac_stack ~= "" and "+" or "") .. input
+    p.ac_stack_timeout = ac_stack_timeout
     p.input_detection_delay = 1
 
-    if #p.action_stack > 20 then
-      p.action_stack = sub(p.action_stack, 2, 21)
+    if #p.ac_stack > 20 then
+      p.ac_stack = sub(p.ac_stack, 2, 21)
     end
   end
 end
 
-function release_current_action(p)
+function release_current_ac(p)
   p.cap.is_held = false
   p.cap.is_released = true
 end
 
-function set_current_action_animation_lock(p, lock)
+function set_current_ac_animation_lock(p, lock)
   p.cap.is_animation_locked = lock
 end
 
-function resolve_previous_action(p)
+function resolve_previous_ac(p)
   if p.cap.has_finished then
     if not p.ca.is_reversible or p.cap.is_reversed then
-      start_action(p, p.cap.next_action or (acs[p.ca.complementary_action] or acs.idle), p.cap.next_action_params)
+      start_ac(p, p.cap.next_ac or (acs[p.ca.complementary_ac] or acs.idle), p.cap.next_ac_params)
     end
   elseif p.cap.is_animation_complete then
     if p.cap.is_held then
-      return set_current_action_animation_lock(p, true)
+      return set_current_ac_animation_lock(p, true)
     elseif p.ca.is_resetable then
-      return start_action(p, p.ca, p.cap, false, true)
+      return start_ac(p, p.ca, p.cap, false, true)
     elseif p.ca.is_aerial and p.ca.is_special_attack then
-      return setup_next_action(p, "jump", { is_landing = true, blocks_aerial_acs = true }, true)
+      return setup_next_ac(p, "jump", { is_landing = true, blocks_aerial_acs = true }, true)
     elseif not p.ca.requires_forced_stop then
-      return finish_action(p)
+      return finish_ac(p)
     end
   elseif p.cap.is_reversing and p.cap.is_held then
-    return set_current_action_animation_lock(p, true)
+    return set_current_ac_animation_lock(p, true)
   elseif p.cap.is_released then
-    return set_current_action_animation_lock(p, false)
+    return set_current_ac_animation_lock(p, false)
   end
 end
 
-function setup_next_action(p, action_name, params, force)
-  local params, next_action = params or {}, acs[action_name] or p.char.special_attacks[action_name]
+function setup_next_ac(p, ac_name, params, force)
+  local params, next_ac = params or {}, acs[ac_name] or p.char.special_attacks[ac_name]
 
-  if p.ca == next_action and p.ca.is_holdable and not p.cap.is_held then
-    hold_current_action(p)
-  elseif p.ca ~= next_action and p.cap.is_held then
-    release_current_action(p)
+  if p.ca == next_ac and p.ca.is_holdable and not p.cap.is_held then
+    hold_current_ac(p)
+  elseif p.ca ~= next_ac and p.cap.is_held then
+    release_current_ac(p)
   end
 
   if p.cap.has_finished or p.ca.is_cancelable or force then
-    if next_action then
-      if p.ca ~= next_action then
-        return start_action(p, next_action, params)
-      elseif next_action == acs.walk then
-        return start_action(p, next_action, params, not p.cap.has_finished and p.cap.direction == params.direction)
+    if next_ac then
+      if p.ca ~= next_ac then
+        return start_ac(p, next_ac, params)
+      elseif next_ac == acs.walk then
+        return start_ac(p, next_ac, params, not p.cap.has_finished and p.cap.direction == params.direction)
       end
     elseif p.ca == acs.walk then
-      return start_action(p, acs.idle)
+      return start_ac(p, acs.idle)
     end
-  elseif p.ca == acs.jump and next_action and next_action.is_aerial then
-    if (next_action.is_attack or next_action.is_special_attack) and not p.cap.blocks_aerial_acs then
-      return start_action(p, next_action, p.cap)
+  elseif p.ca == acs.jump and next_ac and next_ac.is_aerial then
+    if (next_ac.is_attack or next_ac.is_special_attack) and not p.cap.blocks_aerial_acs then
+      return start_ac(p, next_ac, p.cap)
     end
   end
 end
 
-function start_action(p, next_action, params, keep_current_frame, is_restarted)
-  p.ca, p.cap, p.caf, p.t = next_action, params or {}, keep_current_frame and p.caf or 1, is_restarted and p.t or 1
+function start_ac(p, next_ac, params, keep_current_frame, is_restarted)
+  p.ca, p.cap, p.caf, p.t = next_ac, params or {}, keep_current_frame and p.caf or 1, is_restarted and p.t or 1
   p.cap.is_animation_complete = false
-  shift_player_x(p, p.cap.is_x_shiftable or next_action.is_x_shiftable)
-  shift_player_y(p, p.cap.is_y_shiftable or next_action.is_y_shiftable)
-  set_current_action_animation_lock(p, false)
+  shift_player_x(p, p.cap.is_x_shiftable or next_ac.is_x_shiftable)
+  shift_player_y(p, p.cap.is_y_shiftable or next_ac.is_y_shiftable)
+  set_current_ac_animation_lock(p, false)
 
-  if next_action.is_special_attack then
-    cleanup_action_stack(p, true)
+  if next_ac.is_special_attack then
+    cleanup_ac_stack(p, true)
   end
 
-  if p.ca.action_sfx and not is_restarted then
-    play_sfx(p.ca.action_sfx, 3)
+  if p.ca.ac_sfx and not is_restarted then
+    play_sfx(p.ca.ac_sfx, 3)
   end
 end

@@ -15,7 +15,7 @@ function handle_special_attack(p)
       slide,
       function(p, vs)
         if p.t >= get_total_frames(p, 3) then
-          finish_action(p)
+          finish_ac(p)
         else
           attack(
             p,
@@ -26,8 +26,8 @@ function handle_special_attack(p)
             end,
             function(p, vs)
               if p.t >= get_total_frames(p, 3) then
-                finish_action(vs)
-                setup_next_action(p, "thrown_backward", nil, true)
+                finish_ac(vs)
+                setup_next_ac(p, "thrown_backward", nil, true)
               elseif p.t % 5 == 0 then
                 spill_blood(p)
               end
@@ -49,7 +49,7 @@ function handle_special_attack(p)
       end,
       function(p)
         if p.t >= get_total_frames(p, 4) then
-          finish_action(p)
+          finish_ac(p)
         else
           attack(p)
         end
@@ -60,7 +60,7 @@ function handle_special_attack(p)
       function(p)
         if p.cap.top_height_reached then
           if not is_timer_active(p.cap, "delay", 3) then
-            setup_next_action(p, "jump", nil, true)
+            setup_next_ac(p, "jump", nil, true)
           end
         else
           attack(p)
@@ -83,13 +83,13 @@ function handle_special_attack(p)
           end
         )
         if not p.cap.has_hit then
-          setup_next_action(p, "jump", p.cap, true)
+          setup_next_ac(p, "jump", p.cap, true)
         end
       end,
       function(p, vs)
         if vs.hp <= 0 then
-          finish_action(p)
-          setup_next_action(vs, "fainted", nil, true)
+          finish_ac(p)
+          setup_next_ac(vs, "fainted", nil, true)
         elseif p.cap.has_hit then
           if not is_timer_active(p.cap, "delay", 15) or p.cap.skip_delay then
             p.cap.punches, p.cap.max_punches = p.cap.punches or 1, p.cap.max_punches or 2
@@ -98,20 +98,20 @@ function handle_special_attack(p)
               p.cap.max_punches = 3
             end
             if p.t >= get_total_frames(p, 1) then
-              setup_next_action(
+              setup_next_ac(
                 p, "punch", {
                   is_x_shiftable = 0,
-                  skip_reaction = not is_last_punch,
-                  next_action = is_last_punch and acs.idle or p.char.special_attacks["gotcha"],
-                  next_action_params = is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true },
-                  reaction = is_last_punch and "thrown_backward"
+                  skip_reac = not is_last_punch,
+                  next_ac = is_last_punch and acs.idle or p.char.special_attacks["gotcha"],
+                  next_ac_params = is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true },
+                  reac = is_last_punch and "thrown_backward"
                 }, true
               )
             end
           end
         else
           if p.t >= get_total_frames(p, 2) and vs.ca ~= acs.grabbed then
-            finish_action(p)
+            finish_ac(p)
           else
             attack(p)
           end
@@ -119,7 +119,7 @@ function handle_special_attack(p)
       end,
       function(p, vs)
         if p.t >= get_total_frames(p, 4) then
-          finish_action(p)
+          finish_ac(p)
         else
           attack(
             p,
@@ -127,7 +127,7 @@ function handle_special_attack(p)
             function(p)
               move_x(p, -1)
               if p.t >= get_total_frames(p, 2) then
-                finish_action(p)
+                finish_ac(p)
               end
             end,
             nil,
@@ -138,7 +138,7 @@ function handle_special_attack(p)
         end
       end,
       function(p)
-        setup_next_action(
+        setup_next_ac(
           p,
           "jump_kick",
           {
@@ -146,7 +146,7 @@ function handle_special_attack(p)
             is_landing = true,
             x_speed = offensive_speed,
             block_callback = function(p)
-              setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
+              setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
             end
           },
           true
@@ -168,7 +168,7 @@ function handle_special_attack(p)
       function(p)
         local total_frames = get_total_frames(p)
         if p.t >= total_frames * 2 then
-          finish_action(p)
+          finish_ac(p)
         else
           attack(p)
           if p.t >= total_frames then
@@ -176,7 +176,7 @@ function handle_special_attack(p)
             if btnp(⬆️, p.id) and p.cap.boosts < 3 then
               p.t -= total_frames
               p.cap.boosts += 1
-              play_sfx(p.ca.action_sfx)
+              play_sfx(p.ca.ac_sfx)
             end
           end
         end
@@ -206,7 +206,7 @@ function handle_special_attack(p)
           function(p)
             local total_frames = get_total_frames(p)
             if p.t >= total_frames * 5 then
-              setup_next_action(p, "fall", nil, true)
+              setup_next_ac(p, "fall", nil, true)
             elseif p.t < total_frames then
               move_x(p, -1)
               move_y(p, -1)
@@ -215,18 +215,18 @@ function handle_special_attack(p)
         )
       end,
       function(p)
-        attack(p, finish_action)
+        attack(p, finish_ac)
         if p.cap.top_height_reached then
-          set_current_action_animation_lock(p, false)
+          set_current_ac_animation_lock(p, false)
           if p.t >= get_total_frames(p, 8) then
             if not is_timer_active(p.cap, "delay", 3) then
-              setup_next_action(p, "jump", nil, true)
+              setup_next_ac(p, "jump", nil, true)
             end
           else
             move_x(p, offensive_speed * 1.5)
           end
         else
-          set_current_action_animation_lock(p, true)
+          set_current_ac_animation_lock(p, true)
           move_y(p, -offensive_speed * 1.5)
           p.cap.top_height_reached = p.y <= y_upper_limit + sprite_h
         end
@@ -238,8 +238,8 @@ function handle_special_attack(p)
         end
         if p.cap.has_hit then
           if vs.t >= total_frames * 3 then
-            finish_action(p)
-            finish_action(vs)
+            finish_ac(p)
+            finish_ac(vs)
             p.y = y_bottom_limit
           else
             move_x(p, offensive_speed / 2)
@@ -247,7 +247,7 @@ function handle_special_attack(p)
           end
         else
           if p.t >= total_frames * 2 then
-            finish_action(p)
+            finish_ac(p)
           else
             move_x(p, offensive_speed)
             attack(
@@ -255,7 +255,7 @@ function handle_special_attack(p)
               nil,
               nil,
               function(p)
-                setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
+                setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
               end
             )
           end
@@ -267,7 +267,7 @@ function handle_special_attack(p)
       function(p)
         slide(
           p, nil, 3, nil, true, function(p)
-            setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
+            setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
           end
         )
       end,
@@ -279,7 +279,7 @@ function handle_special_attack(p)
           {
             is_landing = true,
             block_callback = function(p)
-              setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
+              setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
             end
           },
           function(p, vs)
@@ -290,13 +290,13 @@ function handle_special_attack(p)
       end,
       function(p, vs)
         if not p.cap.has_hit and p.t >= get_total_frames(p, 3) then
-          finish_action(p)
+          finish_ac(p)
         else
           attack(
             p, nil, function(p, vs)
               if p.t >= get_total_frames(p, 4) then
-                finish_action(vs)
-                setup_next_action(p, "fall", nil, true)
+                finish_ac(vs)
+                setup_next_ac(p, "fall", nil, true)
               elseif p.t < 3 then
                 move_x(p, -1)
                 move_y(p, -1)
@@ -317,7 +317,7 @@ function handle_special_attack(p)
       end,
       function(p, vs)
         if not p.cap.has_hit and p.t >= get_total_frames(p, 2) then
-          finish_action(p)
+          finish_ac(p)
         else
           p.cap.skip_sfx = true
           move_x(p, offensive_speed)
@@ -327,14 +327,14 @@ function handle_special_attack(p)
             function(p, vs)
               if is_limit_left(p.x) or is_limit_right(p.x) then
                 play_sfx(vs.ca.hit_sfx)
-                setup_next_action(vs, "jump", { direction = backward }, true)
-                setup_next_action(p, "fall", nil, true)
+                setup_next_ac(vs, "jump", { direction = backward }, true)
+                setup_next_ac(p, "fall", nil, true)
               else
                 move_x(p, -offensive_speed)
               end
             end,
             function(p)
-              setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
+              setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
             end
           )
         end
@@ -366,12 +366,12 @@ function handle_special_attack(p)
           function(p, vs)
             if p.t >= get_total_frames(p, 10) then
               if has_collision(p.x, p.y, vs.x, vs.y, nil, 12, 12, 12, 12) then
-                finish_action(vs)
-                setup_next_action(p, "stumble", nil, true)
+                finish_ac(vs)
+                setup_next_ac(p, "stumble", nil, true)
                 destroy_projectile(vs)
-                p.cap.reaction_callback = function(p)
+                p.cap.reac_callback = function(p)
                   if p.t >= get_total_frames(p, 4) then
-                    finish_action(p)
+                    finish_ac(p)
                   end
                 end
               else
@@ -396,12 +396,12 @@ function handle_special_attack(p)
             p.y = y_upper_limit
           end
         else
-          setup_next_action(
+          setup_next_ac(
             p,
             "jump_punch",
             {
               is_landing = true, direction = forward, x_speed = offensive_speed, block_callback = function(p)
-                setup_next_action(p, "jump", { blocks_aerial_acs = true }, true)
+                setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
               end
             },
             true
@@ -424,7 +424,7 @@ function handle_special_attack(p)
             local total_frames = get_total_frames(p)
             if p.projectile.t > 21 then
               destroy_projectile(p)
-              finish_action(p)
+              finish_ac(p)
             else
               local t = p.projectile.t
               if t <= 3 then
@@ -467,20 +467,20 @@ function projectile(p)
   create_projectile(p)
 end
 
-function create_projectile(p, max_t, before_callback, after_callback, collision_callback, reaction_callback)
+function create_projectile(p, max_t, before_callback, after_callback, collision_callback, reac_callback)
   if not p.cap.has_fired_projectile and (not p.ca.dmg_sprite or (p.ca.dmg_sprite and p.cap.is_dmg_sprite)) then
-    p.projectile = p.projectile or string_to_hash("action,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reaction_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reaction_callback, p.char.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.char.projectile_h / 2) })
+    p.projectile = p.projectile or string_to_hash("ac,after_callback,before_callback,collision_callback,direction,frames,max_t,params,reac_callback,sprites,x,y", { p.ca, after_callback, before_callback, collision_callback, p.facing, 0, max_t, p.cap, reac_callback, p.char.projectile_sprites, p.x + sprite_w * p.facing, p.y + 5 - ceil(p.char.projectile_h / 2) })
     p.cap.has_fired_projectile = true
   end
 end
 
 function update_projectile(p)
-  if combat_round_state == "finished" then
+  if cb_round_state == "finished" then
     destroy_projectile(p)
   end
 
   if p.projectile then
-    local vs, action, params = get_vs(p), p.projectile.action, p.projectile.params
+    local vs, ac, params = get_vs(p), p.projectile.ac, p.projectile.params
 
     p.projectile.t = (p.projectile.t or 0) + 1
 
@@ -498,13 +498,13 @@ function update_projectile(p)
         deal_damage(vs, 1)
         destroy_projectile(p)
       else
-        if p.projectile.action.hit_sfx then
-          play_sfx(p.projectile.action.hit_sfx)
+        if p.projectile.ac.hit_sfx then
+          play_sfx(p.projectile.ac.hit_sfx)
         end
 
         p.projectile.has_hit = true
-        hit(action, params, vs)
-        vs.cap.reaction_callback = p.projectile.reaction_callback
+        hit(ac, params, vs)
+        vs.cap.reac_callback = p.projectile.reac_callback
 
         if p.projectile.collision_callback then
           p.projectile.collision_callback(p, vs)
@@ -525,7 +525,7 @@ function update_projectile(p)
     end
 
     if not p.projectile and p.ca.requires_forced_stop and not p.ca.is_aerial then
-      finish_action(p)
+      finish_ac(p)
     end
   end
 end
@@ -533,7 +533,7 @@ end
 function slide(p, _, cycles, delay, ignore_collision, block_callback)
   if (p.cap.has_hit and not ignore_collision) or p.t >= get_total_frames(p, cycles or 3) then
     if not is_timer_active(p.cap, "delay", delay or 0) then
-      finish_action(p)
+      finish_ac(p)
     end
   else
     if not p.cap.has_hit or ignore_collision then
@@ -544,7 +544,7 @@ function slide(p, _, cycles, delay, ignore_collision, block_callback)
   end
 end
 
-function teleport(p, vs, next_action_name, next_action_params, teleport_callback)
+function teleport(p, vs, next_ac_name, next_ac_params, teleport_callback)
   if not p.cap.has_teleported then
     if p.y < y_bottom_limit + (sprite_h * 2) + stroke_width then
       move_y(p, jump_speed)
@@ -553,6 +553,6 @@ function teleport(p, vs, next_action_name, next_action_params, teleport_callback
       teleport_callback(p, vs)
     end
   else
-    setup_next_action(p, next_action_name, next_action_params, true)
+    setup_next_ac(p, next_ac_name, next_ac_params, true)
   end
 end

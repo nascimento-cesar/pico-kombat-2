@@ -1,7 +1,7 @@
 function draw_gameplay()
   cls()
 
-  if combat_round_state == "boss_defeated" then
+  if cb_round_state == "boss_defeated" then
     if ccp.defeat_animation_step == 1 then
       shift_pal "p07172737475767778797a7b7c7d7e7f7"
       draw_stage()
@@ -17,8 +17,8 @@ function draw_gameplay()
     end
   else
     draw_stage()
-    function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, combat_round_state)
-    print(combat_round_remaining_time, get_hcenter(combat_round_remaining_time), 8, 7)
+    function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, cb_round_state)
+    print(cb_round_remaining_time, get_hcenter(cb_round_remaining_time), 8, 7)
     local offset = 8
     local h, w, y = 8, (128 - offset * 3) / 2, offset * 2
 
@@ -27,7 +27,7 @@ function draw_gameplay()
       rectfill(x, y, x + w - 1, y + h - 1, 8)
       rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
       rect(x, y, x + w - 1, y + h - 1, 6)
-      for i = 1, combat_rounds_won[p_id] do
+      for i = 1, cb_rounds_won[p_id] do
         shift_pal "p50"
         spr(192, x + (i - 1) * 8, y + h + 2)
         pal()
@@ -155,17 +155,17 @@ function draw_particles(p)
 end
 
 function draw_finishing_move()
-  if combat_round_timers.finishing_move > round_timers.finishing_move / 2 then
-    draw_blinking_text("finish " .. (combat_round_loser.char.gender == 1 and "him" or "her"))
+  if cb_round_timers.finishing_move > round_timers.finishing_move / 2 then
+    draw_blinking_text("finish " .. (cb_round_loser.char.gender == 1 and "him" or "her"))
   end
 end
 
 function draw_starting()
-  draw_blinking_text(combat_round_timers.starting > round_timers.starting / 2 and "round " .. combat_round or "fight")
+  draw_blinking_text(cb_round_timers.starting > round_timers.starting / 2 and "round " .. cb_round or "fight")
 end
 
 function draw_finished()
-  draw_blinking_text(combat_round_winner and ((combat_round_winner == p1 and "p1" or "p2") .. " wins") or "draw")
+  draw_blinking_text(cb_round_winner and ((cb_round_winner == p1 and "p1" or "p2") .. " wins") or "draw")
 end
 
 function draw_new_player()

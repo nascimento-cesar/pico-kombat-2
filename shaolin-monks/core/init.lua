@@ -8,13 +8,13 @@ function _init()
 end
 
 function define_global_constants()
-  action_stack_timeout, backward, forward, frozen_body_pal_map, frozen_head_pal_map, jump_speed, map_min_x, map_max_x, p1_id, p2_id, offensive_speed, projectile_speed, round_duration, sprite_h, sprite_w, stroke_width, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, 1, "p0c1c2c3c4c5c6c7c8c9cacbcdcecfc", "p0c1c2c374c5c6c8c9cacbcdcecfc", 3, 0, 127, 0, 1, 4, 3, 90, 8, 8, 2, 1, 3, 92, 2, 64
+  ac_stack_timeout, backward, forward, frozen_body_pal_map, frozen_head_pal_map, jump_speed, map_min_x, map_max_x, p1_id, p2_id, offensive_speed, projectile_speed, round_duration, sprite_h, sprite_w, stroke_width, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, 1, "p0c1c2c3c4c5c6c7c8c9cacbcdcecfc", "p0c1c2c374c5c6c8c9cacbcdcecfc", 3, 0, 127, 0, 1, 4, 3, 90, 8, 8, 2, 1, 3, 92, 2, 64
   ground_acs_map, aerial_acs_map, round_timers = string_to_hash("⬅️,➡️,⬆️,⬇️,➡️⬆️,⬅️⬆️,➡️⬇️,⬅️⬇️,🅾️,⬇️🅾️,❎,⬅️❎,⬇️❎,🅾️❎", "walk,walk,jump,crouch,jump,jump,crouch,crouch,punch,hook,kick,roundhouse_kick,sweep,block"), string_to_hash("🅾️,❎", "jump_punch,jump_kick"), string_to_hash("finished,finishing_move,new_player,starting,time_up", "60,90,60,60,60")
 end
 
 function define_global_variables()
   current_screen, p1, p2 = "start", {}, {}
-  define_combat_variables()
+  define_cb_variables()
 end
 
 function define_chars()
@@ -30,7 +30,7 @@ function define_chars()
 end
 
 function define_acs(attr_list, attr_keys)
-  local acs, attr_list, attr_keys = {}, split(attr_list or "broken_back,n,n,n,n,8,broken_back,thrown_backward,n,n,#$24/4/-4/0/f/f/t/t|$22/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,f,f;block,n,16,n,n,2,n,n,n,n,#10|11,f,f,t,t,f,t,f,f,f,f,f;crouch,n,n,n,n,2,n,n,n,n,#$4/1/0/1|$5/1/0/2,f,f,t,t,f,t,f,f,f,f,f;fall,n,n,n,n,2,fall,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;flinch,n,n,n,n,6,flinch,n,n,n,#$23/6,f,f,f,f,f,f,f,f,f,f,f;grabbed,n,n,n,n,1,grabbed,n,n,n,#$23/6,f,f,f,f,f,f,f,f,f,t,f;jump_kick,n,14,10,1,3,jump_attack,n,thrown_backward,n,#$14/6,t,t,f,f,f,f,f,f,f,t,t;jump_punch,n,14,10,1,3,jump_attack,n,flinch,n,#$15/6,t,t,f,f,f,f,f,f,f,t,t;fainted,n,n,n,n,1,n,n,n,n,#$22/4/-4/0/f/f/t/t,f,f,f,f,f,f,f,f,1,t,f;get_up,n,n,n,n,2,n,n,n,n,#$5/1/0/2|$4/1/0/1,f,f,f,f,f,f,f,f,f,f,f;hook,n,15,100,3,3,attack,n,thrown_up,n,#$6/1/0/1|$7/2|$8/3|$8/3|$8/3|$7/2|0,f,t,f,f,f,f,f,1,f,f,t;idle,n,n,n,n,1,n,n,n,n,#0,f,f,t,f,f,f,f,f,f,f,f;jump,17,n,n,n,2,jump,n,n,n,#$16/6/0/2|$17/4/2/1|$16/6/0/-2/t/t/t/t|$17/4/-2/-1/t/t/t/t,t,f,f,f,t,f,f,f,f,t,f;kick,n,14,10,2,2,attack,n,flinch,n,#$12/5|$13/6|$13/6,f,t,f,f,f,t,f,1,f,f,t;ouch,n,n,n,n,4,ouch,n,n,n,#34|38|$39/1/0/1,f,f,f,f,f,t,f,f,f,t,f;prone,n,n,n,n,8,n,get_up,n,n,#$22/4/-4/0/f/f/t/t,f,f,f,f,f,f,f,f,1,f,f;punch,n,14,10,2,2,attack,n,flinch,n,#$7/2|$9/3|$9/3,f,t,f,f,f,t,f,1,f,f,t;roundhouse_kick,n,15,20,4,2,attack,n,thrown_backward,n,#$7/2|$28/3/-1|$7/2/0/0/t/f/t/f|$12/5|$13/6|$13/6|$13/6|$12/5,f,t,f,f,f,f,f,1,f,f,t;stumble,n,n,n,n,6,n,n,n,n,#$23/6|1,f,f,f,f,t,f,f,f,f,t,f;sweep,n,18,10,5,2,sweep,n,swept,n,#$4/1/0/1|$25/2/0/1|$26/3/-1/1|$25/2/0/1/t/f/t/f|$27/1/0/1|$27/1/0/1|$4/1/0/1,f,t,f,f,f,f,f,1,f,f,f;swept,n,n,n,n,4,swept,prone,n,n,#$21/6/0/1,f,f,f,f,f,f,f,f,f,f,f;propelled,n,n,n,n,3,propelled,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;taunt,n,n,n,n,6,n,n,n,n,#48|20|48|20|48|20|48,f,f,f,f,f,f,f,f,f,f,f;boss_defeated,n,n,n,n,6,n,n,n,n,#49|50,f,f,f,f,t,f,f,f,f,t,f;thrown_backward,n,n,n,n,3,thrown_backward,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;thrown_forward,n,n,n,n,3,thrown_forward,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;thrown_up,n,n,n,n,3,thrown_up,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;walk,n,n,n,n,4,walk,n,n,n,#1|2|3|2,f,f,t,f,f,f,f,f,f,f,f", ";"), split(attr_keys or "name,action_sfx,hit_sfx,dmg,dmg_sprite,fps,handler,complementary_action,reaction,sequence,sprites,is_aerial,is_attack,is_cancelable,is_holdable,is_resetable,is_reversible,is_special_attack,is_x_shiftable,is_y_shiftable,requires_forced_stop,spills_blood")
+  local acs, attr_list, attr_keys = {}, split(attr_list or "broken_back,n,n,n,n,8,broken_back,thrown_backward,n,n,#$24/4/-4/0/f/f/t/t|$22/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,f,f;block,n,16,n,n,2,n,n,n,n,#10|11,f,f,t,t,f,t,f,f,f,f,f;crouch,n,n,n,n,2,n,n,n,n,#$4/1/0/1|$5/1/0/2,f,f,t,t,f,t,f,f,f,f,f;fall,n,n,n,n,2,fall,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;flinch,n,n,n,n,6,flinch,n,n,n,#$23/6,f,f,f,f,f,f,f,f,f,f,f;grabbed,n,n,n,n,1,grabbed,n,n,n,#$23/6,f,f,f,f,f,f,f,f,f,t,f;jump_kick,n,14,10,1,3,jump_attack,n,thrown_backward,n,#$14/6,t,t,f,f,f,f,f,f,f,t,t;jump_punch,n,14,10,1,3,jump_attack,n,flinch,n,#$15/6,t,t,f,f,f,f,f,f,f,t,t;fainted,n,n,n,n,1,n,n,n,n,#$22/4/-4/0/f/f/t/t,f,f,f,f,f,f,f,f,1,t,f;get_up,n,n,n,n,2,n,n,n,n,#$5/1/0/2|$4/1/0/1,f,f,f,f,f,f,f,f,f,f,f;hook,n,15,100,3,3,attack,n,thrown_up,n,#$6/1/0/1|$7/2|$8/3|$8/3|$8/3|$7/2|0,f,t,f,f,f,f,f,1,f,f,t;idle,n,n,n,n,1,n,n,n,n,#0,f,f,t,f,f,f,f,f,f,f,f;jump,17,n,n,n,2,jump,n,n,n,#$16/6/0/2|$17/4/2/1|$16/6/0/-2/t/t/t/t|$17/4/-2/-1/t/t/t/t,t,f,f,f,t,f,f,f,f,t,f;kick,n,14,10,2,2,attack,n,flinch,n,#$12/5|$13/6|$13/6,f,t,f,f,f,t,f,1,f,f,t;ouch,n,n,n,n,4,ouch,n,n,n,#34|38|$39/1/0/1,f,f,f,f,f,t,f,f,f,t,f;prone,n,n,n,n,8,n,get_up,n,n,#$22/4/-4/0/f/f/t/t,f,f,f,f,f,f,f,f,1,f,f;punch,n,14,10,2,2,attack,n,flinch,n,#$7/2|$9/3|$9/3,f,t,f,f,f,t,f,1,f,f,t;roundhouse_kick,n,15,20,4,2,attack,n,thrown_backward,n,#$7/2|$28/3/-1|$7/2/0/0/t/f/t/f|$12/5|$13/6|$13/6|$13/6|$12/5,f,t,f,f,f,f,f,1,f,f,t;stumble,n,n,n,n,6,n,n,n,n,#$23/6|1,f,f,f,f,t,f,f,f,f,t,f;sweep,n,18,10,5,2,sweep,n,swept,n,#$4/1/0/1|$25/2/0/1|$26/3/-1/1|$25/2/0/1/t/f/t/f|$27/1/0/1|$27/1/0/1|$4/1/0/1,f,t,f,f,f,f,f,1,f,f,f;swept,n,n,n,n,4,swept,prone,n,n,#$21/6/0/1,f,f,f,f,f,f,f,f,f,f,f;propelled,n,n,n,n,3,propelled,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;taunt,n,n,n,n,6,n,n,n,n,#48|20|48|20|48|20|48,f,f,f,f,f,f,f,f,f,f,f;boss_defeated,n,n,n,n,6,n,n,n,n,#49|50,f,f,f,f,t,f,f,f,f,t,f;thrown_backward,n,n,n,n,3,thrown_backward,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;thrown_forward,n,n,n,n,3,thrown_forward,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;thrown_up,n,n,n,n,3,thrown_up,prone,n,n,#$23/6/0/0|$24/4/-4/0/f/f/t/t,t,f,f,f,f,f,f,f,f,t,f;walk,n,n,n,n,4,walk,n,n,n,#1|2|3|2,f,f,t,f,f,f,f,f,f,f,f", ";"), split(attr_keys or "name,ac_sfx,hit_sfx,dmg,dmg_sprite,fps,handler,complementary_ac,reac,sequence,sprites,is_aerial,is_attack,is_cancelable,is_holdable,is_resetable,is_reversible,is_special_attack,is_x_shiftable,is_y_shiftable,requires_forced_stop,spills_blood")
 
   for i, attrs in ipairs(attr_list) do
     attrs = split(attrs)
@@ -42,19 +42,19 @@ end
 
 function define_player(id, p)
   local p = p or {}
-  local next_combats = p.next_combats
+  local next_cbs = p.next_cbs
 
-  if not next_combats then
-    next_combats = split "1,2,3,4,5,6,7,8,9,10,11,12"
+  if not next_cbs then
+    next_cbs = split "1,2,3,4,5,6,7,8,9,10,11,12"
 
-    for i = #next_combats, 2, -1 do
+    for i = #next_cbs, 2, -1 do
       local j = flr(rnd(i)) + 1
-      next_combats[i], next_combats[j] = next_combats[j], next_combats[i]
+      next_cbs[i], next_cbs[j] = next_cbs[j], next_cbs[i]
     end
   end
 
   local is_p1 = id == p1_id
-  local p = string_to_hash("action_stack,action_stack_timeout,char,ca,caf,cap,facing,has_locked_controls,has_joined,highlighted_char,hp,held_buttons,held_buttons_timer,id,input_detection_delay,is_x_shifted,is_y_shifted,next_combats,particle_sets,previous_buttons,previous_directionals,projectile,released_buttons,st_timers,t,x,y", { "", action_stack_timeout, p.char, acs.idle, 0, {}, is_p1 and forward or backward, false, p.has_joined, is_p1 and 1 or 4, 100, nil, 0, id, 0, false, false, next_combats, {}, nil, nil, nil, nil, { frozen = 0, invisible = 0, morphed = 0 }, 0, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit })
+  local p = string_to_hash("ac_stack,ac_stack_timeout,char,ca,caf,cap,facing,has_locked_controls,has_joined,highlighted_char,hp,held_buttons,held_buttons_timer,id,input_detection_delay,is_x_shifted,is_y_shifted,next_cbs,particle_sets,previous_buttons,previous_directionals,projectile,released_buttons,st_timers,t,x,y", { "", ac_stack_timeout, p.char, acs.idle, 0, {}, is_p1 and forward or backward, false, p.has_joined, is_p1 and 1 or 4, 100, nil, 0, id, 0, false, false, next_cbs, {}, nil, nil, nil, nil, { frozen = 0, invisible = 0, morphed = 0 }, 0, is_p1 and 36 or 127 - 36 - sprite_w, y_bottom_limit })
 
   if is_p1 then
     p1 = p

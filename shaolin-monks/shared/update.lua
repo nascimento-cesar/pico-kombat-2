@@ -1,9 +1,9 @@
-function define_combat_variables(v)
-  ccp, combat_round, combat_round_start_time, combat_round_remaining_time, combat_round_state, combat_round_winner, combat_rounds_won, combat_round_timers = {}, unpack(v or {})
+function define_cb_variables(v)
+  ccp, cb_round, cb_round_start_time, cb_round_remaining_time, cb_round_state, cb_round_winner, cb_rounds_won, cb_round_timers = {}, unpack(v or {})
 end
 
-function get_combat_result()
-  local p1_wins, p2_wins = combat_rounds_won[p1_id], combat_rounds_won[p2_id]
+function get_cb_result()
+  local p1_wins, p2_wins = cb_rounds_won[p1_id], cb_rounds_won[p2_id]
 
   if p1_wins >= 2 and p1_wins > p2_wins then
     return true, p1, p2
@@ -57,7 +57,7 @@ function is_p1_ahead_p2()
 end
 
 function is_round_state_eq(s)
-  return combat_round_state == s
+  return cb_round_state == s
 end
 
 function is_timer_active(obj, timer, init_with)
@@ -73,12 +73,12 @@ end
 
 function increment_rounds_won(winner)
   if winner then
-    combat_rounds_won[winner.id] += 1
-    combat_round_winner, combat_round_loser = winner, get_vs(winner)
+    cb_rounds_won[winner.id] += 1
+    cb_round_winner, cb_round_loser = winner, get_vs(winner)
   else
-    combat_rounds_won[p1.id] += 1
-    combat_rounds_won[p2.id] += 1
-    combat_round_winner, combat_round_loser = nil, nil
+    cb_rounds_won[p1.id] += 1
+    cb_rounds_won[p2.id] += 1
+    cb_round_winner, cb_round_loser = nil, nil
   end
 end
 
@@ -92,10 +92,10 @@ function setup_new_round()
   end)
 
   for k, v in pairs(round_timers) do
-    combat_round_timers[k] = v
+    cb_round_timers[k] = v
   end
 
-  combat_round_remaining_time = round_duration
+  cb_round_remaining_time = round_duration
 end
 
 function update_frames_counter(p)
@@ -118,7 +118,7 @@ function update_frames_counter(p)
       dmg_sprite_handler(p)
 
       if p.ca.requires_forced_stop and not p.cap.is_reversing then
-        set_current_action_animation_lock(p, true)
+        set_current_ac_animation_lock(p, true)
       end
 
       if p.ca.is_reversible and not p.cap.is_reversing then

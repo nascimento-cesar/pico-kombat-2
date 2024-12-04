@@ -9,17 +9,17 @@ __lua__
 #include core/update.lua
 #include draw/char_selection.lua
 #include draw/gameplay.lua
-#include draw/next_combat.lua
+#include draw/next_cb.lua
 #include draw/start.lua
 #include update/char_selection.lua
 #include update/gameplay/acs.lua
-#include update/gameplay/combat.lua
+#include update/gameplay/cb.lua
 #include update/gameplay/controls.lua
 #include update/gameplay/core.lua
 #include update/gameplay/finishing_moves.lua
 #include update/gameplay/movement.lua
 #include update/gameplay/special_attacks.lua
-#include update/next_combat.lua
+#include update/next_cb.lua
 #include update/start.lua
 
 __gfx__
