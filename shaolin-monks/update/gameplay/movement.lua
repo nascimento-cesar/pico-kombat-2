@@ -5,7 +5,7 @@ function fix_players_orientation()
   end
 end
 
-function move_x(p, x_increment, direction)
+function mv_x(p, x_increment, direction)
   local vs, direction = get_vs(p), direction or p.facing
   local new_p_x = p.x + x_increment * direction
   local has_l_col, has_r_col = has_collision(new_p_x, p.y, vs.x, vs.y, "left"), has_collision(new_p_x, p.y, vs.x, vs.y, "right")
@@ -39,7 +39,7 @@ function move_x(p, x_increment, direction)
   end
 end
 
-function move_y(p, y)
+function mv_y(p, y)
   p.y += y
 end
 
@@ -52,19 +52,19 @@ end
 function shift_player_x(p, shift_direction)
   if shift_direction and not p.is_x_shifted then
     p.is_x_shifted = shift_direction
-    move_x(p, x_shift * shift_direction)
+    mv_x(p, x_shift * shift_direction)
   elseif not shift_direction and p.is_x_shifted then
-    move_x(p, x_shift * -p.is_x_shifted)
+    mv_x(p, x_shift * -p.is_x_shifted)
     p.is_x_shifted = false
   end
 end
 
 function shift_player_y(p, shift_direction)
   if shift_direction and not p.is_y_shifted then
-    move_y(p, y_shift * shift_direction, nil, true)
+    mv_y(p, y_shift * shift_direction, nil, true)
     p.is_y_shifted = shift_direction
   elseif not shift_direction and p.is_y_shifted then
-    move_y(p, y_shift * -p.is_y_shifted)
+    mv_y(p, y_shift * -p.is_y_shifted)
     p.is_y_shifted = false
   end
 end

@@ -17,7 +17,7 @@ function draw_gameplay()
     end
   else
     draw_stage()
-    function_lookup("finished,finishing_move,new_player,starting,time_up", { draw_finished, draw_finishing_move, draw_new_player, draw_starting, draw_time_up }, cb_round_state)
+    function_lookup("finished,finishing_mv,new_player,starting,time_up", { draw_finished, draw_finishing_mv, draw_new_player, draw_starting, draw_time_up }, cb_round_state)
     print(cb_round_remaining_time, get_hcenter(cb_round_remaining_time), 8, 7)
     local offset = 8
     local h, w, y = 8, (128 - offset * 3) / 2, offset * 2
@@ -64,7 +64,7 @@ end
 
 function draw_player(p)
   if ccp.skip_p_rendering == p.id then
-    if ccp.has_finishing_move_hit then
+    if ccp.has_finishing_mv_hit then
       draw_player(ccp.p_fmr1)
       draw_player(ccp.p_fmr2)
     end
@@ -154,8 +154,8 @@ function draw_particles(p)
   end
 end
 
-function draw_finishing_move()
-  if cb_round_timers.finishing_move > round_timers.finishing_move / 2 then
+function draw_finishing_mv()
+  if cb_round_timers.finishing_mv > round_timers.finishing_mv / 2 then
     draw_blinking_text("finish " .. (cb_round_loser.char.gender == 1 and "him" or "her"))
   end
 end

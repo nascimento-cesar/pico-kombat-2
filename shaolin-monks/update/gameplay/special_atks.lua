@@ -21,8 +21,8 @@ function handle_special_atk(p)
             p,
             function(p, vs)
               p.t = 0
-              move_x(vs, -1)
-              move_y(vs, -1)
+              mv_x(vs, -1)
+              mv_y(vs, -1)
             end,
             function(p, vs)
               if p.t >= get_total_frames(p, 3) then
@@ -64,8 +64,8 @@ function handle_special_atk(p)
           end
         else
           atk(p)
-          move_x(p, offensive_speed)
-          move_y(p, -offensive_speed)
+          mv_x(p, offensive_speed)
+          mv_y(p, -offensive_speed)
           p.cap.top_height_reached = p.y <= y_upper_limit
         end
       end,
@@ -125,7 +125,7 @@ function handle_special_atk(p)
             p,
             nil,
             function(p)
-              move_x(p, -1)
+              mv_x(p, -1)
               if p.t >= get_total_frames(p, 2) then
                 finish_ac(p)
               end
@@ -208,8 +208,8 @@ function handle_special_atk(p)
             if p.t >= total_frames * 5 then
               setup_next_ac(p, "fall", nil, true)
             elseif p.t < total_frames then
-              move_x(p, -1)
-              move_y(p, -1)
+              mv_x(p, -1)
+              mv_y(p, -1)
             end
           end
         )
@@ -223,11 +223,11 @@ function handle_special_atk(p)
               setup_next_ac(p, "jump", nil, true)
             end
           else
-            move_x(p, offensive_speed * 1.5)
+            mv_x(p, offensive_speed * 1.5)
           end
         else
           set_current_ac_animation_lock(p, true)
-          move_y(p, -offensive_speed * 1.5)
+          mv_y(p, -offensive_speed * 1.5)
           p.cap.top_height_reached = p.y <= y_upper_limit + sprite_h
         end
       end,
@@ -242,14 +242,14 @@ function handle_special_atk(p)
             finish_ac(vs)
             p.y = y_bottom_limit
           else
-            move_x(p, offensive_speed / 2)
-            move_x(vs, -offensive_speed / 2)
+            mv_x(p, offensive_speed / 2)
+            mv_x(vs, -offensive_speed / 2)
           end
         else
           if p.t >= total_frames * 2 then
             finish_ac(p)
           else
-            move_x(p, offensive_speed)
+            mv_x(p, offensive_speed)
             atk(
               p,
               nil,
@@ -298,8 +298,8 @@ function handle_special_atk(p)
                 finish_ac(vs)
                 setup_next_ac(p, "fall", nil, true)
               elseif p.t < 3 then
-                move_x(p, -1)
-                move_y(p, -1)
+                mv_x(p, -1)
+                mv_y(p, -1)
               end
             end
           )
@@ -320,7 +320,7 @@ function handle_special_atk(p)
           finish_ac(p)
         else
           p.cap.skip_sfx = true
-          move_x(p, offensive_speed)
+          mv_x(p, offensive_speed)
           atk(
             p,
             nil,
@@ -330,7 +330,7 @@ function handle_special_atk(p)
                 setup_next_ac(vs, "jump", { direction = backward }, true)
                 setup_next_ac(p, "fall", nil, true)
               else
-                move_x(p, -offensive_speed)
+                mv_x(p, -offensive_speed)
               end
             end,
             function(p)
@@ -376,7 +376,7 @@ function handle_special_atk(p)
                 end
               else
                 vs.projectile.x += offensive_speed * p.facing
-                move_x(p, offensive_speed)
+                mv_x(p, offensive_speed)
               end
             end
           end
@@ -389,7 +389,7 @@ function handle_special_atk(p)
             p.cap.has_changed_orientation = true
           end
           if not is_limit_left(p.x) and not is_limit_right(p.x) then
-            move_x(p, offensive_speed)
+            mv_x(p, offensive_speed)
           else
             p.cap.has_teleported = true
             p.x = is_limit_left(p.x) and map_max_x or map_min_x
@@ -537,7 +537,7 @@ function slide(p, _, cycles, delay, ignore_collision, block_callback)
     end
   else
     if not p.cap.has_hit or ignore_collision then
-      move_x(p, offensive_speed)
+      mv_x(p, offensive_speed)
     end
 
     atk(p, nil, nil, block_callback)
@@ -547,7 +547,7 @@ end
 function teleport(p, vs, next_ac_name, next_ac_params, teleport_callback)
   if not p.cap.has_teleported then
     if p.y < y_bottom_limit + (sprite_h * 2) + stroke_width then
-      move_y(p, jump_speed)
+      mv_y(p, jump_speed)
     else
       p.cap.has_teleported = true
       teleport_callback(p, vs)

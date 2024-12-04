@@ -16,7 +16,7 @@ __lua__
 #include update/gameplay/cb.lua
 #include update/gameplay/controls.lua
 #include update/gameplay/core.lua
-#include update/gameplay/finishing_moves.lua
+#include update/gameplay/finishing_mvs.lua
 #include update/gameplay/movement.lua
 #include update/gameplay/special_atks.lua
 #include update/next_cb.lua

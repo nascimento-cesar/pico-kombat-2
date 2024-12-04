@@ -13,10 +13,10 @@ function aerial_ac(p)
 
   if p.cap.is_landing or p.ca == acs.fall then
     if not is_thrown_lower or (is_thrown_lower and not is_timer_active(p.cap, "air_hold_frames", 4)) then
-      move_y(p, jump_speed)
+      mv_y(p, jump_speed)
     end
 
-    move_x(p, x_speed, is_turn_around_jump and p.facing * -1 or p.facing)
+    mv_x(p, x_speed, is_turn_around_jump and p.facing * -1 or p.facing)
 
     if is_p1_ahd_p2() and not is_turn_around_jump then
       if not p.ca.is_atk then
@@ -35,8 +35,8 @@ function aerial_ac(p)
       finish_ac(p)
     end
   else
-    move_y(p, -jump_speed)
-    move_x(p, x_speed)
+    mv_y(p, -jump_speed)
+    mv_x(p, x_speed)
 
     if p.y <= (is_thrown_lower and y_upper_limit + 16 or y_upper_limit) then
       p.cap.is_landing = true
@@ -60,7 +60,7 @@ function handle_ac(p)
     aerial_ac(p)
   elseif handler == "flinch" then
     if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
-      move_x(p, -walk_speed)
+      mv_x(p, -walk_speed)
     end
   elseif handler == "jump" then
     aerial_ac(p)
@@ -81,7 +81,7 @@ function handle_ac(p)
     end
   elseif handler == "swept" then
     if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
-      move_x(p, -walk_speed)
+      mv_x(p, -walk_speed)
     end
   elseif handler == "thrown_backward" then
     p.cap.direction = backward
@@ -95,7 +95,7 @@ function handle_ac(p)
     p.cap.direction = backward
     aerial_ac(p)
   elseif handler == "walk" then
-    move_x(p, walk_speed * p.cap.direction)
+    mv_x(p, walk_speed * p.cap.direction)
   end
 end
 

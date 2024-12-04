@@ -1,12 +1,12 @@
-function handle_finishing_move(p, vs)
-  local finishing_move = ccp.finishing_move
+function handle_finishing_mv(p, vs)
+  local finishing_mv = ccp.finishing_mv
 
-  if ccp.has_finishing_move_started then
+  if ccp.has_finishing_mv_started then
     if p.cap.is_dmg_sprite then
-      ccp.has_finishing_move_hit = true
+      ccp.has_finishing_mv_hit = true
       ccp.skip_p_rendering = vs.id
-      ccp.p_fmr1 = create_temp_p(vs, finishing_move.fmr1_fps, finishing_move.fmr1_sprites)
-      ccp.p_fmr2 = create_temp_p(vs, finishing_move.fmr2_fps, finishing_move.fmr2_sprites)
+      ccp.p_fmr1 = create_temp_p(vs, finishing_mv.fmr1_fps, finishing_mv.fmr1_sprites)
+      ccp.p_fmr2 = create_temp_p(vs, finishing_mv.fmr2_fps, finishing_mv.fmr2_sprites)
 
       -- update_player(ccp.p_fmr1)
       -- update_player(ccp.p_fmr2)
@@ -15,13 +15,13 @@ function handle_finishing_move(p, vs)
   else
     local x_diff = p.facing == forward and vs.x - (p.x + sprite_w) or p.x - (vs.x + sprite_w)
 
-    if x_diff > finishing_move.distance then
+    if x_diff > finishing_mv.distance then
       setup_next_ac(p, "walk", { direction = forward }, true)
-    elseif x_diff < finishing_move.distance then
+    elseif x_diff < finishing_mv.distance then
       setup_next_ac(p, "walk", { direction = backward }, true)
     else
-      ccp.has_finishing_move_started = true
-      start_ac(p, finishing_move)
+      ccp.has_finishing_mv_started = true
+      start_ac(p, finishing_mv)
     end
   end
 end

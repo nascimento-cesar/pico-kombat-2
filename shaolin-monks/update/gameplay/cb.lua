@@ -37,7 +37,7 @@ end
 
 function check_defeat(p)
   if p.hp <= 0 then
-    if is_round_state_eq "finishing_move" then
+    if is_round_state_eq "finishing_mv" then
       cb_round_state = "finished"
     else
       increment_rounds_won(get_vs(p))
@@ -45,7 +45,7 @@ function check_defeat(p)
       local has_cb_ended, _, loser = get_cb_result()
 
       if has_cb_ended then
-        cb_round_state = is_boss(loser) and "boss_defeated" or "finishing_move"
+        cb_round_state = is_boss(loser) and "boss_defeated" or "finishing_mv"
       else
         cb_round_state = "finished"
       end
@@ -68,7 +68,7 @@ function hit(ac, params, p)
       setup_next_ac(p, reac, nil, true)
     end
 
-    remove_temporary_conditions(p)
+    remv_temporary_conditions(p)
   end
 
   if ac.spills_blood then
@@ -91,7 +91,7 @@ function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)
   end
 end
 
-function remove_temporary_conditions(p)
+function remv_temporary_conditions(p)
   p.st_timers.frozen = 0
 end
 

@@ -66,11 +66,11 @@ function get_ac_from_sequence(p, next_input)
     end
   end
 
-  if cb_round_state == "finishing_move" then
-    ac = handler(p, next_input, p.char.finishing_moves)
+  if cb_round_state == "finishing_mv" then
+    ac = handler(p, next_input, p.char.finishing_mvs)
 
     if ac then
-      ccp.finishing_move = ac
+      ccp.finishing_mv = ac
       ac = acs.idle
     end
   end

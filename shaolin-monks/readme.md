@@ -8,7 +8,7 @@
 - [x] 🐞 sometimes hitting an opponent doesn't make the special ac end
 - [x] 🚀 support triggering release ac in middle of another ac like jumping and walking
 - [x] 🚀 create sk char
-- [x] 🐞 move sz_freeeze_timer to cap
+- [x] 🐞 mv sz_freeeze_timer to cap
 - [x] 🐞 fix morph kn bl+bl+bl
 - [x] 🐞 fix morph ml hold button
 - [x] 🐞 reversible acs that requires forced stop stuck at the last frame
@@ -16,7 +16,7 @@
 - [x] 🐞 pressing directionals after landing a hook does not work, also roundhouse kick and block
 - [x] 🚀 time's up not implemented
 - [x] 🚀 support draw
-- [x] 🚀 all special moves
+- [x] 🚀 all special mvs
 - [x] 🐞 do not allow damage after cb end
 - [x] 🚀 select char animation
 - [x] 🐞 loser should stay prone after cb end
@@ -38,7 +38,7 @@
 - [x] 🚀 test blocked kl diving kick and ml teleport kick and sc teleport punch
 - [x] 🐞 fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to ac stack)
 - [x] 🐞 finishing the opponent with jx special atks doesn't trigger finishing animation
-- [ ] 🚀 all finishing moves
+- [ ] 🚀 all finishing mvs
 - [ ] 🚀 pixel art stages
 - [ ] 🚀 create rp invisibility animation and use the same for st morph
 - [ ] 🚀 particles on projectiles
@@ -66,7 +66,7 @@
 ✅ 31 - sc spear
 ✅ 32 - sc spear hit
 ✅ 33 - rd torpedo
-✅ 34 - char selection move
+✅ 34 - char selection mv
 ✅ 35 - char selection confirm
 
 # LATEST COUNTS

@@ -23,11 +23,11 @@ function update_gameplay()
     end
   end
 
-  function_lookup("finished,finishing_move,starting,time_up", { process_finished, process_finishing_move, process_starting, process_time_up }, cb_round_state)
+  function_lookup("finished,finishing_mv,starting,time_up", { process_finished, process_finishing_mv, process_starting, process_time_up }, cb_round_state)
 
   if cb_round_state == "in_progress" then
     lock_controls(false, false)
-  elseif cb_round_state == "finishing_move" and not ccp.finishing_move then
+  elseif cb_round_state == "finishing_mv" and not ccp.finishing_mv then
     lock_controls(p1 == cb_round_loser, p2 == cb_round_loser)
   else
     lock_controls(true, true)
@@ -107,10 +107,10 @@ function process_boss_defeated()
   end
 end
 
-function process_finishing_move()
-  if ccp.finishing_move then
-    handle_finishing_move(cb_round_winner, cb_round_loser)
-  elseif not is_timer_active(cb_round_timers, "finishing_move") then
+function process_finishing_mv()
+  if ccp.finishing_mv then
+    handle_finishing_mv(cb_round_winner, cb_round_loser)
+  elseif not is_timer_active(cb_round_timers, "finishing_mv") then
     cb_round_state = "finished"
   end
 end
