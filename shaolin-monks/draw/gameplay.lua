@@ -6,10 +6,10 @@ function draw_gameplay()
       shift_pal "p07172737475767778797a7b7c7d7e7f7"
       draw_stage()
       pal()
-      draw_players()
+      draw_pls()
     else
       draw_stage()
-      draw_players()
+      draw_pls()
 
       if ccp.defeat_animation_step == 3 then
         draw_blinking_text "evil emperor has fallen!"
@@ -17,12 +17,12 @@ function draw_gameplay()
     end
   else
     draw_stage()
-    function_lookup("finished,finishing_mv,new_player,starting,time_up", { draw_finished, draw_finishing_mv, draw_new_player, draw_starting, draw_time_up }, cb_round_state)
+    function_lookup("finished,finishing_mv,new_pl,starting,time_up", { draw_finished, draw_finishing_mv, draw_new_pl, draw_starting, draw_time_up }, cb_round_state)
     print(cb_round_remaining_time, get_hcenter(cb_round_remaining_time), 8, 7)
     local offset = 8
     local h, w, y = 8, (128 - offset * 3) / 2, offset * 2
 
-    foreach_player(function(p, p_id)
+    foreach_pl(function(p, p_id)
       local x, hp_w = offset + p_id * w + p_id * offset, max(w * p.hp / 100, 1)
       rectfill(x, y, x + w - 1, y + h - 1, 8)
       rectfill(x, y, x + hp_w - 1, y + h - 1, 11)
@@ -34,7 +34,7 @@ function draw_gameplay()
       end
     end)
 
-    draw_players()
+    draw_pls()
 
     if p1.pj then
       draw_pj(p1)
@@ -46,13 +46,13 @@ function draw_gameplay()
   end
 end
 
-function draw_players()
+function draw_pls()
   if p1.cap.has_hit then
-    draw_player(p2)
-    draw_player(p1)
+    draw_pl(p2)
+    draw_pl(p1)
   else
-    draw_player(p1)
-    draw_player(p2)
+    draw_pl(p1)
+    draw_pl(p2)
   end
 end
 
@@ -62,11 +62,11 @@ function draw_stage()
   pal()
 end
 
-function draw_player(p)
+function draw_pl(p)
   if ccp.skip_p_rendering == p.id then
     if ccp.has_finishing_mv_hit then
-      draw_player(ccp.p_fmr1)
-      draw_player(ccp.p_fmr2)
+      draw_pl(ccp.p_fmr1)
+      draw_pl(ccp.p_fmr2)
     end
 
     return
@@ -168,7 +168,7 @@ function draw_finished()
   draw_blinking_text(cb_round_winner and ((cb_round_winner == p1 and "p1" or "p2") .. " wins") or "draw")
 end
 
-function draw_new_player()
+function draw_new_pl()
   draw_blinking_text "a new challenger has emerged"
 end
 

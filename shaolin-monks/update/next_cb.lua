@@ -1,10 +1,10 @@
 function update_next_cb()
   music(-1, 200)
-  local main_player = get_main_player()
+  local main_pl = get_main_pl()
 
-  if main_player then
-    local next_challenger = get_next_challenger(main_player)
-    get_vs(main_player).char = next_challenger
+  if main_pl then
+    local next_challenger = get_next_challenger(main_pl)
+    get_vs(main_pl).char = next_challenger
   end
 
   current_screen = "gameplay"

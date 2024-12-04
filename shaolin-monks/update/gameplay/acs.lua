@@ -21,11 +21,11 @@ function aerial_ac(p)
     if is_p1_ahd_p2() and not is_turn_around_jump then
       if not p.ca.is_atk then
         p.cap.is_turn_around_jump = true
-        shift_player_orientation(p)
+        shift_pl_orientation(p)
       end
 
       if not p.cap.vs_has_turned_around then
-        shift_player_orientation(vs)
+        shift_pl_orientation(vs)
         p.cap.vs_has_turned_around = true
       end
     end
@@ -178,8 +178,8 @@ end
 function start_ac(p, next_ac, params, keep_current_frame, is_restarted)
   p.ca, p.cap, p.caf, p.t = next_ac, params or {}, keep_current_frame and p.caf or 1, is_restarted and p.t or 1
   p.cap.is_animation_complete = false
-  shift_player_x(p, p.cap.is_x_shiftable or next_ac.is_x_shiftable)
-  shift_player_y(p, p.cap.is_y_shiftable or next_ac.is_y_shiftable)
+  shift_pl_x(p, p.cap.is_x_shiftable or next_ac.is_x_shiftable)
+  shift_pl_y(p, p.cap.is_y_shiftable or next_ac.is_y_shiftable)
   set_current_ac_animation_lock(p, false)
 
   if next_ac.is_special_atk then

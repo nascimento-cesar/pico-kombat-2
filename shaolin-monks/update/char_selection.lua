@@ -4,7 +4,7 @@ function update_char_selection()
   if ccp.chars_selected and not is_timer_active(ccp, "round_beginning_timer", 30) then
     p1.temp_char, p2.temp_char, ccp.chars_selected, current_screen = nil, nil, false, "next_cb"
   else
-    foreach_player(handle_cursor_movement)
+    foreach_pl(handle_cursor_movement)
   end
 end
 
@@ -45,7 +45,7 @@ function handle_cursor_movement(p, p_id, vs)
     p.highlighted_char = new_char
   else
     if btnp(🅾️, p_id) or btnp(❎, p_id) then
-      init_player(p)
+      init_pl(p)
     end
   end
 end

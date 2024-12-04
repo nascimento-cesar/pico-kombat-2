@@ -7,8 +7,8 @@ function update_gameplay()
     return process_boss_defeated()
   end
 
-  if detect_new_player() then
-    if not is_timer_active(cb_round_timers, "new_player") then
+  if detect_new_pl() then
+    if not is_timer_active(cb_round_timers, "new_pl") then
       current_screen = "char_selection"
     end
 
@@ -33,9 +33,9 @@ function update_gameplay()
     lock_controls(true, true)
   end
 
-  update_player(p1)
-  update_player(p2)
-  fix_players_orientation()
+  update_pl(p1)
+  update_pl(p2)
+  fix_pls_orientation()
 end
 
 function build_particle_set(p, color, count, x, y, max_lifespan, radius)
@@ -54,17 +54,17 @@ function build_particle_set(p, color, count, x, y, max_lifespan, radius)
   add(p.particle_sets, particle_set)
 end
 
-function detect_new_player()
-  foreach_player(function(p, p_id)
-    if not p.has_joined and not is_round_state_eq "new_player" then
+function detect_new_pl()
+  foreach_pl(function(p, p_id)
+    if not p.has_joined and not is_round_state_eq "new_pl" then
       if btnp(🅾️, p_id) or btnp(❎, p_id) then
-        init_player(p)
-        cb_round_state = "new_player"
+        init_pl(p)
+        cb_round_state = "new_pl"
       end
     end
   end)
 
-  return is_round_state_eq "new_player"
+  return is_round_state_eq "new_pl"
 end
 
 function process_boss_defeated()
@@ -81,7 +81,7 @@ function process_boss_defeated()
         ccp.defeat_animation_step, cb_round_winner.x, cb_round_winner.y, cb_round_loser.x, cb_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
       end
 
-      update_player(cb_round_loser)
+      update_pl(cb_round_loser)
 
       if timer % 10 == 0 then
         particle_function(11, 6, max(20, flr_rnd(30)), flr_rnd(1))
@@ -138,11 +138,11 @@ function process_finished()
     local has_cb_ended, winner, loser = get_cb_result()
 
     if has_cb_ended then
-      local main_player = get_main_player()
+      local main_pl = get_main_pl()
       current_screen = (not winner or loser.has_joined) and "char_selection" or "next_cb"
 
-      if winner and main_player == winner then
-        deli(main_player.next_cbs, 1)
+      if winner and main_pl == winner then
+        deli(main_pl.next_cbs, 1)
       end
     else
       cb_round += 1
@@ -158,7 +158,7 @@ function process_starting()
   end
 end
 
-function update_player(p)
+function update_pl(p)
   if cb_round_state ~= "finished" then
     is_timer_active(p.st_timers, "frozen")
     is_timer_active(p.st_timers, "invisible")

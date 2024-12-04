@@ -1,8 +1,8 @@
 function update_start()
   music(-1, 200)
-  foreach_player(function(p, p_id)
+  foreach_pl(function(p, p_id)
     if btnp(❎, p_id) then
-      init_player(p)
+      init_pl(p)
       current_screen = "char_selection"
     end
   end)

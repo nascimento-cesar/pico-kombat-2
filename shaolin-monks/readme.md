@@ -32,8 +32,8 @@
 - [x] 🐞 should not allow tripping the opponent if it is not on ground level (ex: air frozen or jumping)
 - [x] 🐞 hit an opponent teleporting makes it stops inside the ground
 - [x] 🐞 fire a pj at a teleported opponent makes the pj change direction
-- [x] 🐞 should not detect a hit when flying atk an opponent that is already behind the player
-- [x] 🐞 should allow just one aerial special atk (pj) per jump (more than one might stuck player in air)
+- [x] 🐞 should not detect a hit when flying atk an opponent that is already behind the pl
+- [x] 🐞 should allow just one aerial special atk (pj) per jump (more than one might stuck pl in air)
 - [x] 🐞 sc spear does not work on right side
 - [x] 🚀 test blocked kl diving kick and ml teleport kick and sc teleport punch
 - [x] 🐞 fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to ac stack)

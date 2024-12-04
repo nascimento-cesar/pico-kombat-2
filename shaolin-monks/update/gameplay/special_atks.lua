@@ -190,7 +190,7 @@ function handle_special_atk(p)
           function(p, vs)
             p.x = vs.x - sp_w * vs.facing
             p.facing *= -1
-            fix_players_orientation()
+            fix_pls_orientation()
           end
         )
       end,
@@ -311,7 +311,7 @@ function handle_special_atk(p)
             p.x = vs.x - sp_w * vs.facing
             p.y = y_bottom_limit
             p.facing *= -1
-            fix_players_orientation()
+            fix_pls_orientation()
           end
         )
       end,

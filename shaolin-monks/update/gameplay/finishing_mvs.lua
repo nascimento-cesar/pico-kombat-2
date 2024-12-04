@@ -8,8 +8,8 @@ function handle_finishing_mv(p, vs)
       ccp.p_fmr1 = create_temp_p(vs, finishing_mv.fmr1_fps, finishing_mv.fmr1_sps)
       ccp.p_fmr2 = create_temp_p(vs, finishing_mv.fmr2_fps, finishing_mv.fmr2_sps)
 
-      -- update_player(ccp.p_fmr1)
-      -- update_player(ccp.p_fmr2)
+      -- update_pl(ccp.p_fmr1)
+      -- update_pl(ccp.p_fmr2)
       -- start reac here
     end
   else

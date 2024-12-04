@@ -1,7 +1,7 @@
-function fix_players_orientation()
+function fix_pls_orientation()
   if (p1.facing == p2.facing or is_p1_ahd_p2()) and not p1.ca.is_aerial and not p2.ca.is_aerial then
-    shift_player_orientation(p1, p1.x < p2.x and forward or backward)
-    shift_player_orientation(p2, p1.x < p2.x and backward or forward)
+    shift_pl_orientation(p1, p1.x < p2.x and forward or backward)
+    shift_pl_orientation(p2, p1.x < p2.x and backward or forward)
   end
 end
 
@@ -43,13 +43,13 @@ function mv_y(p, y)
   p.y += y
 end
 
-function shift_player_orientation(p, facing)
+function shift_pl_orientation(p, facing)
   if not p.ca.is_special_atk and not is_st_eq(p, "frozen") then
     p.facing = facing or p.facing * -1
   end
 end
 
-function shift_player_x(p, shift_direction)
+function shift_pl_x(p, shift_direction)
   if shift_direction and not p.is_x_shifted then
     p.is_x_shifted = shift_direction
     mv_x(p, x_shift * shift_direction)
@@ -59,7 +59,7 @@ function shift_player_x(p, shift_direction)
   end
 end
 
-function shift_player_y(p, shift_direction)
+function shift_pl_y(p, shift_direction)
   if shift_direction and not p.is_y_shifted then
     mv_y(p, y_shift * shift_direction, nil, true)
     p.is_y_shifted = shift_direction

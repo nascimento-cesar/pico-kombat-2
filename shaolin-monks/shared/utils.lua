@@ -14,7 +14,7 @@ function flr_rnd(n)
   return flr(rnd(n))
 end
 
-function foreach_player(callback)
+function foreach_pl(callback)
   for p in all { p1, p2 } do
     local vs = get_vs(p)
     callback(p, p.id, vs, vs.id)

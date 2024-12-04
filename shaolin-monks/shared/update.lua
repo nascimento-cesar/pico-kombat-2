@@ -16,7 +16,7 @@ function get_cb_result()
   return false
 end
 
-function get_main_player()
+function get_main_pl()
   if p1.has_joined and not p2.has_joined then
     return p1
   elseif not p1.has_joined and p2.has_joined then
@@ -32,7 +32,7 @@ function get_vs(p)
   return p.id == p1_id and p2 or p1
 end
 
-function init_player(p)
+function init_pl(p)
   p.has_joined = true
 end
 
@@ -87,8 +87,8 @@ function lock_controls(lock_p1, lock_p2)
 end
 
 function setup_new_round()
-  foreach_player(function(p, p_id)
-    define_player(p_id, p)
+  foreach_pl(function(p, p_id)
+    define_pl(p_id, p)
   end)
 
   for k, v in pairs(round_timers) do

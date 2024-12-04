@@ -17,7 +17,7 @@ function draw_char_selection()
     spr(c.hd_sps[1], x + offset, y + offset)
     pal()
 
-    foreach_player(function(p)
+    foreach_pl(function(p)
       if i == p.highlighted_char and p.has_joined then
         rect(x, y, x + w - 1, y + h - 1, p.temp_char and 7 or get_blinking_color(6, 7))
       end
