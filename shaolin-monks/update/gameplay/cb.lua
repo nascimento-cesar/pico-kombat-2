@@ -95,6 +95,6 @@ function remove_temporary_conditions(p)
   p.st_timers.frozen = 0
 end
 
-function spill_blood(p)
-  build_prt_set(p, 8, 30, p.facing == forward and p.x + sp_w or p.x, p.y)
+function spill_blood(p, x, y)
+  build_prt_set(p, 8, 30, x or (p.x + sp_w / 2), y or p.y)
 end

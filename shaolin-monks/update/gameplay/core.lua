@@ -108,10 +108,14 @@ function process_boss_defeated()
 end
 
 function process_finishing_mv()
+  local timer = is_timer_active(cb_round_timers, "finishing_mv")
+
   if ccp.finishing_mv then
     hdl_finishing_mv(cb_round_winner, cb_round_loser)
-  elseif not is_timer_active(cb_round_timers, "finishing_mv") then
+  elseif not timer then
     cb_round_state = "finished"
+  else
+    cb_round_loser.cap.next_ac = acs.dizzy
   end
 end
 
@@ -130,8 +134,8 @@ function process_time_up()
 end
 
 function process_finished()
-  if cb_round_loser then
-    cb_round_loser.cap.next_ac = cb_round_loser.y == y_bottom_limit and acs.fainted
+  if cb_round_loser and cb_round_loser.y == y_bottom_limit then
+    setup_next_ac(cb_round_loser, "fainted", nil, true)
   end
 
   if not is_timer_active(cb_round_timers, "finished") then
