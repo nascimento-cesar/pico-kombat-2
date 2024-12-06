@@ -1,5 +1,5 @@
 function hdl_finishing_mv(p, vs)
-  local finishing_mv, reac, pj_ac = ccp.finishing_mv, ccp.finishing_mv.reac, ccp.finishing_mv.is_pj
+  local finishing_mv, reac, pj_ac = ccp.finishing_mv, ccp.finishing_mv.reac, ccp.finishing_mv.pj
 
   if ccp.has_finishing_mv_started then
     if ((not pj_ac and p.cap.is_dmg_sp) or (pj_ac and ccp.has_hit_pj)) and not ccp.has_finishing_mv_hit then
@@ -9,7 +9,7 @@ function hdl_finishing_mv(p, vs)
       if reac == "decap" then
         play_sfx(36)
         setup_finishing_mv_reac(
-          vs, split "4,#$n/x4/-2/-1/t/t/t/t|$n/x6/0/-2/t/t/t/t|$n/x4/2/1|$n/x6/0/2|$n/x4/-2/-1/t/t/t/t", split "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$22/n", function(p)
+          vs, split "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", split "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$22/n", function(p)
             if not p.should_stop then
               mv_x(p, -1)
               mv_y(p, p.t < 10 and -1 or 1)
@@ -21,6 +21,20 @@ function hdl_finishing_mv(p, vs)
       elseif reac == "chomp" then
         play_sfx(37)
         setup_finishing_mv_reac(vs, split "16,#$n/n", split "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$22/n", nil, reac_drop_dead)
+      elseif reac == "halved" then
+        play_sfx(37)
+        setup_finishing_mv_reac(
+          vs, split "32,#$54/108/0/0/t/f/t|$55/109/2/1/t/f/t", split "32,#$54/108|$55/109/-2/1", nil, function(p)
+            if p.t == 1 then
+              p.x = p.x - 3 * p.facing
+            end
+            if p.t == 1 or p.t % 4 == 0 then
+              spill_blood(p)
+            end
+            debug = { a = has_finishing_mv_ended }
+            ccp.has_finishing_mv_ended = p.cap.is_animation_complete
+          end
+        )
       end
     end
 
@@ -40,7 +54,7 @@ function hdl_finishing_mv(p, vs)
       end
     end
   else
-    local x_diff = p.facing == forward and vs.x - (p.x + sp_w) or p.x - (vs.x + sp_w)
+    local x_diff = flr(p.facing == forward and vs.x - (p.x + sp_w) or p.x - (vs.x + sp_w))
 
     if x_diff > finishing_mv.distance then
       setup_next_ac(p, "walk", { direction = forward }, true)

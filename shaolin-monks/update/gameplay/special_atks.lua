@@ -504,7 +504,7 @@ function update_pj(p)
 
         p.pj.has_hit = true
 
-        if ccp.finishing_mv and ccp.finishing_mv.is_pj then
+        if ccp.finishing_mv and ccp.finishing_mv.pj then
           ccp.has_hit_pj = true
         else
           hit(ac, params, vs)

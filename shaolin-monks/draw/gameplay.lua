@@ -34,12 +34,12 @@ function draw_gameplay()
       end
     end)
 
-    draw_pls()
-
     if ccp.has_finishing_mv_hit then
       draw_pl(ccp.tmp_pls_1)
       draw_pl(ccp.tmp_pls_2)
     end
+
+    draw_pls()
 
     if p1.pj then
       draw_pj(p1)
@@ -52,7 +52,7 @@ function draw_gameplay()
 end
 
 function draw_pls()
-  if p1.cap.has_hit then
+  if p1.cap.has_hit or cb_round_winner == p1 then
     draw_pl(p2)
     draw_pl(p1)
   else
@@ -72,8 +72,8 @@ function draw_pl(p)
     return
   end
 
-  local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sp, is_dizzy, is_sp_x2, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sps[flr((p.caf - 1) / p.ca.fps) + 1], false, p.ca.is_sp_x2
-  local x, y, sp_sz = is_sp_x2 and p.x - (sp_w * p.facing) or p.x, is_sp_x2 and p.y - sp_h or p.y, is_sp_x2 and 2 or 1
+  local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sp, is_dizzy, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sps[flr((p.caf - 1) / p.ca.fps) + 1], false
+  local x, y, sp_sz_x, sp_sz_y = p.x, p.y, 1, 1
 
   if type(sp) == "table" then
     bd_id, hd_id, hd_x_adjustment, hd_y_adjustment, flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y = sp[1], sp[2], sp[3] or 0, sp[4] or 0, sp[5], sp[6], sp[7], sp[8]
@@ -81,8 +81,20 @@ function draw_pl(p)
     bd_id, hd_id = sp, 1
   end
 
-  if sub(hd_id, 1, 1) == "x" then
-    hd_id, is_dizzy = tonum(sub(hd_id, 2, 2)), true
+  if sub(hd_id, 1, 1) == "d" then
+    hd_id, is_dizzy = sub(hd_id, 2), true
+  end
+
+  if sub(bd_id, 1, 1) == "t" then
+    local tiles = tonum(sub(bd_id, 2, 2))
+    bd_id = sub(bd_id, 3)
+    x, y, hd_x_adjustment, sp_sz_x, sp_sz_y = tiles > 1 and x - (p.facing == backward and sp_w or 0) or x, tiles > 2 and y - sp_h or y, tiles > 1 and hd_x_adjustment - (p.facing == backward and sp_w or 0) or hd_x_adjustment, 2, tiles > 2 and 2 or 1
+  end
+
+  if sub(bd_id, 1, 1) == "x" then
+    local x_adj = sub(bd_id, 2, 4)
+    bd_id = sub(bd_id, 5)
+    x += x_adj * p.facing
   end
 
   if p.facing == backward then
@@ -90,9 +102,14 @@ function draw_pl(p)
   end
 
   if not is_st_eq(p, "invisible") then
-    local hd_x, hd_y = x + hd_x_adjustment * p.facing, y + hd_y_adjustment
+    local hd_x, hd_y, bd_id, hd_id = x + hd_x_adjustment * p.facing, y + hd_y_adjustment, tonum(bd_id), tonum(hd_id)
+    local hd_sp, is_halved_hd = hd_id and p.char.hd_sps[hd_id], hd_id == 108 or hd_id == 109
 
-    draw_stroke(p, x, y, sp_sz, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
+    if is_halved_hd then
+      hd_sp = hd_id
+    end
+
+    draw_stroke(p, x, y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y, hd_sp, hd_x, hd_y, flip_hd_x, flip_hd_y)
 
     if hd_id then
       if is_st_eq(p, "frozen") then
@@ -103,9 +120,13 @@ function draw_pl(p)
         if is_dizzy then
           shift_pal "p37bfe7"
         end
+
+        if is_halved_hd then
+          shift_pal "pe8"
+        end
       end
 
-      spr(p.char.hd_sps[hd_id], hd_x, hd_y, 1, 1, flip_hd_x, flip_hd_y)
+      spr(hd_sp, hd_x, hd_y, 1, 1, flip_hd_x, flip_hd_y)
       pal()
     end
 
@@ -114,7 +135,7 @@ function draw_pl(p)
         shift_pal(is_st_eq(p, "frozen") and frozen_bd_pal_map or p.char.bd_pal_map)
       end
 
-      spr(bd_id, x, y, sp_sz, sp_sz, flip_bd_x, flip_bd_y)
+      spr(bd_id, x, y, sp_sz_x, sp_sz_y, flip_bd_x, flip_bd_y)
       pal()
     end
   end
@@ -122,18 +143,18 @@ function draw_pl(p)
   draw_prts(p)
 end
 
-function draw_stroke(p, p_x, p_y, sp_sz, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
+function draw_stroke(p, p_x, p_y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y, hd_sp, hd_x, hd_y, flip_hd_x, flip_hd_y)
   shift_pal "p01112131415161718191a1b1c1d1e1f1"
 
   for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
     local x, y = unpack_split(axes, "|")
 
     if bd_id then
-      spr(bd_id, p_x + x, p_y + y, sp_sz, sp_sz, flip_bd_x, flip_bd_y)
+      spr(bd_id, p_x + x, p_y + y, sp_sz_x, sp_sz_y, flip_bd_x, flip_bd_y)
     end
 
-    if hd_id then
-      spr(p.char.hd_sps[hd_id], hd_x + x, hd_y + y, 1, 1, flip_hd_x, flip_hd_y)
+    if hd_sp then
+      spr(hd_sp, hd_x + x, hd_y + y, 1, 1, flip_hd_x, flip_hd_y)
     end
   end
 
