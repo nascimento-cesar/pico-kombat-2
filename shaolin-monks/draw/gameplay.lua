@@ -72,7 +72,8 @@ function draw_pl(p)
     return
   end
 
-  local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sp, is_dizzy, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sps[flr((p.caf - 1) / p.ca.fps) + 1], false
+  local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sp, is_dizzy, is_sp_x2, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sps[flr((p.caf - 1) / p.ca.fps) + 1], false, p.ca.is_sp_x2
+  local x, y, sp_sz = is_sp_x2 and p.x - (sp_w * p.facing) or p.x, is_sp_x2 and p.y - sp_h or p.y, is_sp_x2 and 2 or 1
 
   if type(sp) == "table" then
     bd_id, hd_id, hd_x_adjustment, hd_y_adjustment, flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y = sp[1], sp[2], sp[3] or 0, sp[4] or 0, sp[5], sp[6], sp[7], sp[8]
@@ -89,9 +90,9 @@ function draw_pl(p)
   end
 
   if not is_st_eq(p, "invisible") then
-    local hd_x, hd_y = p.x + hd_x_adjustment * p.facing, p.y + hd_y_adjustment
+    local hd_x, hd_y = x + hd_x_adjustment * p.facing, y + hd_y_adjustment
 
-    draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
+    draw_stroke(p, x, y, sp_sz, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
 
     if hd_id then
       if is_st_eq(p, "frozen") then
@@ -109,8 +110,11 @@ function draw_pl(p)
     end
 
     if bd_id then
-      shift_pal(is_st_eq(p, "frozen") and frozen_bd_pal_map or p.char.bd_pal_map)
-      spr(bd_id, p.x, p.y, 1, 1, flip_bd_x, flip_bd_y)
+      if not p.ca.skip_pal_shift then
+        shift_pal(is_st_eq(p, "frozen") and frozen_bd_pal_map or p.char.bd_pal_map)
+      end
+
+      spr(bd_id, x, y, sp_sz, sp_sz, flip_bd_x, flip_bd_y)
       pal()
     end
   end
@@ -118,14 +122,14 @@ function draw_pl(p)
   draw_prts(p)
 end
 
-function draw_stroke(p, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
+function draw_stroke(p, p_x, p_y, sp_sz, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
   shift_pal "p01112131415161718191a1b1c1d1e1f1"
 
   for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
     local x, y = unpack_split(axes, "|")
 
     if bd_id then
-      spr(bd_id, p.x + x, p.y + y, 1, 1, flip_bd_x, flip_bd_y)
+      spr(bd_id, p_x + x, p_y + y, sp_sz, sp_sz, flip_bd_x, flip_bd_y)
     end
 
     if hd_id then

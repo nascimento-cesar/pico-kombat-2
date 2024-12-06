@@ -5,9 +5,9 @@ function hdl_finishing_mv(p, vs)
     if p.cap.is_dmg_sp and not ccp.has_finishing_mv_hit then
       ccp.has_finishing_mv_hit = true
       ccp.skip_p_rendering = vs.id
-      play_sfx(acs.hook.hit_sfx)
 
       if reac == "decap" then
+        play_sfx(36)
         setup_finishing_mv_reac(
           vs, split "4,#$n/x4/-2/-1/t/t/t/t|$n/x6/0/-2/t/t/t/t|$n/x4/2/1|$n/x6/0/2|$n/x4/-2/-1/t/t/t/t", split "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$22/n", function(p)
             if not p.should_stop then
@@ -16,22 +16,11 @@ function hdl_finishing_mv(p, vs)
               p.should_stop = p.y - 4 >= y_bottom_limit
             end
           end,
-          function(p)
-            if p.t == 1 or p.t % 4 == 0 then
-              if p.t == 1 or p.t <= 32 then
-                spill_blood(p)
-              elseif p.t <= 40 then
-                spill_blood(p, nil, p.y + 1)
-              elseif p.t <= 48 then
-                spill_blood(p)
-              end
-            elseif p.t == 41 then
-              shift_pl_x(p, -1)
-              shift_pl_y(p, 1)
-            end
-            ccp.has_finishing_mv_ended = p.cap.is_animation_complete
-          end
+          reac_drop_dead
         )
+      elseif reac == "chomp" then
+        play_sfx(37)
+        setup_finishing_mv_reac(vs, split "16,#$n/n", split "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$22/n", nil, reac_drop_dead)
       end
     end
 
@@ -90,4 +79,20 @@ function setup_finishing_mv_reac(p, params_1, params_2, clb_1, clb_2)
 
   hdl(p, 1, params_1, clb_1)
   hdl(p, 2, params_2, clb_2)
+end
+
+function reac_drop_dead(p)
+  if p.t == 1 or p.t % 4 == 0 then
+    if p.t == 1 or p.t <= 32 then
+      spill_blood(p)
+    elseif p.t <= 40 then
+      spill_blood(p, nil, p.y + 1)
+    elseif p.t <= 48 then
+      spill_blood(p)
+    end
+  elseif p.t == 41 then
+    shift_pl_x(p, -1)
+    shift_pl_y(p, 1)
+  end
+  ccp.has_finishing_mv_ended = p.cap.is_animation_complete
 end

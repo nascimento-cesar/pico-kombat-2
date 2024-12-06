@@ -69,6 +69,8 @@
 ✅ 33 - rd torpedo
 ✅ 34 - char selection mv
 ✅ 35 - char selection confirm
+✅ 36 - decap
+✅ 37 - chomp
 
 # LATEST COUNTS
 
