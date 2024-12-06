@@ -1,8 +1,8 @@
 function hdl_finishing_mv(p, vs)
-  local finishing_mv, reac = ccp.finishing_mv, ccp.finishing_mv.reac
+  local finishing_mv, reac, pj_ac = ccp.finishing_mv, ccp.finishing_mv.reac, ccp.finishing_mv.is_pj
 
   if ccp.has_finishing_mv_started then
-    if p.cap.is_dmg_sp and not ccp.has_finishing_mv_hit then
+    if ((not pj_ac and p.cap.is_dmg_sp) or (pj_ac and ccp.has_hit_pj)) and not ccp.has_finishing_mv_hit then
       ccp.has_finishing_mv_hit = true
       ccp.skip_p_rendering = vs.id
 
@@ -48,7 +48,7 @@ function hdl_finishing_mv(p, vs)
       setup_next_ac(p, "walk", { direction = backward }, true)
     else
       ccp.has_finishing_mv_started = true
-      start_ac(p, finishing_mv)
+      start_ac(p, pj_ac and p.char.special_atks[pj_ac] or finishing_mv)
     end
   end
 end

@@ -503,7 +503,13 @@ function update_pj(p)
         end
 
         p.pj.has_hit = true
-        hit(ac, params, vs)
+
+        if ccp.finishing_mv and ccp.finishing_mv.is_pj then
+          ccp.has_hit_pj = true
+        else
+          hit(ac, params, vs)
+        end
+
         vs.cap.reac_clb = p.pj.reac_clb
 
         if p.pj.collision_clb then
