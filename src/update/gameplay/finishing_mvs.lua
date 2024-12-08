@@ -3,7 +3,7 @@ function hdl_finishing_mv(p, vs)
 
   if ccp.has_finishing_mv_started then
     if ((not pj_ac and p.cap.is_dmg_sp) or (pj_ac and ccp.has_hit_pj)) and not ccp.has_finishing_mv_hit then
-      local no_head_sps, sliced_sps = "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$x-03y+0222/n", "4,#$57/d4/-5/0/f/f/t/t|$56/d1/0/1/t/t/t/t|$57/d4/5/0/t/t/f/f|$56/d1/0/-1|$y-0157/d4/-5/0/f/f/t/t"
+      local no_head_sps, sliced_sps, lift_sps = "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$x-03y+0222/n", "4,#$57/d4/-5/0/f/f/t/t|$56/d1/0/1/t/t/t/t|$57/d4/5/0/t/t/f/f|$56/d1/0/-1|$y-0157/d4/-5/0/f/f/t/t", "1,#$23/d1,-1,-2"
       ccp.has_finishing_mv_hit = true
       ccp.skip_p_rendering = vs.id
 
@@ -21,6 +21,15 @@ function hdl_finishing_mv(p, vs)
           vs, 37, "36,#$54/n|$55/n", reac_drop_dead, "12,#$56/d1/n/-1,4,-4", function(p)
             if p.cap.is_animation_complete then
               setup_finishing_mv_reac(p, nil, nil, nil, sliced_sps, reac_propelled)
+            end
+          end
+        )
+      elseif reac == "soul_steal" then
+        ccp.draw_over_p = true
+        setup_finishing_mv_reac(
+          vs, 37, lift_sps, function(p)
+            if p.t == 32 then
+              setup_finishing_mv_reac(p, nil, "24,#$160/n|$x-01y+03161/n,0,0,t", nil, "4,#$x+02162/n|$x+03163/n|$x+04164/n|$x+04y+01165|$x+05y+02165/n|$x+06y+02166/n|$n/n,0,0,t")
             end
           end
         )
@@ -60,14 +69,14 @@ end
 function setup_finishing_mv_reac(p, sfx_id, params_1, clb_1, params_2, clb_2)
   local hdl = function(p, i, params, clb)
     if params then
-      fps, sps, x_inc, y_inc = unpack_split(params)
+      fps, sps, x_inc, y_inc, skip_pal_shift = unpack_split(params)
 
       if sfx_id then
         play_sfx(sfx_id)
       end
 
       ccp["tmp_pls_" .. i] = string_to_hash(
-        "ca,caf,cap,char,clb,facing,id,prt_sets,st_timers,t,x,y", { { fps = fps, sps = eval_str(sps), requires_forced_stop = true }, 0, {}, p.char, clb or function() end, p.facing, i + 10, {}, p.st_timers, 0, p.x + (x_inc or 0) * p.facing, p.y + (y_inc or 0) }
+        "ca,caf,cap,char,clb,facing,id,prt_sets,st_timers,t,x,y", { { fps = fps, sps = eval_str(sps), requires_forced_stop = true, skip_pal_shift = eval_str(skip_pal_shift) }, 0, {}, p.char, clb or function() end, p.facing, i + 10, {}, p.st_timers, 0, p.x + (x_inc or 0) * p.facing, p.y + (y_inc or 0) }
       )
     end
   end
