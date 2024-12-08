@@ -34,11 +34,6 @@ function draw_gameplay()
       end
     end)
 
-    if ccp.has_finishing_mv_hit then
-      draw_pl(ccp.tmp_pls_1)
-      draw_pl(ccp.tmp_pls_2)
-    end
-
     draw_pls()
 
     if p1.pj then
@@ -52,12 +47,25 @@ function draw_gameplay()
 end
 
 function draw_pls()
+  local f_mv_hdl = function()
+    draw_pl(ccp.tmp_pls_1)
+    draw_pl(ccp.tmp_pls_2)
+  end
+
+  if ccp.has_finishing_mv_hit and not ccp.draw_over_p then
+    f_mv_hdl()
+  end
+
   if p1.cap.has_hit or cb_round_winner == p1 then
     draw_pl(p2)
     draw_pl(p1)
   else
     draw_pl(p1)
     draw_pl(p2)
+  end
+
+  if ccp.has_finishing_mv_hit and ccp.draw_over_p then
+    f_mv_hdl()
   end
 end
 
@@ -97,19 +105,20 @@ function draw_pl(p)
     x += x_adj * p.facing
   end
 
+  if sub(bd_id, 1, 1) == "y" then
+    local y_adj = sub(bd_id, 2, 4)
+    bd_id = sub(bd_id, 5)
+    y += y_adj
+  end
+
   if p.facing == backward then
     flip_bd_x, flip_hd_x = not flip_bd_x, not flip_hd_x
   end
 
   if not is_st_eq(p, "invisible") then
-    local hd_x, hd_y, bd_id, hd_id = x + hd_x_adjustment * p.facing, y + hd_y_adjustment, tonum(bd_id), tonum(hd_id)
-    local hd_sp, is_halved_hd = hd_id and p.char.hd_sps[hd_id], hd_id == 108 or hd_id == 109
+    local hd_x, hd_y, bd_id, hd_id = x + hd_x_adjustment * p.facing, y + hd_y_adjustment, tonum(bd_id), hd_id and p.char.hd_sps[tonum(hd_id)]
 
-    if is_halved_hd then
-      hd_sp = hd_id
-    end
-
-    draw_stroke(p, x, y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y, hd_sp, hd_x, hd_y, flip_hd_x, flip_hd_y)
+    draw_stroke(p, x, y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
 
     if hd_id then
       if is_st_eq(p, "frozen") then
@@ -120,19 +129,19 @@ function draw_pl(p)
         if is_dizzy then
           shift_pal "p37bfe7"
         end
-
-        if is_halved_hd then
-          shift_pal "pe8"
-        end
       end
 
-      spr(hd_sp, hd_x, hd_y, 1, 1, flip_hd_x, flip_hd_y)
+      spr(hd_id, hd_x, hd_y, 1, 1, flip_hd_x, flip_hd_y)
       pal()
     end
 
     if bd_id then
       if not p.ca.skip_pal_shift then
         shift_pal(is_st_eq(p, "frozen") and frozen_bd_pal_map or p.char.bd_pal_map)
+      end
+
+      if bd_id == 152 or bd_id == 154 then
+        shift_pal "pe8"
       end
 
       spr(bd_id, x, y, sp_sz_x, sp_sz_y, flip_bd_x, flip_bd_y)
@@ -143,7 +152,7 @@ function draw_pl(p)
   draw_prts(p)
 end
 
-function draw_stroke(p, p_x, p_y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y, hd_sp, hd_x, hd_y, flip_hd_x, flip_hd_y)
+function draw_stroke(p, p_x, p_y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
   shift_pal "p01112131415161718191a1b1c1d1e1f1"
 
   for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
@@ -153,8 +162,8 @@ function draw_stroke(p, p_x, p_y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y,
       spr(bd_id, p_x + x, p_y + y, sp_sz_x, sp_sz_y, flip_bd_x, flip_bd_y)
     end
 
-    if hd_sp then
-      spr(hd_sp, hd_x + x, hd_y + y, 1, 1, flip_hd_x, flip_hd_y)
+    if hd_id then
+      spr(hd_id, hd_x + x, hd_y + y, 1, 1, flip_hd_x, flip_hd_y)
     end
   end
 

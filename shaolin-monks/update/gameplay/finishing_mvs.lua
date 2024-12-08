@@ -3,36 +3,23 @@ function hdl_finishing_mv(p, vs)
 
   if ccp.has_finishing_mv_started then
     if ((not pj_ac and p.cap.is_dmg_sp) or (pj_ac and ccp.has_hit_pj)) and not ccp.has_finishing_mv_hit then
+      local no_head_sps, sliced_sps = "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$x-03y+0222/n", "4,#$57/d4/-5/0/f/f/t/t|$56/d1/0/1/t/t/t/t|$57/d4/5/0/t/t/f/f|$56/d1/0/-1|$y-0157/d4/-5/0/f/f/t/t"
       ccp.has_finishing_mv_hit = true
       ccp.skip_p_rendering = vs.id
 
-      if reac == "decap" then
-        play_sfx(36)
-        setup_finishing_mv_reac(
-          vs, split "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", split "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$22/n", function(p)
-            if not p.should_stop then
-              mv_x(p, -1)
-              mv_y(p, p.t < 10 and -1 or 1)
-              p.should_stop = p.y - 4 >= y_bottom_limit
-            end
-          end,
-          reac_drop_dead
-        )
+      if reac == "no_head" then
+        setup_finishing_mv_reac(vs, 36, "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", reac_propelled, no_head_sps, reac_drop_dead)
       elseif reac == "chomp" then
-        play_sfx(37)
-        setup_finishing_mv_reac(vs, split "16,#$n/n", split "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$22/n", nil, reac_drop_dead)
+        setup_finishing_mv_reac(vs, 37, "16,#$n/n", nil, no_head_sps, reac_drop_dead)
       elseif reac == "halved" then
-        play_sfx(37)
+        setup_finishing_mv_reac(vs, 37, "32,#$t2152/n|$t2y+01154/n,-4", reac_drop_dead)
+      elseif reac == "ripped" then
+        ccp.draw_over_p = true
         setup_finishing_mv_reac(
-          vs, split "32,#$54/108/0/0/t/f/t|$55/109/2/1/t/f/t", split "32,#$54/108|$55/109/-2/1", nil, function(p)
-            if p.t == 1 then
-              p.x = p.x - 3 * p.facing
+          vs, 37, "36,#$54/n|$55/n", reac_drop_dead, "12,#$56/d1/n/-1,4,-4", function(p)
+            if p.cap.is_animation_complete then
+              setup_finishing_mv_reac(p, nil, nil, nil, sliced_sps, reac_propelled)
             end
-            if p.t == 1 or p.t % 4 == 0 then
-              spill_blood(p)
-            end
-            debug = { a = has_finishing_mv_ended }
-            ccp.has_finishing_mv_ended = p.cap.is_animation_complete
           end
         )
       end
@@ -67,27 +54,18 @@ function hdl_finishing_mv(p, vs)
   end
 end
 
-function setup_finishing_mv_reac(p, params_1, params_2, clb_1, clb_2)
+function setup_finishing_mv_reac(p, sfx_id, params_1, clb_1, params_2, clb_2)
   local hdl = function(p, i, params, clb)
     if params then
-      ccp["tmp_pls_" .. i] = {
-        ca = {
-          fps = params[1],
-          sps = eval_str(params[2]),
-          requires_forced_stop = true
-        },
-        caf = 0,
-        cap = {},
-        char = p.char,
-        clb = clb or function() end,
-        facing = p.facing,
-        id = i + 10,
-        prt_sets = {},
-        st_timers = p.st_timers,
-        t = 0,
-        x = p.x,
-        y = p.y
-      }
+      fps, sps, x_inc, y_inc = unpack_split(params)
+
+      if sfx_id then
+        play_sfx(sfx_id)
+      end
+
+      ccp["tmp_pls_" .. i] = string_to_hash(
+        "ca,caf,cap,char,clb,facing,id,prt_sets,st_timers,t,x,y", { { fps = fps, sps = eval_str(sps), requires_forced_stop = true }, 0, {}, p.char, clb or function() end, p.facing, i + 10, {}, p.st_timers, 0, p.x + (x_inc or 0) * p.facing, p.y + (y_inc or 0) }
+      )
     end
   end
 
@@ -97,16 +75,15 @@ end
 
 function reac_drop_dead(p)
   if p.t == 1 or p.t % 4 == 0 then
-    if p.t == 1 or p.t <= 32 then
-      spill_blood(p)
-    elseif p.t <= 40 then
-      spill_blood(p, nil, p.y + 1)
-    elseif p.t <= 48 then
-      spill_blood(p)
-    end
-  elseif p.t == 41 then
-    shift_pl_x(p, -1)
-    shift_pl_y(p, 1)
+    spill_blood(p)
   end
   ccp.has_finishing_mv_ended = p.cap.is_animation_complete
+end
+
+function reac_propelled(p)
+  if not p.should_stop then
+    mv_x(p, -1, nil)
+    mv_y(p, p.t < 10 and -1 or 1)
+    p.should_stop = p.y - 4 >= y_bottom_limit
+  end
 end
