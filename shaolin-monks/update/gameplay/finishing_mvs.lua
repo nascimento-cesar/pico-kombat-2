@@ -37,6 +37,7 @@ function hdl_finishing_mv(p, vs)
       end
 
       if ccp.has_finishing_mv_ended then
+        p.st_timers.invisible = 0
         cb_round_state = "finished"
       end
     end

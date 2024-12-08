@@ -70,8 +70,12 @@ function get_ac_from_sequence(p, next_input)
     ac = hdlr(p, next_input, p.char.finishing_mvs)
 
     if ac then
-      ccp.finishing_mv = ac
-      ac = acs.idle
+      if ac.name == "rp_f2" and p.st_timers.invisible <= 0 then
+        ac = nil
+      else
+        ccp.finishing_mv = ac
+        ac = acs.idle
+      end
     end
   end
 
