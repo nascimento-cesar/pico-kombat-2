@@ -445,7 +445,7 @@ function hdl_special_atk(p)
         create_pj(
           p, nil, nil, nil, function(p, vs)
             if not is_st_eq(vs, "frozen") then
-              vs.st_timers.frozen = 60
+              vs.st_timers.frozen = ccp.is_sz_f1_1_done and 2400 or 60
             else
               vs.st_timers.frozen, p.st_timers.frozen = 0, 60
             end
