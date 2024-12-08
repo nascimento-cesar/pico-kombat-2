@@ -7,10 +7,12 @@ function hdl_finishing_mv(p, vs)
       ccp.has_finishing_mv_hit = true
       ccp.skip_p_rendering = vs.id
 
-      if reac == "no_head" then
-        setup_finishing_mv_reac(vs, 36, "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", reac_propelled, no_head_sps, reac_drop_dead)
-      elseif reac == "chomp" then
+      if reac == "chomp" then
         setup_finishing_mv_reac(vs, 37, "16,#$n/n", nil, no_head_sps, reac_drop_dead)
+      elseif reac == "explode" then
+        setup_finishing_mv_reac(vs, 37, "6,#$t2x-08140/n|$t2x-08142/n|$t2x-08156/n", reac_explode)
+      elseif reac == "no_head" then
+        setup_finishing_mv_reac(vs, 36, "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", reac_propelled, no_head_sps, reac_drop_dead)
       elseif reac == "halved" then
         setup_finishing_mv_reac(vs, 37, "32,#$t2152/n|$t2y+01154/n,-4", reac_drop_dead)
       elseif reac == "ripped" then
@@ -79,6 +81,13 @@ function reac_drop_dead(p)
     spill_blood(p)
   end
   ccp.has_finishing_mv_ended = p.cap.is_animation_complete
+end
+
+function reac_explode(p)
+  p.st_timers.frozen = 0
+  for i = 1, 5 do
+    reac_drop_dead(p)
+  end
 end
 
 function reac_propelled(p)

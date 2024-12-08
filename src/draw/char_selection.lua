@@ -2,7 +2,7 @@ function draw_char_selection()
   cls()
 
   local w = 20
-  local col, row, h, offset, title_text = 1, 1, 20, (w - 8) / 2, "select your char"
+  local col, row, h, offset, title_text = 1, 1, 20, (w - 8) / 2, "select your character"
 
   print(title_text, get_hcenter(title_text), 20, get_blinking_color(6, 7))
 

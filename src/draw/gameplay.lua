@@ -137,7 +137,7 @@ function draw_pl(p)
 
     if bd_id then
       if not p.ca.skip_pal_shift then
-        shift_pal(is_st_eq(p, "frozen") and frozen_bd_pal_map or p.char.bd_pal_map)
+        shift_pal((is_st_eq(p, "frozen") or (ccp.is_sz_f1_1_done and p.id > 1)) and frozen_bd_pal_map or p.char.bd_pal_map)
       end
 
       if bd_id == 152 or bd_id == 154 then

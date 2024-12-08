@@ -9,7 +9,7 @@ end
 
 function define_global_constants()
   ac_stack_timeout, backward, forward, frozen_bd_pal_map, frozen_hd_pal_map, jump_speed, map_min_x, map_max_x, p1_id, p2_id, offensive_speed, pj_speed, round_duration, sp_h, sp_w, stroke_width, walk_speed, x_shift, y_bottom_limit, y_shift, y_upper_limit = 6, -1, 1, "p0c1c2c3c4c5c6c7c8c9cacbcdcecfc", "p0c1c2c374c5c6c8c9cacbcdcecfc", 3, 0, 127, 0, 1, 4, 3, 90, 8, 8, 2, 1, 3, 92, 2, 64
-  ground_acs_map, aerial_acs_map, round_timers = string_to_hash("⬅️,➡️,⬆️,⬇️,➡️⬆️,⬅️⬆️,➡️⬇️,⬅️⬇️,🅾️,⬇️🅾️,❎,⬅️❎,⬇️❎,🅾️❎", "walk,walk,jump,crouch,jump,jump,crouch,crouch,punch,hook,kick,roundhouse_kick,sweep,block"), string_to_hash("🅾️,❎", "jump_punch,jump_kick"), string_to_hash("finished,finishing_mv,new_pl,starting,time_up", "60,90,60,60,60")
+  ground_acs_map, aerial_acs_map, round_timers = string_to_hash("⬅️,➡️,⬆️,⬇️,➡️⬆️,⬅️⬆️,➡️⬇️,⬅️⬇️,🅾️,⬇️🅾️,❎,⬅️❎,⬇️❎,🅾️❎", "walk,walk,jump,crouch,jump,jump,crouch,crouch,punch,hook,kick,roundhouse_kick,sweep,block"), string_to_hash("🅾️,❎", "jump_punch,jump_kick"), string_to_hash("finished,finishing_mv,new_pl,starting,time_up", "60,120,60,60,60")
 end
 
 function define_global_variables()
