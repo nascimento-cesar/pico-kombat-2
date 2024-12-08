@@ -29,7 +29,7 @@ function hdl_finishing_mv(p, vs)
         setup_finishing_mv_reac(
           vs, 37, lift_sps, function(p)
             if p.t == 32 then
-              setup_finishing_mv_reac(p, nil, "24,#$160/n|$x-01y+03161/n,0,0,t", nil, "4,#$x+02162/n|$x+03163/n|$x+04164/n|$x+04y+01165|$x+05y+02165/n|$x+06y+02166/n|$n/n,0,0,t")
+              setup_finishing_mv_reac(p, nil, "24,#$160/n|$x-01y+03161/n,0,0,t", nil, "4,#$x+01162/n|$x+02163/n|$x+03y+01164/n|$x+04y+01165/n|$x+04y+01166|$x+05y+02166/n|$x+06y+02167/n|$n/n,0,0,t")
             end
           end
         )
