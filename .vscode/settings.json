@@ -1,0 +1,10 @@
+{
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.lua$",
+        "cmd": "build\\shrinko\\shrinko8.exe pico-kombat-2.p8 dist\\pico-kombat-2.png --minify-safe-only"
+      }
+    ]
+  }
+}

@@ -1,26 +1,26 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-#include shared/draw.lua
-#include shared/update.lua
-#include shared/utils.lua
-#include core/draw.lua
-#include core/init.lua
-#include core/update.lua
-#include draw/char_selection.lua
-#include draw/gameplay.lua
-#include draw/next_cb.lua
-#include draw/start.lua
-#include update/char_selection.lua
-#include update/gameplay/acs.lua
-#include update/gameplay/cb.lua
-#include update/gameplay/controls.lua
-#include update/gameplay/core.lua
-#include update/gameplay/finishing_mvs.lua
-#include update/gameplay/movement.lua
-#include update/gameplay/special_atks.lua
-#include update/next_cb.lua
-#include update/start.lua
+#include src/shared/draw.lua
+#include src/shared/update.lua
+#include src/shared/utils.lua
+#include src/core/draw.lua
+#include src/core/init.lua
+#include src/core/update.lua
+#include src/draw/char_selection.lua
+#include src/draw/gameplay.lua
+#include src/draw/next_cb.lua
+#include src/draw/start.lua
+#include src/update/char_selection.lua
+#include src/update/gameplay/acs.lua
+#include src/update/gameplay/cb.lua
+#include src/update/gameplay/controls.lua
+#include src/update/gameplay/core.lua
+#include src/update/gameplay/finishing_mvs.lua
+#include src/update/gameplay/movement.lua
+#include src/update/gameplay/special_atks.lua
+#include src/update/next_cb.lua
+#include src/update/start.lua
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
