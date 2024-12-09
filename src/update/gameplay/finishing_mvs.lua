@@ -21,7 +21,7 @@ function hdl_finishing_mv(p, vs)
         )
       elseif reac == "no_head" then
         setup_finishing_mv_reac(vs, 36, "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", reac_propelled, no_head_sps, reac_drop_dead)
-      elseif reac == "halved" then
+      elseif reac == "split" then
         setup_finishing_mv_reac(vs, 37, "32,#$t2152/n|$t2y+01154/n,-4", reac_drop_dead)
       elseif reac == "arms_ripped" then
         ccp.draw_over_p = true
@@ -41,6 +41,8 @@ function hdl_finishing_mv(p, vs)
             end
           end
         )
+      elseif reac == "sliced" then
+        setup_finishing_mv_reac(vs, 37, "36,#$54/n|$55/n", reac_drop_dead, sliced_sps, reac_propelled)
       elseif reac == "soul_steal" then
         ccp.draw_over_p = true
         setup_finishing_mv_reac(
