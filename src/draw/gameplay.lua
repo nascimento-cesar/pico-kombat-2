@@ -153,7 +153,7 @@ function draw_pl(p)
 end
 
 function draw_stroke(p, p_x, p_y, sp_sz_x, sp_sz_y, bd_id, flip_bd_x, flip_bd_y, hd_id, hd_x, hd_y, flip_hd_x, flip_hd_y)
-  shift_pal "p01112131415161718191a1b1c1d1e1f1"
+  shift_pal "p00102030405060708090a0b0c0d0e0f0"
 
   for axes in all(split "0|-1,-1|-1,-1|0,-1|1,0|1,1|1,1|0,1|-1") do
     local x, y = unpack_split(axes, "|")
