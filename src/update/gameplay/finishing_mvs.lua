@@ -1,8 +1,8 @@
 function hdl_finishing_mv(p, vs)
-  local finishing_mv, reac, pj_ac = ccp.finishing_mv, ccp.finishing_mv.reac, ccp.finishing_mv.pj
+  local finishing_mv, reac, s_ac = ccp.finishing_mv, ccp.finishing_mv.reac, ccp.finishing_mv.s_ac
 
   if ccp.has_finishing_mv_started then
-    if ((not pj_ac and p.cap.is_dmg_sp) or (pj_ac and ccp.has_hit_pj)) and not ccp.has_finishing_mv_hit then
+    if (ccp.force_reac or (not s_ac and p.cap.is_dmg_sp)) and not ccp.has_finishing_mv_hit then
       local no_head_sps, sliced_sps, lift_sps, explode_sps = "8,#$51/n|$51/n|$51/n|$51/n|$4/n|$x-03y+0222/n", "4,#$57/d4/-5/0/f/f/t/t|$56/d1/0/1/t/t/t/t|$57/d4/5/0/t/t/f/f|$56/d1/0/-1|$y-0157/d4/-5/0/f/f/t/t", "1,#$23/d1,-1,-2", "6,#$t2x-08140/n|$t2x-08142/n|$t2x-08156/n"
       ccp.has_finishing_mv_hit = true
       ccp.skip_p_rendering = vs.id
@@ -78,7 +78,7 @@ function hdl_finishing_mv(p, vs)
       setup_next_ac(p, "walk", { direction = backward }, true)
     else
       ccp.has_finishing_mv_started = true
-      start_ac(p, pj_ac and p.char.special_atks[pj_ac] or finishing_mv)
+      start_ac(p, s_ac and p.char.special_atks[s_ac] or finishing_mv)
     end
   end
 end
@@ -106,7 +106,10 @@ function reac_drop_dead(p)
   if p.t == 1 or p.t % 4 == 0 then
     spill_blood(p)
   end
-  ccp.has_finishing_mv_ended = p.cap.is_animation_complete
+  if p.cap.is_animation_complete then
+    ccp.has_finishing_mv_ended = true
+    p.y = y_bottom_limit
+  end
 end
 
 function reac_explode(p)

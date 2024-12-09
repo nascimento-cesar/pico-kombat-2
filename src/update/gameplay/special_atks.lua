@@ -157,11 +157,17 @@ function hdl_special_atk(p)
           p,
           nil,
           function(p)
+            p.pj.params.skip_reac = ccp.finishing_mv
             if btn(⬆️, p.id) then
               p.pj.y -= 0.75
             elseif btn(⬇️, p.id) then
               p.pj.y += 0.75
             end
+          end,
+          nil,
+          function(p)
+            ccp.force_reac = true
+            destroy_pj(p)
           end
         )
       end,
@@ -294,9 +300,11 @@ function hdl_special_atk(p)
         else
           atk(
             p, nil, function(p, vs)
+              p.cap.skip_reac = ccp.finishing_mv
               if p.t >= get_total_frames(p, 4) then
                 finish_ac(vs)
                 setup_next_ac(p, "fall", nil, true)
+                ccp.force_reac = true
               elseif p.t < 3 then
                 mv_x(p, -1)
                 mv_y(p, -1)
@@ -503,13 +511,7 @@ function update_pj(p)
         end
 
         p.pj.has_hit = true
-
-        if ccp.finishing_mv and ccp.finishing_mv.pj then
-          ccp.has_hit_pj = true
-        else
-          hit(ac, params, vs)
-        end
-
+        hit(ac, params, vs)
         vs.cap.reac_clb = p.pj.reac_clb
 
         if p.pj.collision_clb then
