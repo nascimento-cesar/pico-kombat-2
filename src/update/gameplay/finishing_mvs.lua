@@ -52,6 +52,16 @@ function hdl_finishing_mv(p, vs)
             end
           end
         )
+      elseif reac == "toast" then
+        ccp.draw_over_p = true
+        setup_finishing_mv_reac(
+          vs, 37, "2,#$x-18112/n|$x-16113/n|$x-14114/n|$x-12112/n|$x-10113/n|$x-08114/n|$x-06112/n|$x-04113/n,0,0,t", function(p)
+            -- if p.cap.is_animation_complete then
+            --   spill_blood(p)
+            -- end
+          end, "1,#49"
+        )
+        ccp.tmp_pls_1.facing *= -1
       end
     end
 
