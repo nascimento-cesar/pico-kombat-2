@@ -23,6 +23,15 @@ function hdl_finishing_mv(p, vs)
         setup_finishing_mv_reac(vs, 36, "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", reac_propelled, no_head_sps, reac_drop_dead)
       elseif reac == "halved" then
         setup_finishing_mv_reac(vs, 37, "32,#$t2152/n|$t2y+01154/n,-4", reac_drop_dead)
+      elseif reac == "arms_ripped" then
+        ccp.draw_over_p = true
+        setup_finishing_mv_reac(
+          vs, 37, "36,#$62/d1|$63/d4/-8/2/f/f/t/t", reac_drop_dead, "12,#$x+04y-02181/n", function(p)
+            if p.cap.is_animation_complete then
+              setup_finishing_mv_reac(p, nil, nil, nil, "4,#$181/n/0/0/t/f|$181/n/0/0/t/t|$181/n/0/0/f/f|$181/n/0/0/f/t|$181/n/0/0/t/f", reac_propelled)
+            end
+          end
+        )
       elseif reac == "ripped" then
         ccp.draw_over_p = true
         setup_finishing_mv_reac(

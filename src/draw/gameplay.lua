@@ -140,7 +140,7 @@ function draw_pl(p)
         shift_pal((is_st_eq(p, "frozen") or (ccp.is_sz_f1_1_done and p.id > 1)) and frozen_bd_pal_map or p.char.bd_pal_map)
       end
 
-      if bd_id == 152 or bd_id == 154 then
+      if bd_id == 152 or bd_id == 154 or bd_id == 181 then
         shift_pal "pe8"
       end
 
