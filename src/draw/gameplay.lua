@@ -4,16 +4,13 @@ function draw_gameplay()
   if cb_round_state == "boss_defeated" then
     if ccp.defeat_animation_step == 1 then
       shift_pal "p07172737475767778797a7b7c7d7e7f7"
-      draw_stage()
-      pal()
-      draw_pls()
-    else
-      draw_stage()
-      draw_pls()
+    end
 
-      if ccp.defeat_animation_step == 3 then
-        draw_blinking_text "evil emperor has fallen!"
-      end
+    draw_stage()
+    draw_pls()
+
+    if ccp.defeat_animation_step == 3 then
+      draw_blinking_text "evil emperor has fallen!"
     end
   else
     draw_stage()
@@ -79,6 +76,8 @@ function draw_pl(p)
   if not p or ccp.skip_p_rendering == p.id then
     return
   end
+
+  pal()
 
   local flip_bd_x, flip_bd_y, flip_hd_x, flip_hd_y, hd_x_adjustment, hd_y_adjustment, sp, is_dizzy, bd_id, hd_id, index = false, false, false, false, 0, 0, p.ca.sps[flr((p.caf - 1) / p.ca.fps) + 1], false
   local x, y, sp_sz_x, sp_sz_y = p.x, p.y, 1, 1

@@ -4,19 +4,16 @@ function finish_ac(p)
 end
 
 function aerial_ac(p)
-  local direction, vs, is_thrown_lower = p.cap.direction, get_vs(p), p.cap.is_thrown_lower
-  local x_speed, is_turn_around_jump = p.cap.x_speed or ((is_thrown_lower and offensive_speed or jump_speed) * (direction or 0) / 2), p.cap.is_turn_around_jump
+  local direction, vs = p.cap.direction, get_vs(p)
+  local x_speed, is_turn_around_jump = p.cap.x_speed or (jump_speed * (direction or 0) / 2), p.cap.is_turn_around_jump
 
   if p.ca == acs.propelled then
     x_speed *= 3
   end
 
   if p.cap.is_landing or p.ca == acs.fall then
-    if not is_thrown_lower or (is_thrown_lower and not is_timer_active(p.cap, "air_hold_frames", 4)) then
-      mv_y(p, jump_speed)
-    end
-
     mv_x(p, x_speed, is_turn_around_jump and p.facing * -1 or p.facing)
+    mv_y(p, jump_speed)
 
     if is_p1_ahd_p2() and not is_turn_around_jump then
       if not p.ca.is_atk then
@@ -38,7 +35,7 @@ function aerial_ac(p)
     mv_y(p, -jump_speed)
     mv_x(p, x_speed)
 
-    if p.y <= (is_thrown_lower and y_upper_limit + 16 or y_upper_limit) then
+    if p.y <= y_upper_limit then
       p.cap.is_landing = true
     end
   end
@@ -46,8 +43,7 @@ end
 
 function cleanup_ac_stack(p, force)
   if force or not is_timer_active(p, "ac_stack_timeout") then
-    p.ac_stack_timeout = ac_stack_timeout
-    p.ac_stack = ""
+    p.ac_stack_timeout, p.ac_stack = ac_stack_timeout, ""
   end
 end
 
@@ -56,13 +52,11 @@ function hdl_ac(p)
 
   if hdlr == "atk" then
     atk(p)
-  elseif hdlr == "fall" then
-    aerial_ac(p)
   elseif hdlr == "flinch" then
     if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
       mv_x(p, -walk_speed)
     end
-  elseif hdlr == "jump" then
+  elseif hdlr == "jump" or hdlr == "fall" then
     aerial_ac(p)
   elseif hdlr == "jump_atk" then
     aerial_ac(p)
@@ -71,10 +65,6 @@ function hdl_ac(p)
     if not is_timer_active(p.cap, "reac_timer", 30) then
       finish_ac(p)
     end
-  elseif hdlr == "propelled" then
-    p.cap.direction = backward
-    p.cap.is_thrown_lower = true
-    aerial_ac(p)
   elseif hdlr == "sweep" then
     if not vs.ca.is_aerial then
       atk(p)
@@ -83,16 +73,11 @@ function hdl_ac(p)
     if is_timer_active(p.cap, "reac_timer", p.ca.fps) then
       mv_x(p, -walk_speed)
     end
-  elseif hdlr == "thrown_backward" then
+  elseif hdlr == "thrown_backward" or hdlr == "propelled" then
     p.cap.direction = backward
-    p.cap.is_thrown_lower = true
     aerial_ac(p)
   elseif hdlr == "thrown_forward" then
     p.cap.direction = forward
-    p.cap.is_thrown_lower = true
-    aerial_ac(p)
-  elseif hdlr == "thrown_up" then
-    p.cap.direction = backward
     aerial_ac(p)
   elseif hdlr == "walk" then
     mv_x(p, walk_speed * p.cap.direction)
@@ -108,9 +93,7 @@ end
 
 function record_ac(p, input)
   if p.input_detection_delay <= 0 and input ~= "" then
-    p.ac_stack = p.ac_stack .. (p.ac_stack ~= "" and "+" or "") .. input
-    p.ac_stack_timeout = ac_stack_timeout
-    p.input_detection_delay = 1
+    p.ac_stack, p.ac_stack_timeout, p.input_detection_delay = p.ac_stack .. (p.ac_stack ~= "" and "+" or "") .. input, ac_stack_timeout, 1
 
     if #p.ac_stack > 20 then
       p.ac_stack = sub(p.ac_stack, 2, 21)
@@ -119,8 +102,7 @@ function record_ac(p, input)
 end
 
 function release_current_ac(p)
-  p.cap.is_held = false
-  p.cap.is_released = true
+  p.cap.is_held, p.cap.is_released = false, true
 end
 
 function set_current_ac_animation_lock(p, lock)

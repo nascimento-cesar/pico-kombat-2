@@ -9,7 +9,6 @@ __lua__
 #include src/core/update.lua
 #include src/draw/char_selection.lua
 #include src/draw/gameplay.lua
-#include src/draw/next_cb.lua
 #include src/draw/start.lua
 #include src/update/char_selection.lua
 #include src/update/gameplay/acs.lua

@@ -2,9 +2,9 @@ function draw_char_selection()
   cls()
 
   local w = 20
-  local col, row, h, offset, title_text = 1, 1, 20, (w - 8) / 2, "select your character"
+  local col, row, h, offset, title_text, blinking_color = 1, 1, 20, (w - 8) / 2, "select your character", get_blinking_color(6, 7)
 
-  print(title_text, get_hcenter(title_text), 20, get_blinking_color(6, 7))
+  print(title_text, get_hcenter(title_text), 20, blinking_color)
 
   for i = 1, 12 do
     local c, x, y = chars[i], (128 - 4 * w) / 2 + w * (col - 1), (128 - 3 * h) / 2 + h * (row - 1)
@@ -19,7 +19,7 @@ function draw_char_selection()
 
     foreach_pl(function(p)
       if i == p.highlighted_char and p.has_joined then
-        rect(x, y, x + w - 1, y + h - 1, p.temp_char and 7 or get_blinking_color(6, 7))
+        rect(x, y, x + w - 1, y + h - 1, p.temp_char and 7 or blinking_color)
       end
     end)
 
