@@ -167,8 +167,8 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 **Tesoura:** ➡️+⬇️+⬅️+❎ \
 **Soco teleporte:** ⬇️+⬅️+🅾️
 
-💀 **Finalização 1:** \
-💀 **Finalização 2:** 
+💀🔥 **Finalização 1:** segure 🅾️❎ e ⬆️+⬆️ \
+💀 **Finalização 2:** ⬇️+➡️+➡️+➡️+🅾️
 
 ***
 

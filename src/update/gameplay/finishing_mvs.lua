@@ -43,6 +43,17 @@ function hdl_finishing_mv(p, vs)
         )
       elseif reac == "sliced" then
         setup_finishing_mv_reac(vs, 37, "36,#$54/n|$55/n", reac_drop_dead, sliced_sps, reac_propelled)
+      elseif reac == "toast" then
+        ccp.draw_over_p = true
+        setup_finishing_mv_reac(
+          vs, 37, "2,#$x-18112/n|$x-16113/n|$x-14114/n|$x-12112/n|$x-10113/n|$x-08114/n|$x-06112/n|$x-04113/n,0,0,t", function(p)
+            if p.cap.is_animation_complete then
+              ccp.tmp_pls_1, ccp.tmp_pls_2 = nil, nil
+              setup_finishing_mv_reac(vs, 37, "2,#$108/n|$109/n|$110/n|$109/n|$108/n|$109/n|$110/n|$109/n|$108/n|$193/n|$193/n|$194/n|$194/n|$195/n|$195/n,0,0,t", reac_drop_dead)
+            end
+          end, "1,#$49/d1"
+        )
+        ccp.tmp_pls_1.facing *= -1
       elseif reac == "soul_steal" then
         ccp.draw_over_p = true
         setup_finishing_mv_reac(

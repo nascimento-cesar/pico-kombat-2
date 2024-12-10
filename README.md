@@ -168,8 +168,8 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 **Scissors sweep:** ➡️+⬇️+⬅️+❎ \
 **Teleport punch:** ⬇️+⬅️+🅾️
 
-💀 **Finisher 1:** \
-💀 **Finisher 2:** 
+💀🔥 **Finisher 1:** hold 🅾️❎ and ⬆️+⬆️ \
+💀 **Finisher 2:** ⬇️+➡️+➡️+➡️+🅾️
 
 ***
 
