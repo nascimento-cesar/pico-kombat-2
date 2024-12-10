@@ -71,7 +71,7 @@ end
 
 function draw_stage()
   palt(0, false)
-  map(0, 0, 0, 0, 16, 16)
+  map(is_boss(p2) and 16 or 0, 0, 0, 0, 16, 16)
   pal()
 end
 
