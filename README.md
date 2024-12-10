@@ -95,7 +95,7 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 **Character 1:** ⬅️+➡️+➡️+🅾️❎ \
 **Character 2:** ⬅️+⬇️+⬅️+❎ \
 **Character 3:** ⬅️+⬅️+⬇️+🅾️ \
-**Character 4:** hold 🅾️❎ and ⬆️+⬇️ \
+**Character 4:** hold 🅾️❎ and ⬆️+⬇️+⬇️ \
 **Character 5:** ➡️+⬇️+➡️+🅾️ \
 **Character 6:** you are character 6 😅 \
 **Character 7:** 🅾️❎+🅾️❎+🅾️❎ \

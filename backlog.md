@@ -81,6 +81,10 @@
 ✅ 35 - char selection confirm
 ✅ 36 - decap
 ✅ 37 - chomp
+✅ 38 - soul steal
+✅ 39 - toast
+✅ 40 - slice
+✅ 41 - kiss
 
 # LATEST COUNTS
 

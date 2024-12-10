@@ -94,7 +94,7 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 **Personagem 1:** ⬅️+➡️+➡️+🅾️❎ \
 **Personagem 2:** ⬅️+⬇️+⬅️+❎ \
 **Personagem 3:** ⬅️+⬅️+⬇️+🅾️ \
-**Personagem 4:** segure 🅾️❎ e ⬆️+⬇️ \
+**Personagem 4:** segure 🅾️❎ e ⬆️+⬇️+⬇️ \
 **Personagem 5:** ➡️+⬇️+➡️+🅾️ \
 **Personagem 6:** você já é o personagem 6 😅 \
 **Personagem 7:** 🅾️❎+🅾️❎+🅾️❎ \

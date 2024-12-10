@@ -13,7 +13,7 @@ function hdl_finishing_mv(p, vs)
         setup_finishing_mv_reac(vs, 37, explode_sps, reac_explode)
       elseif reac == "kiss" then
         setup_finishing_mv_reac(
-          vs, 37, "1,#$49/d1", function(p)
+          vs, 41, "1,#$49/d1", function(p)
             if p.t == 32 then
               setup_finishing_mv_reac(p, 37, explode_sps, reac_explode)
             end
@@ -22,7 +22,7 @@ function hdl_finishing_mv(p, vs)
       elseif reac == "no_head" then
         setup_finishing_mv_reac(vs, 36, "4,#$n/d4/-2/-1/t/t/t/t|$n/d6/0/-2/t/t/t/t|$n/d4/2/1|$n/d6/0/2|$n/d4/-2/-1/t/t/t/t", reac_propelled, no_head_sps, reac_drop_dead)
       elseif reac == "split" then
-        setup_finishing_mv_reac(vs, 37, "32,#$t2152/n|$t2y+01154/n,-4", reac_drop_dead)
+        setup_finishing_mv_reac(vs, 40, "32,#$t2152/n|$t2y+01154/n,-4", reac_drop_dead)
       elseif reac == "arms_ripped" then
         ccp.draw_over_p = true
         setup_finishing_mv_reac(
@@ -42,14 +42,14 @@ function hdl_finishing_mv(p, vs)
           end
         )
       elseif reac == "sliced" then
-        setup_finishing_mv_reac(vs, 37, "36,#$54/n|$55/n", reac_drop_dead, sliced_sps, reac_propelled)
+        setup_finishing_mv_reac(vs, 40, "36,#$54/n|$55/n", reac_drop_dead, sliced_sps, reac_propelled)
       elseif reac == "toast" then
         ccp.draw_over_p = true
         setup_finishing_mv_reac(
-          vs, 37, "2,#$x-18112/n|$x-16113/n|$x-14114/n|$x-12112/n|$x-10113/n|$x-08114/n|$x-06112/n|$x-04113/n,0,0,t", function(p)
+          vs, 19, "2,#$x-18112/n|$x-16113/n|$x-14114/n|$x-12112/n|$x-10113/n|$x-08114/n|$x-06112/n|$x-04113/n,0,0,t", function(p)
             if p.cap.is_animation_complete then
               ccp.tmp_pls_1, ccp.tmp_pls_2 = nil, nil
-              setup_finishing_mv_reac(vs, 37, "2,#$108/n|$109/n|$110/n|$109/n|$108/n|$109/n|$110/n|$109/n|$108/n|$193/n|$193/n|$194/n|$194/n|$195/n|$195/n,0,0,t", reac_drop_dead)
+              setup_finishing_mv_reac(vs, 39, "2,#$108/n|$109/n|$110/n|$109/n|$108/n|$109/n|$110/n|$109/n|$108/n|$193/n|$193/n|$194/n|$194/n|$195/n|$195/n,0,0,t", reac_drop_dead)
             end
           end, "1,#$49/d1"
         )
@@ -57,9 +57,9 @@ function hdl_finishing_mv(p, vs)
       elseif reac == "soul_steal" then
         ccp.draw_over_p = true
         setup_finishing_mv_reac(
-          vs, 37, lift_sps, function(p)
+          vs, nil, lift_sps, function(p)
             if p.t == 32 then
-              setup_finishing_mv_reac(p, nil, "24,#$160/n|$x-01y+03161/n,0,0,t", nil, "4,#$x+01162/n|$x+02163/n|$x+03y+01164/n|$x+04y+01165/n|$x+04y+01166|$x+05y+02166/n|$x+06y+02167/n|$n/n,0,0,t")
+              setup_finishing_mv_reac(p, 38, "24,#$160/n|$x-01y+03161/n,0,0,t", nil, "4,#$x+01162/n|$x+02163/n|$x+03y+01164/n|$x+04y+01165/n|$x+04y+01166|$x+05y+02166/n|$x+06y+02167/n|$n/n,0,0,t")
             end
           end
         )
