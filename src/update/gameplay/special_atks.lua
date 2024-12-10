@@ -289,7 +289,7 @@ function hdl_special_atk(p)
             end
           },
           function(p, vs)
-            p.x = vs.x - (sp_w / 2)
+            p.x = vs.x + ((sp_w * vs.facing) / 2)
             p.y = y_upper_limit
           end
         )

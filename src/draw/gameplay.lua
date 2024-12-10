@@ -182,7 +182,7 @@ function draw_pj(p)
 
   if p.pj.has_rope then
     local y = p.pj.y + (p.char.pj_h / 2)
-    line(p.x + sp_w, y, p.pj.rope_x, y, 4)
+    line(p.x + (p.facing == backward and -1 or sp_w), y, p.pj.rope_x, y, 4)
   end
 end
 

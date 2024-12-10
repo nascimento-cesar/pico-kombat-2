@@ -26,6 +26,8 @@
 - [x] 🐞 finishing the round with a special atk does not end the ac
 - [x] 🚀 sfx
 - [x] 🚀 create sound for pressing btns in char selection screen
+- [x] 🚀 all finishing mvs
+- [x] 🚀 pixel art stages
 - [x] 🐞 should not push a frozen enemy in middle air
 - [x] 🐞 bug when special atk vs at the edge of the screen
 - [x] 🐞 freeze the opponent in middle air while overlapping it causes stack overflow (also happens on kl spin)
@@ -38,19 +40,17 @@
 - [x] 🚀 test blocked kl diving kick and ml teleport kick and sc teleport punch
 - [x] 🐞 fix infinity hat spin after hat toss (holding up during the toss adds multiple ⬆️ to ac stack)
 - [x] 🐞 finishing the opponent with jx special atks doesn't trigger finishing animation
-- [ ] 🐞 kl finishing moves not working properly
-- [ ] 🐞 sz f1 not working properly - same reason as above
-- [ ] 🐞 rd f1 not working properly - same reason as above
-- [ ] 🐞 sz f2 not implemented
-- [ ] 🐞 st morph sc not working
-- [ ] 🐞 st f not working
-- [ ] 🐞 jc nut cracker no sound
-- [ ] 🐞 ml teleport kick does not work on the right
-- [ ] 🐞 ml projectile not spilling blood
-- [ ] 🐞 sc rope bug on the right side
-- [ ] 🚀 all finishing mvs
-- [ ] 🚀 pixel art stages
-- [ ] 🚀 create rp invisibility animation and use the same for st morph
+- [x] 🐞 kl finishing moves not working properly
+- [x] 🐞 sz f1 not working properly - same reason as above
+- [x] 🐞 rd f1 not working properly - same reason as above
+- [x] 🐞 sz f2 not implemented
+- [x] 🐞 st morph sc not working
+- [x] 🐞 st f not working
+- [x] 🐞 ml projectile not spilling blood
+- [x] 🐞 jc nut cracker no sound
+- [x] 🐞 ml teleport kick does not work on the right
+- [x] 🐞 sc rope bug on the right side
+- [x] 🚀 create rp invisibility animation and use the same for st morph
 - [ ] 🚀 prts on pjs
 - [ ] 🚀 next cb screen
 - [ ] 🚀 create kr char
