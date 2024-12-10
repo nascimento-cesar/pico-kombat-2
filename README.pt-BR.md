@@ -81,7 +81,7 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 **Deslizar:** ⬅️+🅾️❎
 
 💀 **Finalização 1:** ➡️+➡️+⬇️+❎ e depois ➡️+⬇️+➡️+➡️+🅾️ \
-💀 **Finalização 2:** 
+💀 **Finalização 2:** ⬅️+⬅️+⬇️+➡️+🅾️
 
 ***
 

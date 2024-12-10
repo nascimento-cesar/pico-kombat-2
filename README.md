@@ -82,7 +82,7 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 **Slide:** ⬅️+🅾️❎
 
 💀 **Finisher 1:** ➡️+➡️+⬇️+❎ and then ➡️+⬇️+➡️+➡️+🅾️ \
-💀 **Finisher 2:** 
+💀 **Finisher 2:** ⬅️+⬅️+⬇️+➡️+🅾️
 
 ***
 
