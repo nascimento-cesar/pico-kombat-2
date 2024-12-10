@@ -80,7 +80,8 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 **Congelar:** ⬇️+➡️+🅾️ \
 **Deslizar:** ⬅️+🅾️❎
 
-💀 **Finalização 1:** ➡️+➡️+⬇️+❎ e depois ➡️+⬇️+➡️+➡️+🅾️
+💀 **Finalização 1:** ➡️+➡️+⬇️+❎ e depois ➡️+⬇️+➡️+➡️+🅾️ \
+💀 **Finalização 2:** 
 
 ***
 
@@ -143,8 +144,8 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 **Arremessar sai (aéreo):** segure 🅾️ por 2 segundos e solte no ar \
 **Chute teleporte:** ➡️+➡️+❎
 
-💀 **Finalização 1:**  \
-💀 **Finalização 2:** 
+💀 **Finalização 1:** segure ❎ por 3 segundos \
+💀 **Finalização 2:** ➡️+⬅️+➡️+🅾️
 
 ***
 
@@ -154,8 +155,8 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 **Arremessar faísca:** ⬇️+⬅️+🅾️ \
 **Punhalada múltipla:** ⬅️+⬅️+⬅️+🅾️
 
-💀 **Finalização 1:** \
-💀 **Finalização 2:** 
+💀 **Finalização 1:** ⬅️+⬅️+⬅️+⬅️+🅾️ \
+💀 **Finalização 2:** ⬅️+➡️+⬇️+➡️+🅾️
 
 ***
 

@@ -81,7 +81,8 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 **Freeze:** ⬇️+➡️+🅾️ \
 **Slide:** ⬅️+🅾️❎
 
-💀 **Finisher 1:** ➡️+➡️+⬇️+❎ and then ➡️+⬇️+➡️+➡️+🅾️
+💀 **Finisher 1:** ➡️+➡️+⬇️+❎ and then ➡️+⬇️+➡️+➡️+🅾️ \
+💀 **Finisher 2:** 
 
 ***
 
@@ -144,8 +145,8 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 **Sai throw (aerial):** hold 🅾️ for 2 seconds and release in the air \
 **Teleport kick:** ➡️+➡️+❎
 
-💀 **Finisher 1:**  \
-💀 **Finisher 2:** 
+💀 **Finisher 1:** hold ❎ for 3 seconds \
+💀 **Finisher 2:** ➡️+⬅️+➡️+🅾️
 
 ***
 
@@ -155,8 +156,8 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 **Blade spark:** ⬇️+⬅️+🅾️ \
 **Multiple stabs:** ⬅️+⬅️+⬅️+🅾️
 
-💀 **Finisher 1:** \
-💀 **Finisher 2:** 
+💀 **Finisher 1:** ⬅️+⬅️+⬅️+⬅️+🅾️ \
+💀 **Finisher 2:** ⬅️+➡️+⬇️+➡️+🅾️
 
 ***
 
