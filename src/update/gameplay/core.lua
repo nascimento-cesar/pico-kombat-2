@@ -1,6 +1,6 @@
 function update_gameplay()
   if not stat(57) then
-    -- music(0)
+    music(0)
   end
 
   if cb_round_state == "boss_defeated" then
