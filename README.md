@@ -39,8 +39,8 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 ![character 2](doc/char-2.png)
 
 **Flying kick (aerial):** ⬇️+❎ in the air \
-**Hat toss:** ⬅️+➡️+🅾️ (use ⬆️ and ⬇️ to control) \
-**Spinning:** hold 🅾️❎ and ⬆️+⬆️ (keep pressing ⬆️ for extended duration) \
+**Hat toss:** ⬅️+➡️+🅾️ \
+**Spinning:** hold 🅾️❎ and ⬆️+⬆️ \
 **Teleport:** ⬇️+⬆️
 
 💀 **Finisher 1:** ➡️+➡️+➡️+❎ \
@@ -129,7 +129,7 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 
 **Back breaker (aerial):** 🅾️❎ when both players are in the air \
 **Energy wave:** ➡️+⬇️+⬅️+❎ \
-**Grab:** ➡️+➡️+🅾️ (keep pressing 🅾️ for extra punches) \
+**Grab:** ➡️+➡️+🅾️ \
 **Ground pound:** hold ❎ for 3 seconds
 
 💀 **Finisher 1:** 🅾️❎+🅾️❎+🅾️❎+🅾️❎+🅾️ \

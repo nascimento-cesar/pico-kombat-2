@@ -38,8 +38,8 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 ![character 2](doc/char-2.png)
 
 **Voadora (aérea):** ⬇️+❎ no ar \
-**Arremessar o chapéu:** ⬅️+➡️+🅾️ (use ⬆️ e ⬇️ to control) \
-**Ataque giratório:** segure 🅾️❎ e ⬆️+⬆️ (continue apertando ⬆️ para aumentar a duração) \
+**Arremessar o chapéu:** ⬅️+➡️+🅾️ \
+**Ataque giratório:** segure 🅾️❎ \
 **Teleporte:** ⬇️+⬆️
 
 💀 **Finalização 1:** ➡️+➡️+➡️+❎ \
@@ -128,7 +128,7 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 
 **Quebrar as costas (aéreo):** 🅾️❎ quando os dois personagens estiverem no ar \
 **Onda de energia:** ➡️+⬇️+⬅️+❎ \
-**Agarrão:** ➡️+➡️+🅾️ (continue apertando 🅾️ para socos extras) \
+**Agarrão:** ➡️+➡️+🅾️ \
 **Socão no chão:** segure ❎ por 3 segundos
 
 💀 **Finalização 1:** 🅾️❎+🅾️❎+🅾️❎+🅾️❎+🅾️ \

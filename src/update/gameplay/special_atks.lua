@@ -94,9 +94,6 @@ function hdl_special_atk(p)
           if not is_timer_active(p.cap, "delay", 15) or p.cap.skip_delay then
             p.cap.punches, p.cap.max_punches = p.cap.punches or 1, p.cap.max_punches or 2
             local is_last_punch = p.cap.punches >= p.cap.max_punches
-            if btnp(🅾️, p.id) and p.held_btns ~= "🅾️" then
-              p.cap.max_punches = 3
-            end
             if p.t >= get_total_frames(p, 1) then
               setup_next_ac(
                 p, "punch", {
@@ -156,14 +153,7 @@ function hdl_special_atk(p)
         create_pj(
           p,
           nil,
-          function(p)
-            p.pj.params.skip_reac = ccp.finishing_mv
-            if btn(⬆️, p.id) then
-              p.pj.y -= 0.75
-            elseif btn(⬇️, p.id) then
-              p.pj.y += 0.75
-            end
-          end,
+          nil,
           nil,
           function(p)
             ccp.force_reac = true
@@ -177,14 +167,6 @@ function hdl_special_atk(p)
           finish_ac(p)
         else
           atk(p)
-          if p.t >= total_frames then
-            p.cap.boosts = p.cap.boosts or 0
-            if btnp(⬆️, p.id) and p.cap.boosts < 3 then
-              p.t -= total_frames
-              p.cap.boosts += 1
-              play_sfx(p.ca.ac_sfx)
-            end
-          end
         end
       end,
       function(p, vs)
