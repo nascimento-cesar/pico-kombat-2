@@ -77,6 +77,7 @@ function process_boss_defeated()
       ccp.defeat_animation_step = 1
     elseif timer > 120 then
       if ccp.defeat_animation_step == 1 then
+        play_sfx(43)
         setup_next_ac(cb_round_loser, "boss_defeated", nil, true)
         ccp.defeat_animation_step, cb_round_winner.x, cb_round_winner.y, cb_round_loser.x, cb_round_loser.y = 2, -20, -20, map_max_x / 2, y_bottom_limit
       end
@@ -95,6 +96,7 @@ function process_boss_defeated()
         prt_function(7, 2, max(20, flr_rnd(30)), flr_rnd(3))
       end
     elseif ccp.defeat_animation_step == 2 then
+      play_sfx(42)
       prt_function(11, 8, 40, 6)
       prt_function(3, 8, 40, 3)
       prt_function(7, 8, 40, 6)
