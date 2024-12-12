@@ -16,6 +16,10 @@ function get_cb_result()
   return false
 end
 
+function get_x_diff(p, vs)
+  return flr(p.facing == forward and vs.x - (p.x + sp_w) or p.x - (vs.x + sp_w))
+end
+
 function get_main_pl()
   if p1.has_joined and not p2.has_joined then
     return p1

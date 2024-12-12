@@ -407,32 +407,6 @@ function hdl_special_atk(p)
       end,
       function(p)
         create_pj(
-          p, nil, function(p)
-            p.pj.x_speed = 0
-          end,
-          function(p)
-            local total_frames = get_total_frames(p)
-            if p.pj.t > 21 then
-              destroy_pj(p)
-              finish_ac(p)
-            else
-              local t = p.pj.t
-              if t <= 3 then
-                p.pj.sps, p.pj.x, p.pj.y, p.pj.flip_x = { 126 }, p.x - 4, p.y - 5, true
-              elseif t <= 6 then
-                p.pj.sps, p.pj.x, p.pj.y, p.pj.flip_x = { 125 }, p.x + 2, p.y - 6, false
-              elseif t <= 9 then
-                p.pj.sps, p.pj.x, p.pj.y = { 126 }, p.x + 8, p.y - 5
-              else
-                p.pj.sps, p.pj.x, p.pj.y = { 127 }, p.x + 8, p.y - 1
-              end
-            end
-          end,
-          function(p) end
-        )
-      end,
-      function(p)
-        create_pj(
           p, nil, nil, nil, function(p, vs)
             if ccp.finishing_mv then
               ccp.force_reac, p.pj.params.skip_reac = true, true

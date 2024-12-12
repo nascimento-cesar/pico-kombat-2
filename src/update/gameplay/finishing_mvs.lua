@@ -83,7 +83,7 @@ function hdl_finishing_mv(p, vs)
       end
     end
   else
-    local x_diff = flr(p.facing == forward and vs.x - (p.x + sp_w) or p.x - (vs.x + sp_w))
+    local x_diff = get_x_diff(p, vs)
 
     if x_diff > finishing_mv.distance then
       setup_next_ac(p, "walk", { direction = forward }, true)

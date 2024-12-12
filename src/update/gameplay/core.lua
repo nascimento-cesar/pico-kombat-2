@@ -165,6 +165,8 @@ function process_starting()
 end
 
 function update_pl(p)
+  local vs = get_vs(p)
+
   if cb_round_state ~= "finished" then
     is_timer_active(p.st_timers, "frozen")
     is_timer_active(p.st_timers, "invisible")
@@ -183,7 +185,7 @@ function update_pl(p)
   resolve_previous_ac(p)
 
   if not p.has_joined then
-    next_cpu_ac(p)
+    next_cpu_ac(p, vs)
   elseif not p.has_locked_controls then
     process_inputs(p)
   end
@@ -195,7 +197,7 @@ function update_pl(p)
   end
 
   if p.cap.reac_clb then
-    p.cap.reac_clb(p, get_vs(p))
+    p.cap.reac_clb(p, vs)
   end
 
   update_pj(p)

@@ -44,7 +44,7 @@ function define_pl(id, p)
   end
 
   local is_p1 = id == p1_id
-  local p = string_to_hash("ac_stack,ac_stack_timeout,char,ca,caf,cap,facing,has_locked_controls,has_joined,highlighted_char,hp,held_btns,held_btns_timer,id,input_detection_delay,is_x_shifted,is_y_shifted,next_cbs,prt_sets,previous_btns,previous_directionals,pj,released_btns,st_timers,t,x,y", { "", ac_stack_timeout, p.char, acs.idle, 0, {}, is_p1 and forward or backward, false, p.has_joined, is_p1 and 1 or 4, 100, nil, 0, id, 0, false, false, next_cbs, {}, nil, nil, nil, nil, { frozen = 0, invisible = 0, morphed = 0 }, 0, is_p1 and 36 or 127 - 36 - sp_w, y_bottom_limit })
+  local p = string_to_hash("ac_stack,ac_stack_timeout,char,ca,caf,cap,facing,has_locked_controls,has_joined,highlighted_char,hp,held_btns,held_btns_timer,id,input_detection_delay,is_x_shifted,is_y_shifted,next_cbs,prt_sets,previous_btns,previous_directionals,pj,released_btns,st_timers,t,x,y", { "", ac_stack_timeout, p.char, acs.idle, 0, {}, is_p1 and forward or backward, false, p.has_joined, is_p1 and 1 or 4, 100, nil, 0, id, 0, false, false, next_cbs, {}, nil, nil, nil, nil, { frozen = 0, invisible = 0, morphed = 0 }, 0, is_p1 and 38 or 82, y_bottom_limit })
 
   if is_p1 then
     p1 = p
