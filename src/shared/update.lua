@@ -93,6 +93,7 @@ end
 function setup_new_round()
   foreach_pl(function(p, p_id)
     define_pl(p_id, p)
+    un_morph(p)
   end)
 
   for k, v in pairs(round_timers) do

@@ -164,16 +164,20 @@ function process_starting()
   end
 end
 
+function un_morph(p)
+  if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
+    p.char, p.is_morphed = chars[6], false
+    p.com_ac_map = build_com_ac_map(p.char)
+  end
+end
+
 function update_pl(p)
   local vs = get_vs(p)
 
   if cb_round_state ~= "finished" then
     is_timer_active(p.st_timers, "frozen")
     is_timer_active(p.st_timers, "invisible")
-
-    if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
-      p.char, p.is_morphed = chars[6], false
-    end
+    un_morph(p)
   end
 
   if is_st_eq(p, "frozen") then

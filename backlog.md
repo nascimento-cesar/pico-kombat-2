@@ -1,13 +1,13 @@
-- [ ] sc spear hitting when prone makes projectile not disappear
-- [ ] sz morph should update com ac map
-- [ ] kl hat throw close freezes character in position
+- [x] sc spear hitting when prone makes projectile not disappear
+- [x] sz morph does not reset after round end
+- [x] sz morph should update com ac map
+- [x] kl hat throw close freezes character in position
 - [x] com is using basic attacks out of reach
 - [x] stop com action in the finish mv timer
 - [ ] fm in the end of the screen freezes the game
-- [ ] sz morph does not reset after round end
-- [ ] remove invisibility when hit
-- [ ] spear p2 side sometimes does not hit
+- [x] remove invisibility when hit
+- [x] spear is not destroyed when p is hit during the movement
 - [x] bk blade fury makes player stuck above ground
 - [x] kn fan lift makes player stuck above ground
 - [ ] kn is launching multiple special attacks while in air after flying punch
-- [ ] projectile doesn't move when player is frozen
+- [x] projectile doesn't move when player is frozen

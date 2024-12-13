@@ -101,7 +101,12 @@ function next_cpu_ac(p, vs)
 
   flag = vs.pj and distance < 7 and "pjt_cls" or (vs_ca.name == "walk" and "wlk_" or (vs_ca.is_atk and "atk_" or (vs_ca.is_special_atk and "spa_" or (vs_ca.is_aerial and "jmp_" or "idl_")))) .. (distance >= 36 and "far" or (distance < 36 and distance >= 7 and "med" or (distance > 0 and "cls" or "sid"))) .. ((vs_ca.name == "walk" or (vs_ca.is_aerial and not vs_ca.is_atk and not vs_ca.is_special_atk)) and (vs.cap.direction == forward and "_f" or (vs.cap.direction == backward and "_b" or "")) or "")
 
-  setup_next_ac(p, p.com_ac_map[flag][ceil(rnd(#p.com_ac_map[flag]))], { direction = (vs.cap.direction or backward) * -1 })
+  local ac_name = p.com_ac_map[flag][ceil(rnd(#p.com_ac_map[flag]))]
+
+  if ac_name then
+    p.is_forced_idle = not p.is_forced_idle
+    setup_next_ac(p, p.is_forced_idle and "idle" or ac_name, { direction = (vs.cap.direction or backward) * -1 })
+  end
 end
 
 function record_ac(p, input)
@@ -156,10 +161,6 @@ function setup_next_ac(p, ac_name, params, force)
   if p.cap.has_finished or p.ca.is_cancelable or force then
     if next_ac then
       if p.ca ~= next_ac then
-        debug = debug or { a = {} }
-        if p1 == p then
-          debug.a = p.ca.name .. " - " .. ac_name
-        end
         return start_ac(p, next_ac, params)
       elseif next_ac == acs.walk then
         return start_ac(p, next_ac, params, not p.cap.has_finished and p.cap.direction == params.direction)
