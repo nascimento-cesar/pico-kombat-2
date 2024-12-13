@@ -102,6 +102,26 @@ function setup_new_round()
   cb_round_remaining_time = round_duration
 end
 
+function build_com_ac_map(char)
+  local com_ac_map = {}
+
+  for flag in all(split "idl_far,idl_med,idl_cls,wlk_far_f,wlk_far_b,wlk_med_f,wlk_med_b,wlk_cls_f,wlk_cls_b,jmp_far,jmp_far_f,jmp_far_b,jmp_med,jmp_med_f,jmp_med_b,jmp_cls,jmp_cls_f,jmp_cls_b,atk_far,atk_med,atk_cls,spa_far,spa_med,spa_cls,pjt_cls") do
+    com_ac_map[flag] = {}
+  end
+
+  for acs in all({ acs, char.special_atks }) do
+    for _, ac in pairs(acs) do
+      if ac.com_reac_flags then
+        for flag in all(split(sub(ac.com_reac_flags, 3), "|")) do
+          add(com_ac_map[flag], ac.name)
+        end
+      end
+    end
+  end
+
+  return com_ac_map
+end
+
 function update_frames_counter(p)
   if not p.cap.is_animation_locked then
     local prev, is_animation_complete, dmg_sp_hdlr = p.caf, false, function(p)

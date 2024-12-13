@@ -10,7 +10,7 @@ function hdl_special_atk(p)
   end
 
   string_to_hash(
-    "pj,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sk_pj,sk_sledgehammer,sz_freeze", {
+    "pj,slide,bk_blade_fury,jc_high_green_bolt,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_hat_toss,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sk_pj,sz_freeze", {
       pj,
       slide,
       function(p, vs)
@@ -347,7 +347,7 @@ function hdl_special_atk(p)
           nil,
           function(p)
             p.pj.has_rope = true
-            p.pj.rope_x = p.pj.direction == forward and p.pj.x or p.pj.x + 6
+            p.pj.rope_x = p.pj.facing == forward and p.pj.x or p.pj.x + 6
           end,
           nil,
           function(p)
@@ -437,7 +437,7 @@ end
 
 function create_pj(p, max_t, before_clb, after_clb, collision_clb, reac_clb)
   if not p.cap.has_fired_pj and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) then
-    p.pj = p.pj or string_to_hash("ac,after_clb,before_clb,collision_clb,direction,frames,max_t,params,reac_clb,sps,x,y", { p.ca, after_clb, before_clb, collision_clb, p.facing, 0, max_t, p.cap, reac_clb, p.char.pj_sps, p.x + sp_w * p.facing, p.y + 5 - ceil(p.char.pj_h / 2) })
+    p.pj = p.pj or string_to_hash("ac,after_clb,before_clb,collision_clb,facing,frames,max_t,params,reac_clb,sps,x,y", { p.ca, after_clb, before_clb, collision_clb, p.facing, 0, max_t, p.cap, reac_clb, p.char.pj_sps, p.x + sp_w * p.facing, p.y + 5 - ceil(p.char.pj_h / 2) })
     p.cap.has_fired_pj = true
   end
 end
@@ -456,7 +456,7 @@ function update_pj(p)
       p.pj.before_clb(p, vs)
     end
 
-    p.pj.x += (p.pj.x_speed or pj_speed) * p.pj.direction
+    p.pj.x += (p.pj.x_speed or pj_speed) * p.pj.facing
     p.pj.frames += 1
 
     if not p.pj.has_hit and not p.pj.has_blocked and has_collision(p.pj.x, p.pj.y, vs.x, vs.y, nil, 6) then

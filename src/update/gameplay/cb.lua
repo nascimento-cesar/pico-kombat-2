@@ -61,6 +61,10 @@ end
 function hit(ac, params, p)
   local reac = params.reac or ac.reac
 
+  if p.ca == acs.prone then
+    return
+  end
+
   if reac and not params.skip_reac then
     if p.ca.is_aerial and (reac == "flinch" or reac == "swept") then
       setup_next_ac(p, "thrown_backward", nil, true)
