@@ -66,12 +66,7 @@ function hit(ac, params, p)
   end
 
   if reac and not params.skip_reac then
-    if p.ca.is_aerial and (reac == "flinch" or reac == "swept") then
-      setup_next_ac(p, "thrown_backward", nil, true)
-    else
-      setup_next_ac(p, reac, nil, true)
-    end
-
+    setup_next_ac(p, p.y < y_bottom_limit and (reac == "flinch" or reac == "swept") and "thrown_backward" or reac, nil, true)
     remove_temporary_conditions(p)
   end
 
