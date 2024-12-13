@@ -105,7 +105,7 @@ end
 function build_com_ac_map(char)
   local com_ac_map = {}
 
-  for flag in all(split "idl_far,idl_med,idl_cls,wlk_far_f,wlk_far_b,wlk_med_f,wlk_med_b,wlk_cls_f,wlk_cls_b,jmp_far,jmp_far_f,jmp_far_b,jmp_med,jmp_med_f,jmp_med_b,jmp_cls,jmp_cls_f,jmp_cls_b,atk_far,atk_med,atk_cls,spa_far,spa_med,spa_cls,pjt_cls") do
+  for flag in all(split "idl_far,idl_med,idl_cls,idl_sid,wlk_far_f,wlk_far_b,wlk_med_f,wlk_med_b,wlk_cls_f,wlk_cls_b,wlk_sid_f,wlk_sid_b,jmp_far,jmp_far_f,jmp_far_b,jmp_med,jmp_med_f,jmp_med_b,jmp_cls,jmp_cls_f,jmp_cls_b,jmp_sid,jmp_sid_f,jmp_sid_b,atk_far,atk_med,atk_cls,atk_sid,spa_far,spa_med,spa_cls,spa_sid,pjt_cls") do
     com_ac_map[flag] = {}
   end
 

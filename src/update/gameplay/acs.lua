@@ -89,57 +89,19 @@ function hold_current_ac(p)
 end
 
 function next_cpu_ac(p, vs)
-  if p.ca ~= acs.idle then
-    if p.ca.has_finished then
-      setup_next_ac(p, "idle")
-    else
-      return
+  if cb_round_state == "finishing_mv" then
+    if vs.t >= 30 then
+      ccp.finishing_mv = p.char.finishing_mvs[p.char.name .. "_f" .. ceil(rnd(2))]
     end
+
+    return
   end
 
-  local vs_ca, distance, flag, f1, f2, f3 = vs.ca, get_x_diff(vs, p)
+  local vs_ca, distance, flag = vs.ca, get_x_diff(vs, p)
 
-  if vs.pj and get_x_diff(vs.pj, p) < 7 then
-    flag = "pjt_cls"
-  else
-    if vs_ca.name == "walk" then
-      f1 = "wlk_"
-    elseif vs_ca.is_atk then
-      f1 = "atk_"
-    elseif vs_ca.is_special_atk then
-      f1 = "spa_"
-    elseif vs_ca.is_aerial then
-      f1 = "jmp_"
-    else
-      f1 = "idl_"
-    end
+  flag = vs.pj and distance < 7 and "pjt_cls" or (vs_ca.name == "walk" and "wlk_" or (vs_ca.is_atk and "atk_" or (vs_ca.is_special_atk and "spa_" or (vs_ca.is_aerial and "jmp_" or "idl_")))) .. (distance >= 36 and "far" or (distance < 36 and distance >= 7 and "med" or (distance > 0 and "cls" or "sid"))) .. ((vs_ca.name == "walk" or (vs_ca.is_aerial and not vs_ca.is_atk and not vs_ca.is_special_atk)) and (vs.cap.direction == forward and "_f" or (vs.cap.direction == backward and "_b" or "")) or "")
 
-    if distance >= 36 then
-      f2 = "far"
-    elseif distance < 36 and distance >= 7 then
-      f2 = "med"
-    else
-      f2 = "cls"
-    end
-
-    if f1 == "wlk_" or f1 == "jmp_" then
-      f3 = vs.cap.direction == forward and "_f" or (vs.cap.direction == backward and "_b" or "")
-    else
-      f3 = ""
-    end
-
-    flag = f1 .. f2 .. f3
-  end
-
-  local ac_name, params = p.com_ac_map[flag][flr(rnd(#p.com_ac_map[flag])) + 1], {}
-
-  if ac_name == "walk" or ac_name == "jump" or ac_name == "jump_punch" or ac_name == "jump_kick" then
-    params = { direction = (vs.cap.direction or backward) * -1 }
-  end
-
-  debug = { a = ac_name }
-
-  setup_next_ac(p, ac_name, params)
+  setup_next_ac(p, p.com_ac_map[flag][ceil(rnd(#p.com_ac_map[flag]))], { direction = (vs.cap.direction or backward) * -1 })
 end
 
 function record_ac(p, input)
@@ -194,6 +156,10 @@ function setup_next_ac(p, ac_name, params, force)
   if p.cap.has_finished or p.ca.is_cancelable or force then
     if next_ac then
       if p.ca ~= next_ac then
+        debug = debug or { a = {} }
+        if p1 == p then
+          debug.a = p.ca.name .. " - " .. ac_name
+        end
         return start_ac(p, next_ac, params)
       elseif next_ac == acs.walk then
         return start_ac(p, next_ac, params, not p.cap.has_finished and p.cap.direction == params.direction)
