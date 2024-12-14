@@ -184,8 +184,12 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 
 ***
 
+### Gerando uma nova versão
+1. Baixe os executáveis do `shrinko8` em [thisismypassport/shrinko8](https://github.com/thisismypassport/shrinko8/releases) e extraia dentro do diretório `/dist`.
+1. Em uma janela do windows terminal, execute `build\\shrinko\\shrinko8.exe pico-kombat-2.p8 dist\\pico-kombat-2.png --minify-safe-only` dentro da pasta root do projeto.
+2. O auto-build já está configurado `.vscode/settings.json`. Basta instalar e habilitar a extensão `Run on Save` no vs code e salvar qualquer arquivo para gerar uma nova build do .p8 automaticamente no diretório `/dist`.
+
 ### Backlog
-- [ ] Vs CPU
 - [ ] Agarrões
 - [ ] Outros tipos de finalização
 - [ ] Chefe secundário
