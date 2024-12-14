@@ -5,7 +5,7 @@ function atk(p, collision_clb, reac_clb, block_clb, collision_hdlr)
 
   local vs, should_hit, block_clb = get_vs(p), false, p.cap.block_clb or block_clb
 
-  if (collision_hdlr and collision_hdlr(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) and vs.ca ~= acs.prone then
+  if (collision_hdlr and collision_hdlr(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) and vs.ca ~= acs.prone and vs.ca ~= acs.thrown_backward and vs.ca ~= acs.thrown_forward then
     should_hit = true
   end
 

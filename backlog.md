@@ -9,8 +9,8 @@
 - [x] spear is not destroyed when p is hit during the movement
 - [x] bk blade fury makes player stuck above ground
 - [x] kn fan lift makes player stuck above ground
-- [ ] kn is launching multiple special attacks while in air after flying punch
+- [x] kn is launching multiple special attacks while in air after flying punch
 - [x] projectile doesn't move when player is frozen
-- [ ] walk far back does not trigger actions
-- [ ] does not allow hit when thrown
-- [ ] throw after bicycle kick
+- [x] walk far back does not trigger actions
+- [x] does not allow hit when thrown
+- [x] throw after bicycle kick

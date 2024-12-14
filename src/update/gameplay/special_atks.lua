@@ -62,8 +62,7 @@ function hdl_special_atk(p)
         p.cap.skip_sfx = true
         atk(
           p, function(p, vs)
-            vs.y = p.y - (vs.caf > 8 and 5 or 6)
-            vs.x = p.x
+            vs.y, vs.x = p.y - (vs.caf > 8 and 5 or 6), p.x
           end,
           function(p, vs)
             if p.caf == 12 then
@@ -85,13 +84,10 @@ function hdl_special_atk(p)
             local is_last_punch = p.cap.punches >= p.cap.max_punches
             if p.t >= get_total_frames(p, 1) then
               setup_next_ac(
-                p, "punch", {
-                  is_x_shiftable = 0,
-                  skip_reac = not is_last_punch,
-                  next_ac = is_last_punch and acs.idle or p.char.special_atks["gotcha"],
-                  next_ac_params = is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true },
-                  reac = is_last_punch and "thrown_backward"
-                }, true
+                p,
+                "punch",
+                string_to_hash("is_x_shiftable,skip_reac,next_ac,next_ac_params,reac", { 0, not is_last_punch, is_last_punch and acs.idle or p.char.special_atks["gotcha"], is_last_punch and {} or { punches = p.cap.punches + 1, skip_delay = true, skip_sfx = true }, is_last_punch and "thrown_backward" }),
+                true
               )
             end
           end
@@ -127,14 +123,16 @@ function hdl_special_atk(p)
         setup_next_ac(
           p,
           "jump_kick",
-          {
-            direction = forward,
-            is_landing = true,
-            x_speed = offensive_speed,
-            block_clb = function(p)
-              setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
-            end
-          },
+          string_to_hash(
+            "direction,is_landing,x_speed,block_clb", {
+              forward,
+              true,
+              offensive_speed,
+              function(p)
+                setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
+              end
+            }
+          ),
           true
         )
       end,
@@ -204,7 +202,7 @@ function hdl_special_atk(p)
         if p.cap.has_hit then
           if vs.t >= total_frames * 3 then
             finish_ac(p)
-            finish_ac(vs)
+            setup_next_ac(vs, "thrown_backward", nil, true)
             p.y = y_bottom_limit
           else
             mv_x(p, offensive_speed / 2)
@@ -248,8 +246,7 @@ function hdl_special_atk(p)
             end
           },
           function(p, vs)
-            p.x = vs.x + ((sp_w * vs.facing) / 2)
-            p.y = y_upper_limit
+            p.x, p.y = vs.x + ((sp_w * vs.facing) / 2), y_upper_limit
           end
         )
       end,
@@ -275,8 +272,7 @@ function hdl_special_atk(p)
       function(p, vs)
         teleport(
           p, vs, "idle", nil, function(p, vs)
-            p.x = vs.x - sp_w * vs.facing
-            p.y = y_bottom_limit
+            p.x, p.y = vs.x - sp_w * vs.facing, y_bottom_limit
             p.facing *= -1
             fix_pls_orientation()
           end
@@ -323,8 +319,7 @@ function hdl_special_atk(p)
           p,
           nil,
           function(p)
-            p.pj.has_rope = true
-            p.pj.rope_x = p.pj.facing == forward and p.pj.x or p.pj.x + 6
+            p.pj.has_rope, p.pj.rope_x = true, p.pj.facing == forward and p.pj.x or p.pj.x + 6
           end,
           nil,
           function(p)
@@ -358,19 +353,22 @@ function hdl_special_atk(p)
           if not is_limit_left(p.x) and not is_limit_right(p.x) then
             mv_x(p, offensive_speed)
           else
-            p.cap.has_teleported = true
-            p.x = is_limit_left(p.x) and map_max_x or map_min_x
-            p.y = y_upper_limit
+            p.cap.has_teleported, p.x, p.y = true, is_limit_left(p.x) and map_max_x or map_min_x, y_upper_limit
           end
         else
           setup_next_ac(
             p,
             "jump_punch",
-            {
-              is_landing = true, direction = forward, x_speed = offensive_speed, block_clb = function(p)
-                setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
-              end
-            },
+            string_to_hash(
+              "is_landing,direction,x_speed,block_clb", {
+                true,
+                forward,
+                offensive_speed,
+                function(p)
+                  setup_next_ac(p, "jump", { blocks_aerial_acs = true }, true)
+                end
+              }
+            ),
             true
           )
         end
