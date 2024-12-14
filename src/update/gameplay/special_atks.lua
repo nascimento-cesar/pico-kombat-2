@@ -11,7 +11,7 @@ function hdl_special_atk(p)
   end
 
   string_to_hash(
-    "pj,slide,bk_blade_fury,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sk_pj,sz_freeze", {
+    "pj,slide,bk_blade_fury,jc_nut_cracker,jc_shadow_kick,jc_uppercut,jx_back_breaker,jx_gotcha,jx_ground_pound,kl_diving_kick,kl_spin,kl_teleport,kn_fan_lift,kn_flying_punch,lk_bicycle_kick,lk_flying_kick,ml_ground_roll,ml_teleport_kick,rd_electric_grab,rd_teleport,rd_torpedo,rp_force_ball,rp_invisibility,sc_spear,sc_teleport_punch,sz_freeze", {
       pj,
       slide,
       function(p, vs)
@@ -372,13 +372,6 @@ function hdl_special_atk(p)
             true
           )
         end
-      end,
-      function(p)
-        create_pj(
-          p, nil, function(p)
-            p.pj.x_speed = pj_speed * 1.5
-          end
-        )
       end,
       function(p)
         create_pj(
