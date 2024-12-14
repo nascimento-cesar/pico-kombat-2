@@ -177,7 +177,7 @@ function draw_pj(p)
   end
 
   shift_pal(p.char.pj_pal_map)
-  spr(sps[index], p.pj.x, p.pj.y, 1, 1, p.pj.flip_x or p.pj.direction == backward)
+  spr(sps[index], p.pj.x, p.pj.y, 1, 1, p.pj.flip_x or p.pj.facing == backward)
   pal()
 
   if p.pj.has_rope then

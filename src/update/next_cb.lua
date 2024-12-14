@@ -3,8 +3,9 @@ function update_next_cb()
   local main_pl = get_main_pl()
 
   if main_pl then
-    local next_challenger = get_next_challenger(main_pl)
-    get_vs(main_pl).char = next_challenger
+    local next_challenger, vs = get_next_challenger(main_pl), get_vs(main_pl)
+    vs.char = next_challenger
+    vs.com_ac_map = build_com_ac_map(next_challenger)
   end
 
   current_screen = "gameplay"

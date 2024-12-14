@@ -51,7 +51,6 @@ Este jogo é inspirado em uma clássica franquia de jogos de luta dos anos 90. E
 ![character 3](doc/char-3.png)
 
 **Bola de energia:** ⬅️+⬇️+➡️+🅾️ \
-**Bola de energia (alta):** ➡️+⬇️+⬅️+🅾️ \
 **Chute especial:** ⬅️+➡️+❎ \
 **Ai:** ⬇️+🅾️❎ \
 **Gancho aéreo:** ⬅️+⬇️+⬅️+🅾️

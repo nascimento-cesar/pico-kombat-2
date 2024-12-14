@@ -88,7 +88,25 @@ function hold_current_ac(p)
   p.cap.is_held = true
 end
 
-function next_cpu_ac(p)
+function next_cpu_ac(p, vs)
+  if cb_round_state == "finishing_mv" then
+    if vs.t >= 30 then
+      ccp.finishing_mv = p.char.finishing_mvs[p.char.name .. "_f" .. ceil(rnd(2))]
+    end
+
+    return
+  end
+
+  local vs_ca, distance, flag = vs.ca, get_x_diff(vs, p)
+
+  flag = vs.pj and distance < 7 and "pjt_cls" or (vs_ca.name == "walk" and "wlk_" or (vs_ca.is_atk and "atk_" or (vs_ca.is_special_atk and "spa_" or (vs_ca.is_aerial and "jmp_" or "idl_")))) .. (distance >= 36 and "far" or (distance < 36 and distance >= 7 and "med" or (distance > 0 and "cls" or "sid"))) .. ((vs_ca.name == "walk" or (vs_ca.is_aerial and not vs_ca.is_atk and not vs_ca.is_special_atk)) and (vs.cap.direction == forward and "_f" or (vs.cap.direction == backward and "_b" or "")) or "")
+
+  local ac_name = p.com_ac_map[flag][ceil(rnd(#p.com_ac_map[flag]))]
+
+  if ac_name then
+    p.is_forced_idle = not p.is_forced_idle
+    setup_next_ac(p, p.is_forced_idle and "idle" or ac_name, { direction = (vs.cap.direction or backward) * -1 })
+  end
 end
 
 function record_ac(p, input)

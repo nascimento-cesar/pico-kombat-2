@@ -164,14 +164,20 @@ function process_starting()
   end
 end
 
+function un_morph(p)
+  if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
+    p.char, p.is_morphed = chars[6], false
+    p.com_ac_map = build_com_ac_map(p.char)
+  end
+end
+
 function update_pl(p)
+  local vs = get_vs(p)
+
   if cb_round_state ~= "finished" then
     is_timer_active(p.st_timers, "frozen")
     is_timer_active(p.st_timers, "invisible")
-
-    if not is_timer_active(p.st_timers, "morphed") and p.is_morphed then
-      p.char, p.is_morphed = chars[6], false
-    end
+    un_morph(p)
   end
 
   if is_st_eq(p, "frozen") then
@@ -182,10 +188,12 @@ function update_pl(p)
   update_frames_counter(p)
   resolve_previous_ac(p)
 
-  if not p.has_joined then
-    next_cpu_ac(p)
-  elseif not p.has_locked_controls then
-    process_inputs(p)
+  if not p.has_locked_controls then
+    if p.has_joined then
+      process_inputs(p)
+    else
+      next_cpu_ac(p, vs)
+    end
   end
 
   if p.ca.is_special_atk then
@@ -195,7 +203,7 @@ function update_pl(p)
   end
 
   if p.cap.reac_clb then
-    p.cap.reac_clb(p, get_vs(p))
+    p.cap.reac_clb(p, vs)
   end
 
   update_pj(p)

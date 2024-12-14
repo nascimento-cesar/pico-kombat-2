@@ -52,7 +52,6 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 ![character 3](doc/char-3.png)
 
 **Energy ball:** ⬅️+⬇️+➡️+🅾️ \
-**Energy ball (high):** ➡️+⬇️+⬅️+🅾️ \
 **Forward kick:** ⬅️+➡️+❎ \
 **Ouch:** ⬇️+🅾️❎ \
 **Uppercut:** ⬅️+⬇️+⬅️+🅾️

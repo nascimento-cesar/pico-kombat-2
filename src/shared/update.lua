@@ -16,6 +16,10 @@ function get_cb_result()
   return false
 end
 
+function get_x_diff(p, vs)
+  return flr(p.facing == forward and vs.x - (p.x + sp_w) or p.x - (vs.x + sp_w))
+end
+
 function get_main_pl()
   if p1.has_joined and not p2.has_joined then
     return p1
@@ -50,6 +54,10 @@ end
 
 function is_limit_right(x, tolerance)
   return x + sp_w > map_max_x + (tolerance or 0)
+end
+
+function is_limit_screen(x, tolerance)
+  return is_limit_left(x, tolerance) or is_limit_right(x, tolerance)
 end
 
 function is_p1_ahd_p2()
@@ -89,6 +97,7 @@ end
 function setup_new_round()
   foreach_pl(function(p, p_id)
     define_pl(p_id, p)
+    un_morph(p)
   end)
 
   for k, v in pairs(round_timers) do
@@ -96,6 +105,26 @@ function setup_new_round()
   end
 
   cb_round_remaining_time = round_duration
+end
+
+function build_com_ac_map(char)
+  local com_ac_map = {}
+
+  for flag in all(split "idl_far,idl_med,idl_cls,idl_sid,wlk_far_f,wlk_far_b,wlk_med_f,wlk_med_b,wlk_cls_f,wlk_cls_b,wlk_sid_f,wlk_sid_b,jmp_far,jmp_far_f,jmp_far_b,jmp_med,jmp_med_f,jmp_med_b,jmp_cls,jmp_cls_f,jmp_cls_b,jmp_sid,jmp_sid_f,jmp_sid_b,atk_far,atk_med,atk_cls,atk_sid,spa_far,spa_med,spa_cls,spa_sid,pjt_cls") do
+    com_ac_map[flag] = {}
+  end
+
+  for acs in all({ acs, char.special_atks }) do
+    for _, ac in pairs(acs) do
+      if ac.com_reac_flags then
+        for flag in all(split(sub(ac.com_reac_flags, 3), "|")) do
+          add(com_ac_map[flag], ac.name)
+        end
+      end
+    end
+  end
+
+  return com_ac_map
 end
 
 function update_frames_counter(p)

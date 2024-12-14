@@ -5,7 +5,7 @@ function atk(p, collision_clb, reac_clb, block_clb, collision_hdlr)
 
   local vs, should_hit, block_clb = get_vs(p), false, p.cap.block_clb or block_clb
 
-  if (collision_hdlr and collision_hdlr(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) then
+  if (collision_hdlr and collision_hdlr(p, vs) or has_collision(p.x, p.y, vs.x, vs.y, p.facing == forward and "right" or "left", 12, 12, 12, 12)) and (not p.ca.dmg_sp or (p.ca.dmg_sp and p.cap.is_dmg_sp)) and vs.ca ~= acs.prone and vs.ca ~= acs.thrown_backward and vs.ca ~= acs.thrown_forward then
     should_hit = true
   end
 
@@ -62,12 +62,7 @@ function hit(ac, params, p)
   local reac = params.reac or ac.reac
 
   if reac and not params.skip_reac then
-    if p.ca.is_aerial and (reac == "flinch" or reac == "swept") then
-      setup_next_ac(p, "thrown_backward", nil, true)
-    else
-      setup_next_ac(p, reac, nil, true)
-    end
-
+    setup_next_ac(p, p.y < y_bottom_limit and (reac == "flinch" or reac == "swept") and "thrown_backward" or reac, nil, true)
     remove_temporary_conditions(p)
   end
 
@@ -75,6 +70,7 @@ function hit(ac, params, p)
     spill_blood(p)
   end
 
+  destroy_pj(p)
   deal_damage(p, ac.dmg)
 end
 
@@ -92,7 +88,7 @@ function has_collision(a_x, a_y, t_x, t_y, type, a_w, a_h, t_w, t_h)
 end
 
 function remove_temporary_conditions(p)
-  p.st_timers.frozen = 0
+  p.st_timers.frozen, p.st_timers.invisible = 0, 0
 end
 
 function spill_blood(p, x, y)
