@@ -78,20 +78,20 @@ function hdl_finishing_mv(p, vs)
       end
 
       if ccp.has_finishing_mv_ended then
-        p.st_timers.invisible = 0
-        cb_round_state = "finished"
+        p.st_timers.invisible, cb_round_state = 0, "finished"
       end
     end
   else
-    local x_diff = get_x_diff(p, vs)
+    local distance, is_limit = get_x_diff(p, vs), is_limit_screen(p.x)
 
-    if x_diff > finishing_mv.distance then
-      setup_next_ac(p, "walk", { direction = forward }, true)
-    elseif x_diff < finishing_mv.distance then
-      setup_next_ac(p, "walk", { direction = backward }, true)
-    else
+    if distance == finishing_mv.distance then
       ccp.has_finishing_mv_started = true
       start_ac(p, s_ac and p.char.special_atks[s_ac] or finishing_mv)
+    elseif is_limit and not ccp.is_fm_adjusting then
+      ccp.is_fm_adjusting = is_limit
+      setup_next_ac(p, "jump", { direction = forward }, true)
+    else
+      setup_next_ac(p, "walk", { direction = distance > finishing_mv.distance and forward or backward })
     end
   end
 end

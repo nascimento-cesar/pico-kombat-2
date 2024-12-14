@@ -56,6 +56,10 @@ function is_limit_right(x, tolerance)
   return x + sp_w > map_max_x + (tolerance or 0)
 end
 
+function is_limit_screen(x, tolerance)
+  return is_limit_left(x, tolerance) or is_limit_right(x, tolerance)
+end
+
 function is_p1_ahd_p2()
   return (p1.x > p2.x and p1.facing == forward) or (p1.x + sp_w < p2.x + sp_w and p1.facing == backward)
 end

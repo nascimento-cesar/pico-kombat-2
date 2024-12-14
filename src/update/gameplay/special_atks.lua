@@ -292,7 +292,7 @@ function hdl_special_atk(p)
             p,
             nil,
             function(p, vs)
-              if is_limit_left(p.x) or is_limit_right(p.x) then
+              if is_limit_screen(p.x) then
                 play_sfx(vs.ca.hit_sfx)
                 setup_next_ac(vs, "jump", { direction = backward }, true)
                 setup_next_ac(p, "fall", nil, true)
@@ -460,7 +460,7 @@ function update_pj(p)
           destroy_pj(p)
         end
       end
-    elseif is_limit_right(p.pj.x) or is_limit_left(p.pj.x) or (p.pj.y > y_bottom_limit + sp_h * 2) then
+    elseif is_limit_screen(p.pj.x) or (p.pj.y > y_bottom_limit + sp_h * 2) then
       destroy_pj(p)
     end
 
