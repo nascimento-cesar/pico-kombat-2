@@ -4,6 +4,9 @@
 
 This game is inspired by a classic 90s fighting game franchise. I aimed to port as many original elements from the source game as possible within the limitations imposed by PICO-8. Some elements were left out as I reached the maximum token limit, however, I am very satisfied with the results achieved. At the end of the documentation, you will find a backlog list with some features that I may implement in future versions if there is interest.
 
+## PICO-8 cart
+![cart](dist/pico-kombat-2.png)
+
 ## Controls
 ⬅️ **walk backward** \
 ➡️ **walk forward** \
@@ -189,6 +192,13 @@ This game is inspired by a classic 90s fighting game franchise. I aimed to port 
 1. Download `shrinko8` executables from [thisismypassport/shrinko8](https://github.com/thisismypassport/shrinko8/releases) and extract inside `/dist` folder.
 2. On windows terminal, run `build\\shrinko\\shrinko8.exe pico-kombat-2.p8 dist\\pico-kombat-2.png --minify-safe-only` inside project root folder.
 3. Auto-build is already configured in `.vscode/settings.json`. Just install and enable `Run on Save` vs code extension and save any file to automatically generate a new .p8 build in `/dist` folder.
+
+## Screenshots
+
+![1](dist/screenshots/1.gif)
+![2](dist/screenshots/2.gif)
+![3](dist/screenshots/3.gif)
+![4](dist/screenshots/4.gif)
 
 ### Backlog
 - [ ] Grabs
